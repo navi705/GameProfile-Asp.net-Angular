@@ -21,7 +21,8 @@ namespace GameProfile.Persistence
 
         protected void FromSql()
         {
-
+            // добавить sql запросы 
+            
         }
 
         public DbSet<Game> Games { get; set; }

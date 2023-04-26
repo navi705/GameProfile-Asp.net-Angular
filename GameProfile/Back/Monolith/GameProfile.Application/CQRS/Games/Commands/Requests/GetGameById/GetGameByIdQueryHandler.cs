@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests
         public async Task<Game> Handle(GetGameByIdQuery request, CancellationToken cancellationToken)
         {
             var game = await _context.Games.FindAsync(request.GameId);
-
+            
             return game;
         }
     }
