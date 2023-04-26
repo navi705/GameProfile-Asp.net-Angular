@@ -8,5 +8,7 @@ namespace GameProfile.Application.Data
         DbSet<Game> Games { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
+
+        
     }
 }

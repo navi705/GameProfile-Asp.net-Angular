@@ -27,8 +27,9 @@ namespace GameProfile.Application.Games.Commands.CreateGame
                                 request.Screenshots,
                                 request.ShopsLinkBuyGame,
                                 request.AchievementsCount);
-            _context.Games.Add(game);
-            await _context.SaveChangesAsync(cancellationToken);
+            //_context.Games.Add(game);
+            
+            await _context.SaveChangesAsync(cancellationToken);         
         }
     }
 }

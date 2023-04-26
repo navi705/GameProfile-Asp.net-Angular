@@ -16,7 +16,12 @@ namespace GameProfile.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new GameConfigure());
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);           
+        }
+
+        protected void FromSql()
+        {
+
         }
 
         public DbSet<Game> Games { get; set; }

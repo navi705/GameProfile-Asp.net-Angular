@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  gameprofile.mssqldb: 
+    image: docker pull mcr.microsoft.com/mssql/server:server:2019-latest
+  gameprofile.webapi:
+    image: ${DOCKER_REGISTRY-}gameprofilewebapi
+    build:
+      context: .
+      dockerfile: GameProfile.WebAPI/Dockerfile

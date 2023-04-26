@@ -1,0 +1,20 @@
+<form>
+<mat-form-field>
+    <mat-label>Title</mat-label>
+    <input matInput type="text" [(ngModel)]="name" [ngModelOptions]="{standalone: true}" />
+</mat-form-field>
+
+<mat-form-field>
+    <mat-label>Date Release</mat-label>
+    <input matInput type="date" [(ngModel)]="date" [ngModelOptions]="{standalone: true}" />
+</mat-form-field>
+
+<mat-form-field>
+    <mat-label>Header Image (url)</mat-label>
+    <input matInput type="url" [(ngModel)]="image" [ngModelOptions]="{standalone: true}" />
+</mat-form-field>
+
+<mat-checkbox [(ngModel)]="nsfw" [ngModelOptions]="{standalone: true}" >Nsfw</mat-checkbox>
+<button (click)="createGame()">save</button>
+
+</form>

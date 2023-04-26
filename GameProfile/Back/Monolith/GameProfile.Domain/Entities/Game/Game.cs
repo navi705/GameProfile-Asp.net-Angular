@@ -45,32 +45,6 @@ namespace GameProfile.Domain.Entities
             AchievementsCount = achievementsCount;
         }
 
-        //public Game(Guid id,
-        //            string title,
-        //            DateTime releaseDate,
-        //            Uri headerImage,
-        //            bool nsfw,
-        //            string description,
-        //           // ICollection<StringForGame> developers,
-        //           // ICollection<StringForGame> publishers,
-        //           // ICollection<StringForGame> genres,
-        //            ICollection<UriForGame> screenshot,
-        //           // ICollection<UriForGame> shopsLinkBuyGame,
-        //            int achievementsCount) : base(id)
-        //{
-        //    Title = title;
-        //    ReleaseDate = releaseDate;
-        //    HeaderImage = headerImage;
-        //    Nsfw = nsfw;
-        //    Description = description;
-        //  //  Developers = developers;
-        //  //  Publishers = publishers;
-        //   // Genres = genres;
-        //    Screenshots = screenshot;
-        //   // ShopsLinkBuyGame = shopsLinkBuyGame;
-        //    AchievementsCount = achievementsCount;
-        //}
-
         public string Title { get; private set; }
 
         public DateTime ReleaseDate { get; private set; }

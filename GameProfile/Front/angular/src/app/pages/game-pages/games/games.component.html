@@ -1,0 +1,7 @@
+<button mat-raised-button color="accent"><a href="add-game">Add Game</a></button>
+<div *ngFor="let game of games" >
+    <mat-card>
+        <a href="{{game.id}}">{{game.title}}</a>
+        <img src="{{game.headerImage}}" width="200" height="100">
+    </mat-card>
+</div>

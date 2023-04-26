@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Steam\genres.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameProfile.Domain\GameProfile.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Steam\genres.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
