@@ -1,4 +1,6 @@
-﻿using GameProfile.Application.CQRS.Games.Commands.Requests;
+﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
+using GameProfile.Application.CQRS.Games.Commands.Requests;
+using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
 using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Entities;
 using MediatR;
@@ -43,6 +45,20 @@ namespace GameProfile.WebAPI.Controllers
                                   game.AchievementsCount);
             await Sender.Send(query);
                 return Ok();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteGame(Guid gameId)
+        {
+            var query = new DeleteGameCommand(gameId);
+            await Sender.Send(query);
+            return Ok();
+        }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateGame(Game game,Guid id)
+        {
+            var query = new UpdateGameCommand(game,id);
+            await Sender.Send(query);
+            return Ok();
         }
     }
 }

@@ -1,0 +1,21 @@
+<header>
+    <mat-toolbar color="primary" aria-label="Top Toolbar" >
+        <nav>
+           <a href="/" id="logo">GameProfile</a>
+           <a mat-button class="nav-a" routerLink="games" routerLinkActive="nav-a-selected" href="games">Games</a>
+           <a>Find Teammate</a>        
+           <a>Forum</a>
+           <a>Stats</a>
+        </nav>
+        <div *ngIf="id == undefined; else elseBlock">
+            <a href="login"> Login in </a>      
+        </div>
+        <ng-template #elseBlock> 
+            <div> 
+                <span>{{id}}</span> 
+                <a href="/profile" ><img src="{{image}}" /> </a> 
+            </div> 
+        </ng-template>
+    </mat-toolbar>
+ 
+</header>

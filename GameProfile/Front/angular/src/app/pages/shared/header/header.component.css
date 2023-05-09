@@ -1,0 +1,37 @@
+header{
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+mat-toolbar{
+    justify-content: space-around;
+    align-items: center;
+    margin: 0 0 0 0;
+}
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+nav a {
+    margin: 0px 20px;
+}
+.nav-a{
+    font-size: 20px;
+    font-weight: 500;
+}
+.nav-a:hover,.nav-a:focus{
+    background: rgba(0, 0, 0, 0.4);
+}
+.nav-a-selected{
+    background: rgba(0, 0, 0, 0.2);
+    
+}
+#logo{
+    color: white;
+    font-weight: bold;
+    font-size: 2em;
+}
+#logo:hover{
+    color: #1de9b6;
+}

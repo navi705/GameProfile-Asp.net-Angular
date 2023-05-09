@@ -14,6 +14,7 @@
 // hue. Available color palettes: https://material.io/design/color/
 $angular-primary: mat.define-palette(mat.$cyan-palette, 600);
 $angular-accent: mat.define-palette(mat.$teal-palette, A400);
+$angular-background: mat.define-palette(mat.$gray-palette, 900);
 
 // The warn palette is optional (defaults to red).
 $angular-warn: mat.define-palette(mat.$red-palette);
@@ -25,6 +26,8 @@ $angular-theme: mat.define-dark-theme((
     primary: $angular-primary,
     accent: $angular-accent,
     warn: $angular-warn,
+    background: $angular-background,
+    foreground: $angular-background,
   )
 ));
 

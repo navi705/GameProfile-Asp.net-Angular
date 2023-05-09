@@ -1,6 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
 {
@@ -14,7 +15,9 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
 
         public Task<List<Game>> Handle(GetGamesQuery request, CancellationToken cancellationToken)
         {
-            var games =  _context.Games.ToList();
+            //var games =  _context.Games.ToList();
+            // добавить жанры
+            var games = _context.Games.FromSqlRaw($"select * from Games").ToList();
             return Task.FromResult(games);
         }
     }

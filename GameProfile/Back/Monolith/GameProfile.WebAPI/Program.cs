@@ -4,6 +4,7 @@ using GameProfile.Infrastructure.Steam;
 using GameProfile.Presentation.Configuration;
 using MediatR;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddPresentation();
+builder.Services.AddAuthentications();
 
 var app = builder.Build();
 
@@ -64,5 +66,8 @@ app.MapPut("minimaApi", async (Game game,IMediator mediator) =>
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

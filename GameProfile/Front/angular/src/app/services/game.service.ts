@@ -20,4 +20,10 @@ import { Game,GamePut } from './models/game';
     public putGame(game:GamePut){
       return this.http.put<GamePut>(GlobalVariable.BASE_API_URL + 'game',game);
     }
+    public deleteGame(id:string){
+      return this.http.delete(GlobalVariable.BASE_API_URL + 'game?gameid=' + id);
+    }
+    public updateGame(game:any,id:string){
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/update?id='+id,game);
+    }
   }

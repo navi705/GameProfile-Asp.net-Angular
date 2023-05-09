@@ -1,7 +1,31 @@
-<button mat-raised-button color="accent"><a href="add-game">Add Game</a></button>
-<div *ngFor="let game of games" >
-    <mat-card>
-        <a href="{{game.id}}">{{game.title}}</a>
-        <img src="{{game.headerImage}}" width="200" height="100">
-    </mat-card>
+<div class="container">
+    <div class="sorting">
+        <span>sorting</span>
+        <mat-select>
+            <mat-option value="titleAtoZ">Title A to Z</mat-option>
+            <mat-option value="titleZtoA">Title Z to A</mat-option>           
+            <mat-option value="dateAscending">Date Ascending</mat-option>           
+            <mat-option value="dateDescending">Date Descending</mat-option>           
+        </mat-select>
+    </div>
+    <div class="wrapper"> 
+        <div class="game-list">
+            <div *ngFor="let game of games" >
+                <mat-card class="game-card"  >
+                    <mat-card-header>
+                        <mat-card-title><a href="/game?id={{game.id}}">{{game.title}}</a></mat-card-title>
+                    </mat-card-header>             
+                    <img mat-card-image src="{{game.headerImage}}"[height]="150" >
+                </mat-card>
+            </div>
+        </div>
+        <div class="filters">
+            <span>Year of production</span>
+                <div> 
+                <input>
+                <input>    
+                </div>
+                <a mat-button color="primary">Find</a>          
+        </div>
+    </div>
 </div>

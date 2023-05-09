@@ -1,12 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 body{
-    background: #121212;
-    /* background: #000000; */
+    background: #121212; 
     font-family: 'Roboto', sans-serif;
     color: #ffff;
     opacity: 87%;
     margin: 0;
 }
-
+a{
+    text-decoration: none; 
+    color: inherit;
+}
+a:hover{
+    color: #00acc1;
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
