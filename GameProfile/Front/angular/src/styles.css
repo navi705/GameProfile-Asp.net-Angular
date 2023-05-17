@@ -1,10 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 body{
     background: #121212; 
-    font-family: 'Roboto', sans-serif;
     color: #ffff;
     opacity: 87%;
     margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    /* background-image: url(https://steamcdn-a.akamaihd.net/steamcommunity/public/images/items/326480/40f09e3cc7a3ddf88024a6ff4165ae332f123fcb.jpg);
+    background-repeat: no-repeat;
+    background-size: auto; */
+}
+.container-page{
+    margin-left: auto;
+    margin-right:auto ;
+    width: 1400px;
 }
 a{
     text-decoration: none; 
@@ -13,5 +21,3 @@ a{
 a:hover{
     color: #00acc1;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

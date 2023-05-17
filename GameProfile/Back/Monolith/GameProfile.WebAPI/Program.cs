@@ -3,7 +3,7 @@ using GameProfile.Domain.Entities;
 using GameProfile.Infrastructure.Steam;
 using GameProfile.Presentation.Configuration;
 using MediatR;
-
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,28 +39,37 @@ app.MapPut("minimaApi", async (Game game,IMediator mediator) =>
                                   game.AchievementsCount);
 
     SteamApi steamApi = new();
-    List<int> apps = new(){ 594650, 218620, 548430, 304930, 648800, 252490, 1465360, 227300, 1190000 };
-    //var aerws= await steamApi.GetGamesList();
+     List<int> apps = new(){ 7660, 6510, 6320, 6330, 6200, 6000, 5850, 5310, 4430, 3420, 3390, 3160, 2140, 1800 };
+    //var aerws = await steamApi.GetGamesList();
     //await steamApi.GetgameInfo(746850);
-    //int j = 0;
+   // int j = 0;
     //foreach (var item in aerws.applist.apps)
     //{
-    //    await steamApi.GetgameInfo(item.appid);
-    //    if(j > 40)
+    //   var game1 = await steamApi.GetgameInfo(item.appid);
+    //    if (game1 == null)
+    //        continue;
+    //    if (j > 300)
     //    {
     //        break;
     //    }
+    //    var query1 = new CreateGameCommand(game1.Name, game1.ReleaseTime, game1.HeaderImg, game1.Nsfw, "", game1.Genres, game1.Publishers, game1.Developers, null, null, 0);
+    //    Debug.WriteLine(game1.Name);
+    //    await mediator.Send(query);
     //    j++;
     //}
-    //await mediator.Send(query);
-    //foreach (var item in apps)
-    //{
-    //    var game1 = await steamApi.GetgameInfo(item);
-    //    var query1 = new CreateGameCommand(game1.Name,game1.ReleaseTime,game1.HeaderImg,game1.Nsfw,"",game1.Genres,game1.Publishers,game1.Developers,null,null,0);
-    //    await mediator.Send(query1);
-    //}
 
-    
+    foreach (var item in apps)
+    {
+        var game1 = await steamApi.GetgameInfo(item);
+        if (game1 == null)
+        {
+            continue;
+        }
+        var query1 = new CreateGameCommand(game1.Name, game1.ReleaseTime, game1.HeaderImg, game1.Nsfw, "", game1.Genres, game1.Publishers, game1.Developers, null, null, 0);
+        await mediator.Send(query1);
+    }
+
+
 });
 
 app.UseHttpsRedirection();

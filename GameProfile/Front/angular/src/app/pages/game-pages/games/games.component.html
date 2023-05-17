@@ -1,31 +1,48 @@
-<div class="container">
-    <div class="sorting">
-        <span>sorting</span>
-        <mat-select>
-            <mat-option value="titleAtoZ">Title A to Z</mat-option>
-            <mat-option value="titleZtoA">Title Z to A</mat-option>           
-            <mat-option value="dateAscending">Date Ascending</mat-option>           
-            <mat-option value="dateDescending">Date Descending</mat-option>           
-        </mat-select>
-    </div>
+<div class="container-page">   
     <div class="wrapper"> 
         <div class="game-list">
-            <div *ngFor="let game of games" >
-                <mat-card class="game-card"  >
-                    <mat-card-header>
-                        <mat-card-title><a href="/game?id={{game.id}}">{{game.title}}</a></mat-card-title>
-                    </mat-card-header>             
-                    <img mat-card-image src="{{game.headerImage}}"[height]="150" >
-                </mat-card>
+            <div *ngFor="let game of games" class="game-container" >
+                    <div class="game">                                           
+                    <img mat-card-image class="game-img" src="{{game.headerImage}}"[height]="150" >
+                    </div>
+                    <div class="game-content">
+                        <a href="/game?id={{game.id}}" class="game-title" ><b>{{game.title}}</b></a>
+                        <span class="game-content-span">Release Date: {{game.releaseDate.slice(0,-9)}}</span>
+                        <span class="game-content-span" >Genre: <a *ngFor="let item of game.genres">{{item.gameString}} </a></span>
+                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers">{{item.gameString}} </a></span>
+                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers">{{item.gameString}} </a></span>
+                    </div>
             </div>
         </div>
-        <div class="filters">
-            <span>Year of production</span>
-                <div> 
-                <input>
-                <input>    
-                </div>
-                <a mat-button color="primary">Find</a>          
-        </div>
-    </div>
+        <div class="right-wrapper">
+                <mat-form-field class="sorting"> 
+                <mat-label>Choose a sorting</mat-label>
+                <mat-select [(value)]="sortFilters.Sorting" (selectionChange)="sort()"  >
+                    <mat-option value="titleAtoZ" >Title A to Z</mat-option>
+                    <mat-option value="titleZtoA">Title Z to A</mat-option>           
+                    <mat-option value="dateAscending">Date Ascending</mat-option>           
+                    <mat-option value="dateDescending">Date Descending</mat-option>           
+                </mat-select>
+            </mat-form-field>
+            <div class="filters">
+               <span class="filter-title">Filters</span>
+                <span class="filer-subtitle">Release Date</span>
+                    <div class="dense-1">                  
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="pickerOf" placeholder="Of" [(ngModel)]="sortTemp.dateOf">
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerOf></mat-datepicker>
+                          </mat-form-field>
+                    <span>—</span>
+                    <mat-form-field  >
+                        <input matInput [matDatepicker]="pickerTo" placeholder="To"  [(ngModel)]="sortTemp.dateTo">
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerTo></mat-datepicker>
+                      </mat-form-field>   
+                    </div>
+                        <mat-checkbox color="primary" [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}" class="filter-nsfw">Nsfw</mat-checkbox>
+                    <a mat-button color="primary" (click)="find()">Find</a>          
+            </div>
+        </div>     
+        </div>       
 </div>

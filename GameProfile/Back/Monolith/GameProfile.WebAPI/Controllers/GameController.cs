@@ -1,8 +1,10 @@
 ﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.Requests;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
+using GameProfile.Application.CQRS.Games.Requests.GetGamesBySort;
 using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Entities;
+using GameProfile.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,10 +25,16 @@ namespace GameProfile.WebAPI.Controllers
             var response = await Sender.Send(query);
             return Ok(response);
         }
-        [HttpGet("games")]
-        public async Task<IActionResult> GetGames()
+        [HttpGet("games/{sort}")]
+        public async Task<IActionResult> GetGamesBySort(string sort)
         {
-            var query = new GetGamesQuery();
+            var query = new GetGamesBySortQuery(sort);
+            return Ok(await Sender.Send(query));
+        }
+        [HttpGet("games")]
+        public async Task<IActionResult> GetGames([FromQuery]GetGamesBySortFiltersModel filters)
+        {
+            var query = new GetGamesQuery(filters.Sorting,filters.ReleaseDateOf,filters.ReleaseDateTo);
             return Ok(await Sender.Send(query));
         }
         [HttpPut]

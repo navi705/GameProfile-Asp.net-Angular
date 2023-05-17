@@ -13,7 +13,7 @@ export class AdminGameComponent {
     private gameService: GameService
   ){}
   ngOnInit(): void {
-    this.gameService.fetchGames().subscribe(response => this.games = response);        
+    this.gameService.fetchGamesBySort('titleAtoZ').subscribe(response => this.games = response);         
 }
   public deleteGame(id:string):void{
     this.gameService.deleteGame(id).subscribe();

@@ -2,6 +2,7 @@
 using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Steam.Models;
 using System.Collections.Specialized;
+using System.Data;
 using System.Text.Json;
 
 namespace GameProfile.Infrastructure.Steam
@@ -36,7 +37,8 @@ namespace GameProfile.Infrastructure.Steam
             JsonElement type = data.GetProperty("type");
             JsonElement associations = data.GetProperty("associations");
             JsonElement genr = data.GetProperty("genres");
-            if (type.ToString() != "Game")
+            var aqwe = type.ToString();
+            if (type.ToString() != "Game" && type.ToString() != "game")
             {
                 return null;
             }
