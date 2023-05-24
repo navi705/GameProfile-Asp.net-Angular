@@ -48,6 +48,13 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(answer);
         }
 
+        [Authorize]
+        [HttpGet("profile/avatar")]
+        public async Task<IActionResult> GetProfileAvatar()
+        {
+            return Ok();
+        }
+
         // delete in future 
         public class GameForProfile
         {
