@@ -1,0 +1,19 @@
+<div class="container-page">   
+    <h3>Game by: {{name}} </h3>
+    <div class="wrapper"> 
+      
+        <div class="game-list">
+            <div *ngFor="let game of games" class="game-container"  >
+                    <div class="game">                                           
+                    <img mat-card-image class="game-img" src="{{game.headerImage}}"[height]="150" >
+                    </div>
+                    <div class="game-content">
+                        <a href="/game?id={{game.id}}" class="game-title" ><b>{{game.title}}</b></a>
+                        <span class="game-content-span">Release Date: {{game.releaseDate.slice(0,-9)}}</span>
+                        <span class="game-content-span" >Genre: <a *ngFor="let item of game.genres">{{item.gameString}} </a></span>
+                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers">{{item.gameString}} </a></span>
+                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers">{{item.gameString}} </a></span>
+                    </div>
+            </div>
+    </div>
+</div>

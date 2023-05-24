@@ -1,21 +1,41 @@
 <header>
     <mat-toolbar color="primary" aria-label="Top Toolbar" >
+        <div class="header-container">
         <nav>
            <a href="/" id="logo">GameProfile</a>
            <a mat-button class="nav-a" routerLink="games" routerLinkActive="nav-a-selected" href="games">Games</a>
            <a>Find Teammate</a>        
            <a>Forum</a>
-           <a>Stats</a>
-        </nav>
-        <div *ngIf="id == undefined; else elseBlock">
+           <a>Stats</a>     
+        </nav>       
+        <div class="search">
+        <mat-icon>search</mat-icon>   
+        <input class="search-input"
+        [matAutocomplete]="auto"
+        [(ngModel)]="searchString"
+        [ngModelOptions]="{standalone: true}"
+        (input)="onSearchChange()"
+        > 
+        <mat-autocomplete #auto="matAutocomplete" >   
+            <mat-option *ngFor="let game of findGames | async">              
+                    <a href="/game?id={{game.id}}">
+                    <div class="aboba">
+                    <img [src]="game.headerImage" [height]="50" [width]="150">
+                    <span class="">{{game.title}}</span>
+                    </div>
+                    </a>
+            </mat-option>   
+        </mat-autocomplete>      
+    </div>
+        <div class="login" *ngIf="image == undefined; else elseBlock">
             <a href="login"> Login in </a>      
         </div>
         <ng-template #elseBlock> 
-            <div> 
-                <span>{{id}}</span> 
-                <a href="/profile" ><img src="{{image}}" /> </a> 
+            <div class="login"> 
+                <a href="/profile" ><img src="{{image}}" class="avatar" /> </a> 
             </div> 
         </ng-template>
+    </div>
     </mat-toolbar>
- 
+    
 </header>

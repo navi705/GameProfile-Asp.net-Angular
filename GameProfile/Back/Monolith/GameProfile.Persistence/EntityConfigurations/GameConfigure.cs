@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GameProfile.Domain.Entities;
+using GameProfile.Domain.Entities.GameEntites;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GameProfile.Persistence.EntityConfigurations
 {
-    // sealed or record or ?
     public sealed class GameConfigure : IEntityTypeConfiguration<Game>
     {
         public void Configure(EntityTypeBuilder<Game> builder)

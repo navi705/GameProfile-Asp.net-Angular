@@ -1,6 +1,7 @@
 import { Injectable} from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GlobalVariable } from '../global';
+import { GameForProfile } from './models/game';
 
 
 @Injectable({
@@ -14,8 +15,8 @@ import { GlobalVariable } from '../global';
         const params = new HttpParams()
         .set('openid.ns', 'http://specs.openid.net/auth/2.0')
         .set('openid.mode', 'checkid_setup')
-        .set('openid.return_to','http://localhost:4200/games')
-        .set('openid.realm','http://localhost:4200')
+        .set('openid.return_to','https://localhost:4200/games')
+        .set('openid.realm','https://localhost:4200')
         .set('openid.identity','http://specs.openid.net/auth/2.0/identifier_select')
         .set('openid.claimed_id','http://specs.openid.net/auth/2.0/identifier_select');
         return'https://steamcommunity.com/openid/login?' + params;   
@@ -36,11 +37,22 @@ import { GlobalVariable } from '../global';
          return 'https://steamcommunity.com/openid/login?' + params;
     }
     public getLoginWithSteam(objects:any){
-        return this.http.post(GlobalVariable.BASE_API_URL +'login/steam',objects);
+      const httpOptions = {
+        withCredentials: true //this is required so that Angular returns the Cookies received from the server. The server sends cookies in Set-Cookie header. Without this, Angular will ignore the Set-Cookie header
+      };
+        return this.http.post(GlobalVariable.BASE_API_URL +'login/steam',objects,httpOptions);
     }
     public logout(){
+      const httpOptions = {
+        withCredentials: true //this is required so that Angular returns the Cookies received from the server. The server sends cookies in Set-Cookie header. Without this, Angular will ignore the Set-Cookie header
+      };
         console.log(GlobalVariable.BASE_API_URL + 'logout');
-        return this.http.post(GlobalVariable.BASE_API_URL + 'logout',{});
+        return this.http.post(GlobalVariable.BASE_API_URL + 'logout',{},httpOptions);
     }
-
+    public profile(){
+      const httpOptions = {
+        withCredentials: true //this is required so that Angular returns the Cookies received from the server. The server sends cookies in Set-Cookie header. Without this, Angular will ignore the Set-Cookie header
+      };
+      return this.http.get<Array<GameForProfile>>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
+    }
   }

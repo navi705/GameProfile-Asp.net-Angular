@@ -3,6 +3,7 @@ using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Steam.Models;
 using System.Collections.Specialized;
 using System.Data;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace GameProfile.Infrastructure.Steam
@@ -35,8 +36,25 @@ namespace GameProfile.Infrastructure.Steam
                 return null;
             }
             JsonElement type = data.GetProperty("type");
-            JsonElement associations = data.GetProperty("associations");
-            JsonElement genr = data.GetProperty("genres");
+            JsonElement associations = new();
+            try
+            {
+                 associations = data.GetProperty("associations");
+            }
+            catch
+            {
+                return null;
+            }
+            JsonElement genr = new();
+            try
+            {
+                genr = data.GetProperty("genres");
+            }
+            catch
+            {
+                return null;
+            }
+           
             var aqwe = type.ToString();
             if (type.ToString() != "Game" && type.ToString() != "game")
             {
@@ -105,106 +123,138 @@ namespace GameProfile.Infrastructure.Steam
                 }
                 i++;
             }
-
+            Debug.WriteLine(appID);
             return game;
-        }
-
-        public async Task<ListGames> GetGamesList()
-        {
-            HttpResponseMessage response;
-            response = await _httpClient.GetAsync("http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json");
-            var games = JsonSerializer.Deserialize<ListGames>(response.Content.ReadAsStringAsync().Result.ToString());
-            return games;
-        }
-        public async Task<bool> CheckOpenIdSteam(SteamOpenIdData steamOpenIdData)
-        {
-            HttpResponseMessage response;
-            NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-            queryString.Add("openid.assoc_handle", steamOpenIdData.openidassoc_handle);
-            queryString.Add("openid.signed", steamOpenIdData.openidsigned);
-            queryString.Add("openid.sig", steamOpenIdData.openidsig);
-            queryString.Add("openid.ns", steamOpenIdData.openidns);
-            queryString.Add("openid.mode", steamOpenIdData.openidmode);
-            queryString.Add("openid.op_endpoint", steamOpenIdData.openidop_endpoint);
-            queryString.Add("openid.claimed_id", steamOpenIdData.openidclaimed_id);
-            queryString.Add("openid.identity", steamOpenIdData.openididentity);
-            queryString.Add("openid.return_to", steamOpenIdData.openidreturn_to);
-            queryString.Add("openid.response_nonce", steamOpenIdData.openidresponse_nonce);
-            response = await _httpClient.GetAsync("https://steamcommunity.com/openid/login?" + queryString.ToString());
-            var responeString = response.Content.ReadAsStringAsync().Result.ToString();
-            if (responeString.Contains("true"))
-            {
-                return true;
             }
-            return false;
-        }
 
-        public async Task<string> SteamUserGetPlayerSummaries(string id)
+            public async Task<ListGames> GetGamesList()
+            {
+                HttpResponseMessage response;
+                response = await _httpClient.GetAsync("http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json");
+                var games = JsonSerializer.Deserialize<ListGames>(response.Content.ReadAsStringAsync().Result.ToString());
+                return games;
+            }
+            public async Task<bool> CheckOpenIdSteam(SteamOpenIdData steamOpenIdData)
+            {
+                HttpResponseMessage response;
+                NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                queryString.Add("openid.assoc_handle", steamOpenIdData.openidassoc_handle);
+                queryString.Add("openid.signed", steamOpenIdData.openidsigned);
+                queryString.Add("openid.sig", steamOpenIdData.openidsig);
+                queryString.Add("openid.ns", steamOpenIdData.openidns);
+                queryString.Add("openid.mode", steamOpenIdData.openidmode);
+                queryString.Add("openid.op_endpoint", steamOpenIdData.openidop_endpoint);
+                queryString.Add("openid.claimed_id", steamOpenIdData.openidclaimed_id);
+                queryString.Add("openid.identity", steamOpenIdData.openididentity);
+                queryString.Add("openid.return_to", steamOpenIdData.openidreturn_to);
+                queryString.Add("openid.response_nonce", steamOpenIdData.openidresponse_nonce);
+                response = await _httpClient.GetAsync("https://steamcommunity.com/openid/login?" + queryString.ToString());
+                var responeString = response.Content.ReadAsStringAsync().Result.ToString();
+                if (responeString.Contains("true"))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            public async Task<List<string>> SteamUserGetPlayerSummaries(string id)
+            {
+                HttpResponseMessage response;
+                response = await _httpClient.GetAsync("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=E3F8346565FF771EDB7691695BB4A081&steamids=" + id);
+                var answer = JsonSerializer.Deserialize<GetPlayerSummaries>(response.Content.ReadAsStringAsync().Result.ToString());
+                var array = new List<string>();
+                array.Add(answer.response.players[0].avatarmedium);
+                array.Add(answer.response.players[0].personaname);
+                return array;
+            }
+
+            public async Task<SteamOwnedGames> SteamOwnedGames(string steamId)
+            {
+                HttpResponseMessage response;
+                response = await _httpClient.GetAsync("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=E3F8346565FF771EDB7691695BB4A081&steamid=" + steamId + "&include_played_free_games=true&include_free_sub=true");
+                var answer = JsonSerializer.Deserialize<SteamOwnedGamesApi>(response.Content.ReadAsStringAsync().Result.ToString());
+                return answer.response;
+            }
+        }
+        public class SteamGameFromApi
         {
-            HttpResponseMessage response;
-            response = await _httpClient.GetAsync("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=E3F8346565FF771EDB7691695BB4A081&steamids=" + id);
-            var answer = JsonSerializer.Deserialize<GetPlayerSummaries>(response.Content.ReadAsStringAsync().Result.ToString());
-            return answer.response.players[0].avatarmedium;
+            public string Name { get; set; }
+
+            public bool Nsfw { get; set; }
+
+            public DateTime ReleaseTime { get; set; }
+
+            public Uri HeaderImg { get; set; }
+
+            public List<StringForGame> Genres { get; set; } = new();
+
+            public List<StringForGame> Publishers { get; set; } = new();
+
+            public List<StringForGame> Developers { get; set; } = new();
         }
+
+        public class SteamOpenIdData
+        {
+            public string openidassoc_handle { get; set; }
+            public string openidsigned { get; set; }
+            public string openidsig { get; set; }
+            public string openidns { get; set; }
+            public string openidmode { get; set; }
+            public string openidop_endpoint { get; set; }
+            public string openidclaimed_id { get; set; }
+            public string openididentity { get; set; }
+            public string openidreturn_to { get; set; }
+            public string openidresponse_nonce { get; set; }
+        }
+
+        public class GetPlayerSummaries
+        {
+            public ResponseGetPlayerSummaries response { get; set; }
+        }
+
+        public class ResponseGetPlayerSummaries
+        {
+            public Player[] players { get; set; }
+        }
+
+        public class Player
+        {
+            public string steamid { get; set; }
+            public int communityvisibilitystate { get; set; }
+            public int profilestate { get; set; }
+            public string personaname { get; set; }
+            public string profileurl { get; set; }
+            public string avatar { get; set; }
+            public string avatarmedium { get; set; }
+            public string avatarfull { get; set; }
+            public string avatarhash { get; set; }
+            public int lastlogoff { get; set; }
+            public int personastate { get; set; }
+            public string primaryclanid { get; set; }
+            public int timecreated { get; set; }
+            public int personastateflags { get; set; }
+        }
+
+        public class SteamOwnedGamesApi
+        {
+            public SteamOwnedGames response { get; set; }
+        }
+
+        public class SteamOwnedGames
+        {
+            public int game_count { get; set; }
+            public GameForSteamOwned[] games { get; set; }
+        }
+
+        public class GameForSteamOwned
+        {
+            public int appid { get; set; }
+            public int playtime_forever { get; set; }
+            public int playtime_windows_forever { get; set; }
+            public int playtime_mac_forever { get; set; }
+            public int playtime_linux_forever { get; set; }
+            public long rtime_last_played { get; set; }
+            public int playtime_2weeks { get; set; }
+        }
+
     }
-    public class SteamGameFromApi
-    {
-        public string Name { get; set; }
-
-        public bool Nsfw { get; set; }
-
-        public DateTime ReleaseTime { get; set; }
-
-        public Uri HeaderImg { get; set; }
-
-        public List<StringForGame> Genres { get; set; } = new();
-
-        public List<StringForGame> Publishers { get; set; } = new();
-
-        public List<StringForGame> Developers { get; set; } = new();
-    }
-
-    public class SteamOpenIdData
-    {
-        public string openidassoc_handle { get; set; }
-        public string openidsigned { get; set; }
-        public string openidsig { get; set; }
-        public string openidns { get; set; }
-        public string openidmode { get; set; }
-        public string openidop_endpoint { get; set; }
-        public string openidclaimed_id { get; set; }
-        public string openididentity { get; set; }
-        public string openidreturn_to { get; set; }
-        public string openidresponse_nonce { get; set; }
-    }
-
-    public class GetPlayerSummaries
-    {
-        public ResponseGetPlayerSummaries response { get; set; }
-    }
-
-    public class ResponseGetPlayerSummaries
-    {
-        public Player[] players { get; set; }
-    }
-
-    public class Player
-    {
-        public string steamid { get; set; }
-        public int communityvisibilitystate { get; set; }
-        public int profilestate { get; set; }
-        public string personaname { get; set; }
-        public string profileurl { get; set; }
-        public string avatar { get; set; }
-        public string avatarmedium { get; set; }
-        public string avatarfull { get; set; }
-        public string avatarhash { get; set; }
-        public int lastlogoff { get; set; }
-        public int personastate { get; set; }
-        public string primaryclanid { get; set; }
-        public int timecreated { get; set; }
-        public int personastateflags { get; set; }
-    }
-
-
-}

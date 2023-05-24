@@ -3,7 +3,6 @@ import { ActivatedRoute} from '@angular/router';
 
 
 import { GameService } from 'src/app/services/game.service';
-import { Game } from 'src/app/services/models/game';
 
 
 

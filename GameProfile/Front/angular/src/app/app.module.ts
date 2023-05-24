@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './modules/material.module';
+import { MaterialModule } from './pages/shared/modules/material.module';
 import { FormsModule } from '@angular/forms';
 import {
   DateAdapter,
@@ -22,6 +22,8 @@ import { AfterLoginSteamComponent } from './pages/profile-pages/after-login-stea
 import { LoginComponent } from './pages/profile-pages/login/login.component';
 import { ProfileComponent } from './pages/profile-pages/profile/profile.component';
 import { AdminGameComponent } from './pages/admin-pages/admin-game/admin-game.component';
+import { GameClass } from './services/models/game';
+import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-creators/game-filters-creators.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -45,7 +47,8 @@ const MY_DATE_FORMAT = {
     LoginComponent,
     AfterLoginSteamComponent,
     ProfileComponent,
-    AdminGameComponent
+    AdminGameComponent,
+    GameFiltersCreatorsComponent,
   ],
   imports: [
     BrowserModule,

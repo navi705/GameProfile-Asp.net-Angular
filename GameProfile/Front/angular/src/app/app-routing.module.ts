@@ -8,6 +8,7 @@ import { LoginComponent } from './pages/profile-pages/login/login.component';
 import { AfterLoginSteamComponent } from './pages/profile-pages/after-login-steam/after-login-steam.component';
 import { ProfileComponent } from './pages/profile-pages/profile/profile.component';
 import { AdminGameComponent } from './pages/admin-pages/admin-game/admin-game.component';
+import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-creators/game-filters-creators.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'after-login-steam',component:AfterLoginSteamComponent},
   {path:'profile',component: ProfileComponent},
-  {path:'admin/game',component:AdminGameComponent}
+  {path:'admin/game',component:AdminGameComponent},
+  {path: 'game/filter',component:GameFiltersCreatorsComponent}
 ];
 
 @NgModule({

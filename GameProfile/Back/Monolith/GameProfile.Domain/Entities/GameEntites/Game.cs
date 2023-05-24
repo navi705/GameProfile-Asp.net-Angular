@@ -1,6 +1,6 @@
 ﻿using GameProfile.Domain.ValueObjects.Game;
 
-namespace GameProfile.Domain.Entities
+namespace GameProfile.Domain.Entities.GameEntites
 {
     public sealed class Game : Entity
     {

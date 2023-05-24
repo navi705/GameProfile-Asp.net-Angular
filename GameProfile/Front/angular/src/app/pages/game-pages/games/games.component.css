@@ -1,7 +1,3 @@
-.container-page{
-     display: flex;
-     flex-direction: column; 
-}
 .wrapper{
     display: flex;  
     flex-direction: row;
@@ -40,6 +36,9 @@
 }
 .right-wrapper{
     margin-top: 20px;
+    position: sticky;
+    top: 73px;
+    align-self: flex-start;
 }
 .sorting{
     margin-left: auto;
@@ -65,4 +64,7 @@
 }
 .filter-nsfw{
     margin: 0px 150px 0px auto;
+}
+.list-genres{
+    height: 100px;
 }

@@ -46,3 +46,33 @@ export interface Game {
     shopsLinkBuyGame: shopsLinkBuyGame[]
     achievementsCount: number
   }
+  export class GameClass{
+    id!: string
+    title!: string
+    releaseDate!: string
+    headerImage!: string
+    nsfw!: boolean
+    description!: string
+    screenshots!: screenshot[]
+    genres!: genre[]
+    publishers!: publisher[]
+    developers!: developer[]
+    shopsLinkBuyGame!: shopsLinkBuyGame[]
+    achievementsCount!: number
+  }
+
+  export interface GameForProfile{
+    id:string;
+    title:string;
+    headerImage:string;
+    hours:number;
+    statusGame: StatusGameProgressions;
+  }
+  
+  export enum StatusGameProgressions
+  {
+      Playing=1,
+      Completed=2,
+      Dropped=3,
+      Planned=4
+  }

@@ -1,5 +1,7 @@
-﻿using GameProfile.Application.Data;
+﻿using GameProfile.Application;
+using GameProfile.Application.Data;
 using GameProfile.Persistence;
+using GameProfile.Persistence.Caching;
 using GameProfile.Persistence.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +15,7 @@ namespace GameProfile.Presentation.Configuration
         public static IServiceCollection AddPersistence(this IServiceCollection services,IConfiguration configuration)
         {
             var dbOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
-            var redisConnectionString = configuration.GetConnectionString("Redis");
+            var redisConnectionString = configuration.GetValue<string>("Redis");
 
             services.AddDbContext<DatabaseContext>(
                 (sp, optionsBuilder) =>
@@ -31,6 +33,9 @@ namespace GameProfile.Presentation.Configuration
             });
 
             services.AddScoped<IDatabaseContext, DatabaseContext>();
+            services.AddDistributedMemoryCache();
+            services.AddSingleton<ICacheService, CacheService>();
+
             return services;    
         }
         
@@ -55,11 +60,26 @@ namespace GameProfile.Presentation.Configuration
 
         .AddCookie(options =>
         {
-            options.LoginPath = "/loginas";
-            options.LogoutPath = "/logoutas";
-            
-           
+            options.Cookie.Name = ".Auth.Cookies";
+            options.Cookie.HttpOnly = true;
+            options.Cookie.Domain = "localhost";
+            options.Cookie.Path = "/";
+            //options.LoginPath = "/after-login-steam";
+            options.SlidingExpiration = true;
+            //options.LogoutPath = "/logoout";
+            options.Cookie.SameSite = SameSiteMode.Lax;
+
+
         });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowCredentials",
+                    builder => builder.WithOrigins("https://localhost:4200")
+                                      .AllowCredentials()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
 
             return services;
         }

@@ -15,11 +15,18 @@ import { SotrtFilter } from './models/sortFilters';
       
       return this.http.get<Game>(GlobalVariable.BASE_API_URL+`game/${id}`);     
     }
-    public fetchGames(){
-      return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games');   
+    public fetchGames(sortFilters:any){
+      let params = new HttpParams();
+      Object.keys(sortFilters).forEach(function (key) {
+        if(sortFilters[key]== null)
+          return;     
+      params = params.append(key, sortFilters[key]);
+      });
+        return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games?' +params);   
     }
-    public fetchGamesBySort(sort:string){
-      return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/'+sort);   
+    public fetchGamesByDeveloper(type:string,name:string){
+      let params = new HttpParams().set('type',type).set('who',name);
+      return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/devorpub?'+params);   
     }
     public fetchGamesBySortFilters(sortFilters:any){
       let params = new HttpParams();
@@ -31,8 +38,10 @@ import { SotrtFilter } from './models/sortFilters';
   
         //console.log(GlobalVariable.BASE_API_URL + 'game/games?' +params);
         return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games?' +params);   
-      }
-
+      }     
+    public fecthGameByString(title:string){
+      return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/search?title='+title);   
+    }
     public putGame(game:GamePut){
       return this.http.put<GamePut>(GlobalVariable.BASE_API_URL + 'game',game);
     }

@@ -1,8 +1,10 @@
-import { Moment } from "moment";
 
 export class SotrtFilter{
     Sorting?: string;
+    Page?: number;
     ReleaseDateOf?:string;
     ReleaseDateTo?:string;
-    Nsfw?: boolean;
+    Nsfw?: string;
+    Genres?: string[];
+    GenresExcluding? : string[] ;
 }

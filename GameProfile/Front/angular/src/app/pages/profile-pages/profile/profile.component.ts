@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { GameForProfile } from 'src/app/services/models/game';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -8,12 +9,19 @@ import { ProfileService } from 'src/app/services/profile.service';
   providers: [ProfileService]
 })
 export class ProfileComponent {
-  constructor(private profile:ProfileService){}
+  avatar:any;
+  name:any;
+  profileGames: GameForProfile[];
+  constructor(private profile:ProfileService){
+    this.profileGames = new Array<GameForProfile>();
+  }
+  ngOnInit(): void {   
+    this.avatar = localStorage.getItem('avatar')?.replace('medium','full');
+    this.name = localStorage.getItem('name');
+    this.profile.profile().subscribe(response=> this.profileGames = response);
+  }
   logout(){
-    localStorage.clear();
+    this.profile.logout().subscribe();
     window.location.href="/games";
-    //this.profile.logout().subscribe();
-    //window.location.href='games';
-    // использовать location
   }
 }

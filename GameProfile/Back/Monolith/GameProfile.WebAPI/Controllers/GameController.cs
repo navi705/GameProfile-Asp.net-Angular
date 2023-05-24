@@ -1,9 +1,11 @@
 ﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.Requests;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
+using GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesBySort;
+using GameProfile.Application.CQRS.Games.Requests.GetGenres;
 using GameProfile.Application.Games.Commands.CreateGame;
-using GameProfile.Domain.Entities;
+using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,18 +27,31 @@ namespace GameProfile.WebAPI.Controllers
             var response = await Sender.Send(query);
             return Ok(response);
         }
-        [HttpGet("games/{sort}")]
-        public async Task<IActionResult> GetGamesBySort(string sort)
+        [HttpGet("games/search")]
+        public async Task<IActionResult> GetGamesBySearch(string title)
         {
-            var query = new GetGamesBySortQuery(sort);
+            var query = new GetGamesBySearch(title);
+            return Ok(await Sender.Send(query));
+        }
+        [HttpGet("games/devorpub")]
+        public async Task<IActionResult> GetGamesByDevOrPub(string type,string who)
+        {
+            var query = new GetGamesByPubOrDevQuery(type,who);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("games")]
         public async Task<IActionResult> GetGames([FromQuery]GetGamesBySortFiltersModel filters)
         {
-            var query = new GetGamesQuery(filters.Sorting,filters.ReleaseDateOf,filters.ReleaseDateTo);
+            var query = new GetGamesQuery(filters.Sorting,filters.Page,filters.Nsfw,filters.ReleaseDateOf,filters.ReleaseDateTo,filters.Genres,filters.GenresExcluding);
             return Ok(await Sender.Send(query));
         }
+        [HttpGet("genres")]
+        public async Task<IActionResult> GetGenres()
+        {
+            var query = new GetGenresQuery();
+            return Ok(await Sender.Send(query));
+        }
+
         [HttpPut]
         public async Task<IActionResult> PutGame(Game game)
         {

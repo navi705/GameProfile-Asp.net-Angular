@@ -22,7 +22,7 @@ namespace GameProfile.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GameProfile.Domain.Entities.Game", b =>
+            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.Game", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,70 @@ namespace GameProfile.Persistence.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("GameProfile.Domain.Entities.Game", b =>
+            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.GameSteamId", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("SteamAppId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("SteamAppId")
+                        .IsUnique();
+
+                    b.ToTable("GameSteamIds");
+                });
+
+            modelBuilder.Entity("GameProfile.Domain.Entities.Profile.Profile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("GameProfile.Domain.Entities.Profile.ProfileHasGames", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MinutesInGame")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("StatusGame")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("ProfileHasGames");
+                });
+
+            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.Game", b =>
                 {
                     b.OwnsMany("GameProfile.Domain.ValueObjects.Game.StringForGame", "Developers", b1 =>
                         {
@@ -183,6 +246,74 @@ namespace GameProfile.Persistence.Migrations
                     b.Navigation("Screenshots");
 
                     b.Navigation("ShopsLinkBuyGame");
+                });
+
+            modelBuilder.Entity("GameProfile.Domain.Entities.Profile.Profile", b =>
+                {
+                    b.OwnsOne("GameProfile.Domain.ValueObjects.Profile.Description", "Description", b1 =>
+                        {
+                            b1.Property<Guid>("ProfileId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ProfileId");
+
+                            b1.ToTable("Profiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProfileId");
+                        });
+
+                    b.OwnsOne("GameProfile.Domain.ValueObjects.Profile.Name", "Name", b1 =>
+                        {
+                            b1.Property<Guid>("ProfileId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ProfileId");
+
+                            b1.ToTable("Profiles");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProfileId");
+                        });
+
+                    b.OwnsMany("GameProfile.Domain.ValueObjects.StringForEntity", "SteamIds", b1 =>
+                        {
+                            b1.Property<Guid>("ProfileId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("StringFor")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ProfileId", "Id");
+
+                            b1.ToTable("StringForEntity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProfileId");
+                        });
+
+                    b.Navigation("Description")
+                        .IsRequired();
+
+                    b.Navigation("Name")
+                        .IsRequired();
+
+                    b.Navigation("SteamIds");
                 });
 #pragma warning restore 612, 618
         }

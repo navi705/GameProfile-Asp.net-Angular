@@ -1,23 +1,23 @@
 <div class="container-page">   
     <div class="wrapper"> 
         <div class="game-list">
-            <div *ngFor="let game of games" class="game-container" >
+            <div *ngFor="let game of games" class="game-container"  >
                     <div class="game">                                           
                     <img mat-card-image class="game-img" src="{{game.headerImage}}"[height]="150" >
                     </div>
                     <div class="game-content">
                         <a href="/game?id={{game.id}}" class="game-title" ><b>{{game.title}}</b></a>
                         <span class="game-content-span">Release Date: {{game.releaseDate.slice(0,-9)}}</span>
-                        <span class="game-content-span" >Genre: <a *ngFor="let item of game.genres">{{item.gameString}} </a></span>
-                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers">{{item.gameString}} </a></span>
-                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers">{{item.gameString}} </a></span>
+                        <span class="game-content-span" >Genre: <span *ngFor="let item of game.genres">{{item.gameString}} </span></span>
+                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers" href="/game/filter?type=publisher&name={{item.gameString}}" >{{item.gameString}} </a></span>
+                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers" href="/game/filter?type=developer&name={{item.gameString}}" >{{item.gameString}} </a></span>
                     </div>
             </div>
         </div>
         <div class="right-wrapper">
                 <mat-form-field class="sorting"> 
                 <mat-label>Choose a sorting</mat-label>
-                <mat-select [(value)]="sortFilters.Sorting" (selectionChange)="sort()"  >
+                <mat-select [(value)]="sortFilters.Sorting" >
                     <mat-option value="titleAtoZ" >Title A to Z</mat-option>
                     <mat-option value="titleZtoA">Title Z to A</mat-option>           
                     <mat-option value="dateAscending">Date Ascending</mat-option>           
@@ -29,7 +29,7 @@
                 <span class="filer-subtitle">Release Date</span>
                     <div class="dense-1">                  
                         <mat-form-field>
-                            <input matInput [matDatepicker]="pickerOf" placeholder="Of" [(ngModel)]="sortTemp.dateOf">
+                            <input matInput [matDatepicker]="pickerOf" placeholder="Of" [(ngModel)]="sortTemp.dateOf" >
                             <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
                             <mat-datepicker #pickerOf></mat-datepicker>
                           </mat-form-field>
@@ -40,8 +40,14 @@
                         <mat-datepicker #pickerTo></mat-datepicker>
                       </mat-form-field>   
                     </div>
-                        <mat-checkbox color="primary" [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}" class="filter-nsfw">Nsfw</mat-checkbox>
-                    <a mat-button color="primary" (click)="find()">Find</a>          
+                        <mat-checkbox color="primary" (change)="changeCheckbox1()" [(indeterminate)]="indeterminate" [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}" class="filter-nsfw">Nsfw</mat-checkbox>
+                        <span class="filer-subtitle">Genres</span>
+                        <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
+                            <ng-container *ngIf="filtersArray && filtersArray.length">
+                                <mat-checkbox *cdkVirtualFor="let genre of filtersArray" name="{{genre.name}}" color="primary" (change)="onChange($event)">{{genre.name}}</mat-checkbox>
+                              </ng-container>
+                        </cdk-virtual-scroll-viewport>   
+                    <a mat-button color="primary"  (click)="find()">Find</a>          
             </div>
         </div>     
         </div>       
