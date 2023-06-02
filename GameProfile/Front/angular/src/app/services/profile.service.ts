@@ -1,7 +1,8 @@
 import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GlobalVariable } from '../global';
-import { GameForProfile } from './models/game';
+import { GameForProfile, StatusGameProgressions } from './models/game';
+import { ProfileModel } from './models/profile';
 
 
 @Injectable({
@@ -44,15 +45,35 @@ import { GameForProfile } from './models/game';
     }
     public logout(){
       const httpOptions = {
-        withCredentials: true //this is required so that Angular returns the Cookies received from the server. The server sends cookies in Set-Cookie header. Without this, Angular will ignore the Set-Cookie header
+        withCredentials: true 
       };
         console.log(GlobalVariable.BASE_API_URL + 'logout');
         return this.http.post(GlobalVariable.BASE_API_URL + 'logout',{},httpOptions);
     }
     public profile(){
       const httpOptions = {
-        withCredentials: true //this is required so that Angular returns the Cookies received from the server. The server sends cookies in Set-Cookie header. Without this, Angular will ignore the Set-Cookie header
+        withCredentials: true 
       };
-      return this.http.get<Array<GameForProfile>>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
+      //return this.http.get<Array<GameForProfile>>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
+      return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
+    }
+    public getAvatar(){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.get(GlobalVariable.BASE_API_URL + 'profile/avatar',httpOptions);
+    }
+    public updateGame(gameId:string,hours:number,statusGame:StatusGameProgressions){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      const params = new HttpParams().set('gameId',gameId).set('hours',hours).set('statusGame',statusGame);
+      return this.http.put(GlobalVariable.BASE_API_URL + 'profile/update/game?'+params,null,httpOptions);
+    }
+    public deleteGame(gameId:string){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.delete(GlobalVariable.BASE_API_URL + 'profile/delete/game?gameId='+gameId,httpOptions);
     }
   }

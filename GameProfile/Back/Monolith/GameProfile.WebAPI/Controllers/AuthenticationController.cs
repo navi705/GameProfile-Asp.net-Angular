@@ -37,15 +37,14 @@ namespace GameProfile.WebAPI.Controllers
             var userInfo = await steamApi.SteamUserGetPlayerSummaries(idUser);
 
             var query = new GetProfileQuery(idUser);
-           var profile= await Sender.Send(query);
-
+            var profile = await Sender.Send(query);
             if (profile is null)
             {
                 var query2 = new CreateProfileCommand(userInfo[1], "", idUser);
                 await Sender.Send(query2);
                 SteamApi steamApis = new();
                 var games = steamApis.SteamOwnedGames(idUser);
-                profile = await Sender.Send(query); 
+                profile = await Sender.Send(query);
                 foreach (var item in games.Result.games)
                 {
                     //// var game= steamApi.GetgameInfo(item.appid);
@@ -65,36 +64,36 @@ namespace GameProfile.WebAPI.Controllers
                     //}
                     var query3 = new GetGamesSteamAppIdBySteamIdQuery(item.appid);
                     var res = await Sender.Send(query3);
-                    if(res is null)
+                    if (res is null)
                     {
                         continue;
                         // in future maybe
                     }
                     var statusGame = StatusGameProgressions.Playing;
-                    if(item.rtime_last_played == 0)
+                    if (item.rtime_last_played == 0)
                     {
                         statusGame = StatusGameProgressions.Planned;
                     }
-                    if(DateTimeOffset.FromUnixTimeSeconds(item.rtime_last_played).UtcDateTime < DateTimeOffset.Now.AddMonths(-4))
+                    if (DateTimeOffset.FromUnixTimeSeconds(item.rtime_last_played).UtcDateTime < DateTimeOffset.Now.AddMonths(-4))
                     {
                         statusGame = StatusGameProgressions.Dropped;
                     }
-                    var query4 = new CreateProfileHasGameCommand(profile.Id,res.GameId,statusGame,item.playtime_forever);
+                    var query4 = new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever);
                     await Sender.Send(query4);
                 }
-                   
+
             }
             profile = await Sender.Send(query);
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };           
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            var userCache = new UserCache() { AvatarImage= new Uri(userInfo[0]),DeviceList = new()};
+            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]), DeviceList = new() };
             var cookie = Response.Headers["Set-Cookie"].ToString().Split('=')[1].Split(';')[0];
-            userCache.DeviceList.Add(new() {UserAgent= Request.Headers.UserAgent.ToString(),SessionCookie= cookie});
+            userCache.DeviceList.Add(new() { UserAgent = Request.Headers.UserAgent.ToString(), SessionCookie = cookie });
 
-            await _cacheService.SetAsync(profile.Id.ToString(),userCache);
-         
+            await _cacheService.SetAsync(profile.Id.ToString(), userCache);
+
             var anser = new AnswerLoginSteam() { name = userInfo[1], avatar = userInfo[0] };
             return Ok(anser);
 
@@ -107,9 +106,9 @@ namespace GameProfile.WebAPI.Controllers
         {
             await HttpContext.SignOutAsync();
             var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
-           var cache = userCache.DeviceList.Where(device => device.UserAgent == Request.Headers.UserAgent).FirstOrDefault();
-           cache.SessionCookie = "";
-            await _cacheService.SetAsync(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value,userCache);
+            var cache = userCache.DeviceList.Where(device => device.UserAgent == Request.Headers.UserAgent).FirstOrDefault();
+            cache.SessionCookie = "";
+            await _cacheService.SetAsync(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value, userCache);
             return Ok();
         }
 

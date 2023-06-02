@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameForProfile } from 'src/app/services/models/game';
+import { GameList, ProfileModel } from 'src/app/services/models/profile';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -9,19 +9,54 @@ import { ProfileService } from 'src/app/services/profile.service';
   providers: [ProfileService]
 })
 export class ProfileComponent {
-  avatar:any;
-  name:any;
-  profileGames: GameForProfile[];
-  constructor(private profile:ProfileService){
-    this.profileGames = new Array<GameForProfile>();
+  profile: ProfileModel = {} as ProfileModel;
+  profileSort: ProfileModel = {} as ProfileModel;
+  allTime: number = 0;
+  selectedState: string = 'all';
+
+  selectState(state: string) {
+    this.selectedState = state;
+    if(this.selectedState == 'all'){
+      this.profileSort =  JSON.parse(JSON.stringify(this.profile));
+      console.log(this.profile);
+    }
+    if(this.selectedState == 'playing'){
+      this.profileSort =  JSON.parse(JSON.stringify(this.profile));
+      this.profileSort.gameList= this.profileSort.gameList.filter(game => game.statusGame === 1);
+      console.log(this.profile);
+    }
+    if(this.selectedState == 'completed'){
+      this.profileSort.gameList = this.profile.gameList;
+      this.profileSort.gameList.filter(game => game.statusGame === 2);
+    }
+    if(this.selectedState == 'dropped'){
+      this.profileSort.gameList = this.profile.gameList;
+      this.profileSort.gameList.filter(game => game.statusGame === 3);
+    }
+    if(this.selectedState == 'planned'){
+      this.profileSort.gameList = this.profile.gameList;
+      this.profileSort.gameList.filter(game => game.statusGame === 4);
+    }
   }
-  ngOnInit(): void {   
-    this.avatar = localStorage.getItem('avatar')?.replace('medium','full');
-    this.name = localStorage.getItem('name');
-    this.profile.profile().subscribe(response=> this.profileGames = response);
+
+  constructor(private profileService: ProfileService) {
   }
-  logout(){
-    this.profile.logout().subscribe();
-    window.location.href="/games";
+  ngOnInit(): void {
+    this.profileService.profile().subscribe(response => { this.profile = response; this.profileSort = response; this.allTimeGet(); });
+
   }
+  public allTimeGet() {
+    this.profile.gameList.forEach(game => { this.allTime += game.hours; });
+  }
+  public updateGame(game: GameList) {
+    this.profileService.updateGame(game.id, game.hours, game.statusGame).subscribe();
+  }
+  public deleteGame(game: GameList) {
+    this.profileService.deleteGame(game.id).subscribe();
+  }
+  logout() {
+    this.profileService.logout().subscribe();
+    window.location.href = "/games";
+  } 
 }
+

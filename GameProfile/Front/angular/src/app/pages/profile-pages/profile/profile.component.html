@@ -1,10 +1,53 @@
-<div class="container-page">   
+<div class="container-page">
     <div class="profile-info-container">
-        <img src="{{avatar}}">
-        <span>{{name}}</span>
+        <img src="{{profile.avatar}}">
+        <div class="profile-text-info">
+            <span class="nickname">{{profile.nickName}}</span>
+            <span>{{profile.description}}</span>
+        </div>
     </div>
-    <div>
+    <div class="menu">
+        <button mat-button color="primary">Games</button>
+        <button mat-raised-button color="warn" (click)="logout()">Logout</button>
+    </div>
+    <div class="game-menu">
+        <button mat-button [ngClass]="{ 'active': selectedState === 'all' }" (click)="selectState('all')">All</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'playing' }" (click)="selectState('playing')">Playing</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'completed' }" (click)="selectState('completed')">Completed</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'dropped' }" (click)="selectState('dropped')">Dropped</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'planned' }" (click)="selectState('planned')">Planned</button>
+      </div>
+    <div class="timeAll">
+        <span>Total time in yours games:{{allTime}} hours</span>
+    </div>
 
+    <div class="game-list">
+        <div *ngFor="let game of profileSort.gameList">
+            <div class="game-container">
+                <a href="game?id={{game.id}}"
+                    *ngIf="game.title.length > 30;else elseBlock">{{game.title.slice(0,30)}}..</a>
+                <ng-template #elseBlock>
+                    <a href="game?id={{game.id}}">{{game.title}}</a>
+                </ng-template>
+
+                <img src="{{game.headerImage}}" [height]="150" [width]="250" class="game-image" />
+
+                <mat-form-field class="sorting">
+                    <mat-label>hours</mat-label>
+                    <input matInput type="number" [(ngModel)]="game.hours">
+                </mat-form-field>
+                <mat-form-field class="sorting">
+                    <mat-label>Status</mat-label>
+                    <mat-select [(value)]="game.statusGame">
+                        <mat-option [value]="1">Playing</mat-option>
+                        <mat-option [value]="2">Completed</mat-option>
+                        <mat-option [value]="3">Dropped</mat-option>
+                        <mat-option [value]="4">Planned</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-raised-button color="accent" (click)="updateGame(game)">Save changes</button>
+                <button mat-raised-button color="warn" (click)="deleteGame(game)">Delete</button>
+            </div>
+        </div>
     </div>
-<button mat-raised-button color="warn" (click)="logout()">Logout</button>
 </div>

@@ -1,5 +1,4 @@
-﻿using GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId;
-using GameProfile.Application.Data;
+﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Entities.Profile;
 using MediatR;
 
@@ -14,7 +13,7 @@ namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById
             _context = context;
         }
 
-        public Task<Profile> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
+        public Task<Profile?> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Profiles.Where(x => x.Id == request.id).FirstOrDefault();
             return Task.FromResult(query);

@@ -24,6 +24,7 @@ import { ProfileComponent } from './pages/profile-pages/profile/profile.componen
 import { AdminGameComponent } from './pages/admin-pages/admin-game/admin-game.component';
 import { GameClass } from './services/models/game';
 import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-creators/game-filters-creators.component';
+import { ProfileGamesComponentComponent } from './pages/profile-pages/profile/profile-components/profile-games-component/profile-games-component.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -49,6 +50,7 @@ const MY_DATE_FORMAT = {
     ProfileComponent,
     AdminGameComponent,
     GameFiltersCreatorsComponent,
+    ProfileGamesComponentComponent,
   ],
   imports: [
     BrowserModule,

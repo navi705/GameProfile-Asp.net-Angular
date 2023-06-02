@@ -17,7 +17,6 @@ namespace GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId
         {
           var query = _context.Profiles.Where(x => x.SteamIds.Any(g => g.StringFor.Contains(request.steamId))).FirstOrDefault();
           return Task.FromResult(query);
-
         }
     }
 }

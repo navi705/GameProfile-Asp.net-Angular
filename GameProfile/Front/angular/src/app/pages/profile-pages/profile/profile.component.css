@@ -1,0 +1,48 @@
+.profile-info-container{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+}
+.profile-text-info{
+    padding: 20px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: #7a7a7a31;
+}
+.nickname{
+    font-size: 22px;
+    font-weight: 500;
+}
+.menu{
+    display: flex;
+    margin-bottom: 20px;
+}
+.game-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+.game-container {
+    flex-basis: calc(25% - 20px);
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  
+.game-container:nth-child(4n) {
+    margin-right: 0;
+  }
+
+.game-image{
+    margin-bottom: 20px;
+}
+.timeAll{
+    font-size: 32px;
+    text-align: center;
+}
+.active{
+    color: #00acc1;
+}
