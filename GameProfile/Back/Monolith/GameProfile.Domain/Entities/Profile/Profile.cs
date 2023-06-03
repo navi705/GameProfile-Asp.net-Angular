@@ -28,7 +28,8 @@ namespace GameProfile.Domain.Entities.Profile
         public Description Description { get; private set; }
 
         public ICollection<StringForEntity> SteamIds { get; private set; }
-
+        // references property
+        public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
 
     }
 }

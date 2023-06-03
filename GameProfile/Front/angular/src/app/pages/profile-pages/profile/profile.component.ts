@@ -10,39 +10,34 @@ import { ProfileService } from 'src/app/services/profile.service';
 })
 export class ProfileComponent {
   profile: ProfileModel = {} as ProfileModel;
-  profileSort: ProfileModel = {} as ProfileModel;
   allTime: number = 0;
+  gamesCount:number = 0;
   selectedState: string = 'all';
+  sort:string = "hoursDesc";
 
   selectState(state: string) {
     this.selectedState = state;
     if(this.selectedState == 'all'){
-      this.profileSort =  JSON.parse(JSON.stringify(this.profile));
-      console.log(this.profile);
+      this.profileService.profile("",this.sort).subscribe(response => { this.profile = response; this.allTimeGet();this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'playing'){
-      this.profileSort =  JSON.parse(JSON.stringify(this.profile));
-      this.profileSort.gameList= this.profileSort.gameList.filter(game => game.statusGame === 1);
-      console.log(this.profile);
+      this.profileService.profile("1",this.sort).subscribe(response => { this.profile = response; this.allTimeGet();this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'completed'){
-      this.profileSort.gameList = this.profile.gameList;
-      this.profileSort.gameList.filter(game => game.statusGame === 2);
+      this.profileService.profile("2",this.sort).subscribe(response => { this.profile = response; this.allTimeGet();this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'dropped'){
-      this.profileSort.gameList = this.profile.gameList;
-      this.profileSort.gameList.filter(game => game.statusGame === 3);
+      this.profileService.profile("3",this.sort).subscribe(response => { this.profile = response; this.allTimeGet();this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'planned'){
-      this.profileSort.gameList = this.profile.gameList;
-      this.profileSort.gameList.filter(game => game.statusGame === 4);
+      this.profileService.profile("4",this.sort).subscribe(response => { this.profile = response; this.allTimeGet();this.gamesCount = this.profile.gameList.length; });
     }
   }
 
   constructor(private profileService: ProfileService) {
   }
   ngOnInit(): void {
-    this.profileService.profile().subscribe(response => { this.profile = response; this.profileSort = response; this.allTimeGet(); });
+    this.profileService.profile("",this.sort).subscribe(response => { this.profile = response; this.allTimeGet(); this.gamesCount = this.profile.gameList.length; });
 
   }
   public allTimeGet() {

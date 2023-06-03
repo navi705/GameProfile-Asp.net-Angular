@@ -12,6 +12,9 @@ using GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
+using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
+using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
+using GameProfile.Application.Games.Commands.CreateGame;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -34,6 +37,13 @@ namespace GameProfile.WebAPI.Controllers
             {
                 return Unauthorized();
             }
+
+            var games = await steamApi.SteamOwnedGames(idUser);
+            if (games.games is null)
+            {
+                return BadRequest("Check your profule settings");
+            }
+
             var userInfo = await steamApi.SteamUserGetPlayerSummaries(idUser);
 
             var query = new GetProfileQuery(idUser);
@@ -42,32 +52,26 @@ namespace GameProfile.WebAPI.Controllers
             {
                 var query2 = new CreateProfileCommand(userInfo[1], "", idUser);
                 await Sender.Send(query2);
-                SteamApi steamApis = new();
-                var games = steamApis.SteamOwnedGames(idUser);
+               
                 profile = await Sender.Send(query);
-                foreach (var item in games.Result.games)
-                {
-                    //// var game= steamApi.GetgameInfo(item.appid);
-                    //  if (game is null)
-                    //      continue;
-                    //  profile = await Sender.Send(query);
-                    //  if (game.Result is null)
-                    //      continue;
-                    //  if (game.Result.Name is null)
-                    //      continue;
 
-                    //var query1 = new GetGameByNameQuery(game.Result.Name);
-                    //var result1 = await Sender.Send(query1);
-                    //if(result1 is null)
-                    //{
-                    //    continue;
-                    //}
+
+                foreach (var item in games.games)
+                {
                     var query3 = new GetGamesSteamAppIdBySteamIdQuery(item.appid);
                     var res = await Sender.Send(query3);
                     if (res is null)
                     {
-                        continue;
-                        // in future maybe
+                        var game= await steamApi.GetgameInfo(item.appid);
+                          if (game is null)
+                              continue;
+                        var query5 = new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0);
+                        await Sender.Send(query5);
+                        var query6 = await Sender.Send(new GetGameByNameQuery(game.Name));
+                        var query7 = new CreateGamesSteamAppIdQuery(query6.Id, item.appid);
+                        await Sender.Send(query7);
+
+                        res = await Sender.Send(query3);
                     }
                     var statusGame = StatusGameProgressions.Playing;
                     if (item.rtime_last_played == 0)

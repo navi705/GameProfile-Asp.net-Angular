@@ -9,16 +9,22 @@ import { AfterLoginSteamComponent } from './pages/profile-pages/after-login-stea
 import { ProfileComponent } from './pages/profile-pages/profile/profile.component';
 import { AdminGameComponent } from './pages/admin-pages/admin-game/admin-game.component';
 import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-creators/game-filters-creators.component';
+import { StatsPageComponent } from './pages/stats/stats-page/stats-page.component';
+import { NotFoundComponent } from './pages/shared/NotFound/not-found/not-found.component';
+import { HomePageComponent } from './pages/shared/home/home-page/home-page.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
   {path:'games',component: GamesComponent},
-  {path:'add-game',component: GameAddComponent},
+ // {path:'add-game',component: GameAddComponent},
   {path:'login', component:LoginComponent},
   {path:'after-login-steam',component:AfterLoginSteamComponent},
   {path:'profile',component: ProfileComponent},
-  {path:'admin/game',component:AdminGameComponent},
-  {path: 'game/filter',component:GameFiltersCreatorsComponent}
+ // {path:'admin/game',component:AdminGameComponent},
+  {path: 'game/filter',component:GameFiltersCreatorsComponent},
+  {path: 'stats',component:StatsPageComponent},
+  {path:'',component: HomePageComponent},
+  {path: '**', component: NotFoundComponent},
 ];
 
 @NgModule({

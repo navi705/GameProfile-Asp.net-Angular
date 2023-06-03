@@ -1,4 +1,5 @@
-﻿using GameProfile.Domain.ValueObjects.Game;
+﻿using GameProfile.Domain.Entities.Profile;
+using GameProfile.Domain.ValueObjects.Game;
 
 namespace GameProfile.Domain.Entities.GameEntites
 {
@@ -64,6 +65,9 @@ namespace GameProfile.Domain.Entities.GameEntites
         public ICollection<StringForGame> Developers { get; private set; }
 
         public ICollection<UriForGame> ShopsLinkBuyGame { get; private set; }
+
+        //reference property
+        public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
 
         public int AchievementsCount { get; private set; }
     }

@@ -1,4 +1,5 @@
-﻿using GameProfile.Domain.Enums.Profile;
+﻿using GameProfile.Domain.Entities.GameEntites;
+using GameProfile.Domain.Enums.Profile;
 
 namespace GameProfile.Domain.Entities.Profile
 {
@@ -30,7 +31,10 @@ namespace GameProfile.Domain.Entities.Profile
         public Guid ProfileId { get; private set; }
 
         public Guid GameId { get; private set; }
-
+        //reference property
+        public Game Game { get; set; }
+        //reference property
+        public Profile Profile { get; set; }
         public StatusGameProgressions StatusGame { get; private set; }
 
         public int MinutesInGame { get; private set; }

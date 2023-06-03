@@ -50,12 +50,12 @@ import { ProfileModel } from './models/profile';
         console.log(GlobalVariable.BASE_API_URL + 'logout');
         return this.http.post(GlobalVariable.BASE_API_URL + 'logout',{},httpOptions);
     }
-    public profile(){
+    public profile(filter:string,sort:string){
       const httpOptions = {
         withCredentials: true 
       };
-      //return this.http.get<Array<GameForProfile>>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
-      return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + 'profile',httpOptions);
+      const params = new HttpParams().set('filter',filter).set('sort',sort);
+      return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + 'profile?'+params,httpOptions);
     }
     public getAvatar(){
       const httpOptions = {

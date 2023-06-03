@@ -9,6 +9,7 @@ import { ProfileService } from 'src/app/services/profile.service';
   providers: [ProfileService]
 })
 export class AfterLoginSteamComponent {
+  error:any;
   constructor(private route: ActivatedRoute, private profile: ProfileService) { }
   async ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -27,6 +28,10 @@ export class AfterLoginSteamComponent {
         'openidresponse_nonce': params['openid.response_nonce']
       };
       this.profile.getLoginWithSteam(object).subscribe((response: any) => {
+        if(response == 'Check your profule settings'){
+          this.error = 'Check your profule settings';
+          return;
+        }
         window.location.href = "/profile";
       });
     });

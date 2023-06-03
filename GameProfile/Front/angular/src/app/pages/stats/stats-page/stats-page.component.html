@@ -1,0 +1,22 @@
+<div class="container-page">
+    <div class="wrapper">
+        <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Total Hours Played</th>
+                <th>Total Games</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let stat of stats; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ stat.profileName.value }}</td>
+                <td>{{ stat.totalHours }}</td>
+                <td>{{ stat.countGames }}</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
