@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddPresentation();
-builder.Services.AddAuthentications();
+builder.Services.AddAuthentications(builder.Configuration);
 
 var app = builder.Build();
 
@@ -74,7 +74,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy(new CookiePolicyOptions
 {
-    MinimumSameSitePolicy = SameSiteMode.Strict
+    MinimumSameSitePolicy = SameSiteMode.Lax
 });
 
 app.Run();

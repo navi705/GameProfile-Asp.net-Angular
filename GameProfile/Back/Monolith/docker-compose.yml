@@ -1,10 +1,69 @@
 version: '3.4'
 
+networks:
+  gameprofileapp:
+
 services:
   gameprofile.mssqldb: 
-    image: docker pull mcr.microsoft.com/mssql/server:server:2019-latest
+    container_name: mssqldb
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "8002:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345#
+    networks:
+      - gameprofileapp
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - gameprofileapp
   gameprofile.webapi:
+    container_name: gameprofile-back
     image: ${DOCKER_REGISTRY-}gameprofilewebapi
     build:
       context: .
       dockerfile: GameProfile.WebAPI/Dockerfile
+    ports:
+      - "1000:1000"
+    depends_on:
+      - gameprofile.mssqldb
+      - redis
+    environment:
+      ASPNETCORE_URLS: http://+:1000
+    networks:
+      - gameprofileapp
+  angular-app:
+    container_name: angular-app
+    image: nginx:latest
+    volumes:
+      - ./Front/angular/dist/angular:/usr/share/nginx/html
+    ports:
+      - "4200:80"
+    depends_on:
+      - gameprofile.webapi
+    networks:
+      - gameprofileapp
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "8080:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/default.conf
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    depends_on:
+      - gameprofile.webapi
+    networks:
+      - gameprofileapp
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+    - ./data/certbot/conf:/etc/letsencrypt
+    - ./data/certbot/www:/var/www/certbot

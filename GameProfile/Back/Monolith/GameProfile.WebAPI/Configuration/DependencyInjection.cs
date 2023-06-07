@@ -14,6 +14,7 @@ namespace GameProfile.Presentation.Configuration
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services,IConfiguration configuration)
         {
+
             var dbOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
             var redisConnectionString = configuration.GetValue<string>("Redis");
 
@@ -51,7 +52,7 @@ namespace GameProfile.Presentation.Configuration
             return services;
         }
 
-        public static IServiceCollection AddAuthentications(this IServiceCollection services) {
+        public static IServiceCollection AddAuthentications(this IServiceCollection services,IConfiguration configuration) {
 
             services.AddAuthentication(options =>
             {
@@ -62,11 +63,9 @@ namespace GameProfile.Presentation.Configuration
         {
             options.Cookie.Name = ".Auth.Cookies";
             options.Cookie.HttpOnly = true;
-            options.Cookie.Domain = "localhost";
+            options.Cookie.Domain = configuration.GetValue<string>("Front");
             options.Cookie.Path = "/";
-            //options.LoginPath = "/after-login-steam";
             options.SlidingExpiration = true;
-            //options.LogoutPath = "/logoout";
             options.Cookie.SameSite = SameSiteMode.Lax;
 
 
@@ -75,7 +74,7 @@ namespace GameProfile.Presentation.Configuration
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowCredentials",
-                    builder => builder.WithOrigins("https://localhost:4200")
+                    builder => builder.WithOrigins(configuration.GetValue<string>("Front"))
                                       .AllowCredentials()
                                       .AllowAnyHeader()
                                       .AllowAnyMethod());

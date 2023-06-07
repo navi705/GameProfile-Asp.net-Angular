@@ -16,8 +16,8 @@ import { ProfileModel } from './models/profile';
         const params = new HttpParams()
         .set('openid.ns', 'http://specs.openid.net/auth/2.0')
         .set('openid.mode', 'checkid_setup')
-        .set('openid.return_to','https://localhost:4200/games')
-        .set('openid.realm','https://localhost:4200')
+        .set('openid.return_to',`${GlobalVariable.BASE_FRONT_URL}games`)
+        .set('openid.realm',GlobalVariable.BASE_FRONT_URL)
         .set('openid.identity','http://specs.openid.net/auth/2.0/identifier_select')
         .set('openid.claimed_id','http://specs.openid.net/auth/2.0/identifier_select');
         return'https://steamcommunity.com/openid/login?' + params;   

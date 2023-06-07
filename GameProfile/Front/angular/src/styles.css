@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 body{
+    height: 100%;
+    width: 100%;
     background: #121212; 
     color: #ffff;
     opacity: 87%;
