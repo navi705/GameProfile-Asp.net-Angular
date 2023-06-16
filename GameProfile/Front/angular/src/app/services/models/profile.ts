@@ -4,7 +4,8 @@ export interface ProfileModel{
     nickName:string,
     description: string,
     avatar: string,
-    gameList:GameList[]
+    gameList:GameList[],
+    totalHours: number
 }
 
 export interface GameList{

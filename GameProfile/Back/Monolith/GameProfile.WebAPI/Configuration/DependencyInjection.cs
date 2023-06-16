@@ -5,7 +5,6 @@ using GameProfile.Persistence.Caching;
 using GameProfile.Persistence.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 
 namespace GameProfile.Presentation.Configuration
@@ -63,7 +62,7 @@ namespace GameProfile.Presentation.Configuration
         {
             options.Cookie.Name = ".Auth.Cookies";
             options.Cookie.HttpOnly = true;
-            options.Cookie.Domain = configuration.GetValue<string>("Front");
+            options.Cookie.Domain = configuration.GetValue<string>("Domain");
             options.Cookie.Path = "/";
             options.SlidingExpiration = true;
             options.Cookie.SameSite = SameSiteMode.Lax;

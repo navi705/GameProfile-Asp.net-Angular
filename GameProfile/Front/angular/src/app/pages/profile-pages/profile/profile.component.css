@@ -38,6 +38,7 @@
 
 .game-image{
     margin-bottom: 20px;
+    border-radius: 4px;
 }
 .timeAll{
     font-size: 32px;

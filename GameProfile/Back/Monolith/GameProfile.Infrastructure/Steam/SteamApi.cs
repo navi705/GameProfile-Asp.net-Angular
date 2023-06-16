@@ -1,8 +1,6 @@
-﻿using GameProfile.Domain.Entities;
-using GameProfile.Domain.ValueObjects.Game;
+﻿using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Steam.Models;
 using System.Collections.Specialized;
-using System.Data;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -16,7 +14,7 @@ namespace GameProfile.Infrastructure.Steam
         {
             HttpResponseMessage response;
             SteamGameFromApi game = new();
-            response = await _httpClient.GetAsync($"https://api.steamcmd.net/v1/info/{appID}");
+            response = await _httpClient.GetAsync($"http://localhost:8000/v1/info/{appID}");
             JsonDocument document;
             try
             {
@@ -105,7 +103,7 @@ namespace GameProfile.Infrastructure.Steam
                 i++;
             }
             i = 0;
-            StreamReader r = new StreamReader(@"C:\Users\vrclu\source\repos\GameProfile-Asp.net-Angular\GameProfile\Back\Monolith\GameProfile.Infrastructure\Steam\genres.json");
+            StreamReader r = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Steam/genres.json"));
             string json = r.ReadToEnd();
             JsonDocument document1 = JsonDocument.Parse(json);
             JsonElement element = document1.RootElement;

@@ -15,7 +15,7 @@ namespace GameProfile.WebAPI.Controllers
     [Route("game")]
     public sealed class GameController : ApiController
     {
-        public GameController(ISender sender) 
+        public GameController(ISender sender)
             : base(sender)
         {
 
@@ -34,15 +34,25 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
         [HttpGet("games/devorpub")]
-        public async Task<IActionResult> GetGamesByDevOrPub(string type,string who)
+        public async Task<IActionResult> GetGamesByDevOrPub(string type, string who)
         {
-            var query = new GetGamesByPubOrDevQuery(type,who);
+            var query = new GetGamesByPubOrDevQuery(type, who);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("games")]
-        public async Task<IActionResult> GetGames([FromQuery]GetGamesBySortFiltersModel filters)
+        public async Task<IActionResult> GetGames([FromQuery] GetGamesBySortFiltersModel filters)
         {
-            var query = new GetGamesQuery(filters.Sorting,filters.Page,filters.Nsfw,filters.ReleaseDateOf,filters.ReleaseDateTo,filters.Genres,filters.GenresExcluding);
+            List<string> genres = new();
+            List<string> genres1 = new();
+            if (filters.Genres is not null)
+            {
+                 genres = filters.Genres[0].Split(',').ToList();
+            }
+            if (filters.GenresExcluding is not null)
+            {
+                genres1 = filters.GenresExcluding[0].Split(',').ToList();
+            }
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("genres")]
@@ -67,7 +77,7 @@ namespace GameProfile.WebAPI.Controllers
                                   game.ShopsLinkBuyGame,
                                   game.AchievementsCount);
             await Sender.Send(query);
-                return Ok();
+            return Ok();
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteGame(Guid gameId)
@@ -77,9 +87,9 @@ namespace GameProfile.WebAPI.Controllers
             return Ok();
         }
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateGame(Game game,Guid id)
+        public async Task<IActionResult> UpdateGame(Game game, Guid id)
         {
-            var query = new UpdateGameCommand(game,id);
+            var query = new UpdateGameCommand(game, id);
             await Sender.Send(query);
             return Ok();
         }

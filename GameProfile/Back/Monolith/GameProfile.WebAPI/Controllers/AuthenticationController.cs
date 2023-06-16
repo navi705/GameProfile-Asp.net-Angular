@@ -32,8 +32,7 @@ namespace GameProfile.WebAPI.Controllers
         {
             SteamApi steamApi = new();
             string idUser = steamOpenIdData.openidclaimed_id.Substring(37);
-            bool authIsValid = await steamApi.CheckOpenIdSteam(steamOpenIdData);
-            if (authIsValid == false)
+            if (await steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
             {
                 return Unauthorized();
             }
@@ -52,25 +51,21 @@ namespace GameProfile.WebAPI.Controllers
             {
                 var query2 = new CreateProfileCommand(userInfo[1], "", idUser);
                 await Sender.Send(query2);
-               
                 profile = await Sender.Send(query);
-
-
                 foreach (var item in games.games)
                 {
                     var query3 = new GetGamesSteamAppIdBySteamIdQuery(item.appid);
                     var res = await Sender.Send(query3);
                     if (res is null)
                     {
-                        var game= await steamApi.GetgameInfo(item.appid);
-                          if (game is null)
-                              continue;
-                        var query5 = new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0);
-                        await Sender.Send(query5);
+                        var game = await steamApi.GetgameInfo(item.appid);
+                        if (game is null)
+                        {
+                            continue;
+                        }
+                        await Sender.Send(new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0));
                         var query6 = await Sender.Send(new GetGameByNameQuery(game.Name));
-                        var query7 = new CreateGamesSteamAppIdQuery(query6.Id, item.appid);
-                        await Sender.Send(query7);
-
+                        await Sender.Send(new CreateGamesSteamAppIdQuery(query6.Id, item.appid));
                         res = await Sender.Send(query3);
                     }
                     var statusGame = StatusGameProgressions.Playing;
@@ -82,8 +77,7 @@ namespace GameProfile.WebAPI.Controllers
                     {
                         statusGame = StatusGameProgressions.Dropped;
                     }
-                    var query4 = new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever);
-                    await Sender.Send(query4);
+                    await Sender.Send(new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever));
                 }
 
             }
@@ -92,15 +86,23 @@ namespace GameProfile.WebAPI.Controllers
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]), DeviceList = new() };
+            var getCache = await _cacheService.GetAsync<UserCache>(profile.Id.ToString());
+            List<UserDevice> list = new();
+            if (getCache is not null)
+            {
+                list = getCache.DeviceList;
+            }
+            
+
+            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]),DeviceList=list };
             var cookie = Response.Headers["Set-Cookie"].ToString().Split('=')[1].Split(';')[0];
             userCache.DeviceList.Add(new() { UserAgent = Request.Headers.UserAgent.ToString(), SessionCookie = cookie });
 
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
 
             var anser = new AnswerLoginSteam() { name = userInfo[1], avatar = userInfo[0] };
-            return Ok(anser);
 
+            return Ok(anser);
         }
 
 

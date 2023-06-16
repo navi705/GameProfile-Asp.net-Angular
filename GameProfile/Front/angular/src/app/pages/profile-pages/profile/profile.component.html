@@ -28,7 +28,7 @@
         </mat-form-field>
       </div>
     <div class="timeAll">
-        <span>Total time in yours games:{{allTime}} hours</span>
+        <span>Total time in yours games:{{profile.totalHours}} hours</span>
     </div>
 
     <div class="game-list">
@@ -40,11 +40,11 @@
                     <a href="game?id={{game.id}}">{{game.title}}</a>
                 </ng-template>
 
-                <img src="{{game.headerImage}}" [height]="150" [width]="250" class="game-image" />
+                <img src="{{game.headerImage}}" [height]="115" [width]="250" class="game-image" />
 
                 <mat-form-field class="sorting">
                     <mat-label >hours</mat-label>
-                    <input matInput type="number" [(ngModel)]="game.hours" >
+                    <input matInput type="number" min="0" max="876000" oninput="validity.valid||(value='');" [(ngModel)]="game.hours" >
                 </mat-form-field>
                 <mat-form-field class="sorting">
                     <mat-label  >Status</mat-label>

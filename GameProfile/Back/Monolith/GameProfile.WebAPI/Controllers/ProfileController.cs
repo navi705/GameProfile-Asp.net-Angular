@@ -3,6 +3,7 @@ using GameProfile.Application.CQRS.Games.Commands.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGameByProfileId;
+using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId;
 using GameProfile.Application.CQRS.Profiles.Requests.GetProfileById;
 using GameProfile.Domain.AggregateRoots.Profile;
@@ -53,13 +54,15 @@ namespace GameProfile.WebAPI.Controllers
             var qeury2 = new GetProfileByIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
             var profile = await Sender.Send(qeury2);
 
-
+            var query3 = new GetProfileHasGamesTotalHoursQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),filter);
+            var hours = await Sender.Send(query3);
 
             var answer = new AnswerForProfile()
             {
                 NickName = profile.Name.Value.ToString(),
                 Description = profile.Description.Value.ToString(),
                 Avatar = userCache.AvatarImage.ToString().Replace("_medium", "_full"),
+                TotalHours = hours,
                 GameList = games
             };
 
@@ -113,6 +116,8 @@ namespace GameProfile.WebAPI.Controllers
             public string Description { get; set; }
 
             public string Avatar { get; set; }
+
+            public int TotalHours { get; set; }
 
             public List<AggregateProfileHasGame> GameList { get; set; }
 

@@ -70,7 +70,6 @@ import { FilterService } from 'src/app/services/filterService';
             this.sortFilters.GenresExcluding = new Array<string>();
           this.sortFilters.GenresExcluding?.push(item.name);
           }   
-          console.log("aboba")
         }
       });
       console.log(this.sortFilters)

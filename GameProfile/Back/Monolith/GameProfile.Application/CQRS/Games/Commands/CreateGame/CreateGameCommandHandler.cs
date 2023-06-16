@@ -27,9 +27,9 @@ namespace GameProfile.Application.Games.Commands.CreateGame
                                 request.Screenshots,
                                 request.ShopsLinkBuyGame,
                                 request.AchievementsCount);
-            //_context.Games.Add(game);
-            var nsfw = request.NSFW  ? 1 : 0;
-           var asd = await _context.ExecuteSqlInterpolatedAsync($"INSERT INTO Games values(NEWID(),{request.Title},'',{request.HeaderImage},{nsfw},{request.Description},{request.AchievementsCount})", cancellationToken);   
+            _context.Games.Add(game);
+            //var nsfw = request.NSFW  ? 1 : 0;
+           //var asd = await _context.ExecuteSqlInterpolatedAsync($"INSERT INTO Games values(NEWID(),{request.Title},'',{request.HeaderImage},{nsfw},{request.Description},{request.AchievementsCount})", cancellationToken);   
             await _context.SaveChangesAsync(cancellationToken);         
         }
     }
