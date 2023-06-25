@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId
 {
-    public sealed class GetProfileQueryHandler : IRequestHandler<GetProfileQuery,Profile>
+    public sealed class GetProfileQueryHandler : IRequestHandler<GetProfileQuery,Profile?>
     {
         private readonly IDatabaseContext _context;
 
@@ -15,7 +15,7 @@ namespace GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId
 
         public Task<Profile?> Handle(GetProfileQuery request, CancellationToken cancellationToken)
         {
-          var query = _context.Profiles.Where(x => x.SteamIds.Any(g => g.StringFor.Contains(request.steamId))).FirstOrDefault();
+          var query = _context.Profiles.Where(x => x.SteamIds.Any(g => g.StringFor.Contains(request.SteamId))).FirstOrDefault();
           return Task.FromResult(query);
         }
     }

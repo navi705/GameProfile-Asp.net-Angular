@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById
 {
-    public sealed class GetProfileByIdQueryHandler : IRequestHandler<GetProfileByIdQuery, Profile>
+    public sealed class GetProfileByIdQueryHandler : IRequestHandler<GetProfileByIdQuery, Profile?>
     {
         private readonly IDatabaseContext _context;
 
@@ -15,7 +15,7 @@ namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById
 
         public Task<Profile?> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Profiles.Where(x => x.Id == request.id).FirstOrDefault();
+            var query = _context.Profiles.Where(x => x.Id == request.Id).FirstOrDefault();
             return Task.FromResult(query);
         }
     }

@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameProfile.WebAPI", "GameP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EAA74873-FA76-411C-9816-4501F2FD1A08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameProfile.Unit.Tests", "GameProfile.Architecture.Tests\GameProfile.Unit.Tests.csproj", "{803E28AB-EB22-488B-A558-C34811A46A2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{EF14C271-9ED1-4A77-BB63-5F05A1E4A538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF14C271-9ED1-4A77-BB63-5F05A1E4A538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF14C271-9ED1-4A77-BB63-5F05A1E4A538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803E28AB-EB22-488B-A558-C34811A46A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803E28AB-EB22-488B-A558-C34811A46A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803E28AB-EB22-488B-A558-C34811A46A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803E28AB-EB22-488B-A558-C34811A46A2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{B463E292-36A3-4B0F-8F7E-11BB9152DC53} = {7A88B1B0-260A-478A-9B29-CB3D5BAEA36C}
 		{6DDADA35-53A9-4270-BAAF-BCF57ADE15ED} = {7A88B1B0-260A-478A-9B29-CB3D5BAEA36C}
 		{EF14C271-9ED1-4A77-BB63-5F05A1E4A538} = {6DDADA35-53A9-4270-BAAF-BCF57ADE15ED}
+		{803E28AB-EB22-488B-A558-C34811A46A2D} = {EAA74873-FA76-411C-9816-4501F2FD1A08}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A5A5B1C-7405-4365-8E5A-5878D26EC056}

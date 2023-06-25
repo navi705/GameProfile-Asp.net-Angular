@@ -16,6 +16,7 @@ import { ProfileService } from 'src/app/services/profile.service';
     image:any;
     searchString:string;
     findGames: Observable<Game[]>;
+    isMenuOpen:boolean = false;
 
     constructor(public gameService:GameService,public profileService:ProfileService){
       this.searchString = "";
@@ -31,5 +32,8 @@ import { ProfileService } from 'src/app/services/profile.service';
         return;
       }    
       this.gameService.fecthGameByString(this.searchString).subscribe(response=> this.findGames=of(response));
+    }
+    toggleMenu():void{
+      this.isMenuOpen = !this.isMenuOpen;
     }
   }

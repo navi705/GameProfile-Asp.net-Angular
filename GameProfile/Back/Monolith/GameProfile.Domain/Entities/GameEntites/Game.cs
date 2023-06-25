@@ -67,7 +67,7 @@ namespace GameProfile.Domain.Entities.GameEntites
         public ICollection<UriForGame> ShopsLinkBuyGame { get; private set; }
 
         //reference property
-        public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
+        public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
 
         public int AchievementsCount { get; private set; }
     }

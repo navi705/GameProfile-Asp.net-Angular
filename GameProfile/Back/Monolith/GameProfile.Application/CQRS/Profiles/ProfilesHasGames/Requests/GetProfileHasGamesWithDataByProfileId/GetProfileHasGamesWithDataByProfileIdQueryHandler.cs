@@ -18,42 +18,42 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
         {
             var query = _context.ProfileHasGames.AsQueryable();
 
-            if (request.filter == "1")
+            if (request.Filter == "1")
             {
                query= query.Where(x=>x.StatusGame == StatusGameProgressions.Playing);
             }
-            if (request.filter == "2")
+            if (request.Filter == "2")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Completed);
             }
-            if (request.filter == "3")
+            if (request.Filter == "3")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Dropped);
             }
-            if (request.filter == "4")
+            if (request.Filter == "4")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Planned);
             }
 
-            if(request.sort == "titleAtoZ")
+            if(request.Sort == "titleAtoZ")
             {
                 query = query.OrderBy(x => x.Game.Title);
             }
-            if (request.sort == "titleZtoA")
+            if (request.Sort == "titleZtoA")
             {
                 query = query.OrderByDescending(x => x.Game.Title);
             }
-            if (request.sort == "hoursAsc")
+            if (request.Sort == "hoursAsc")
             {
                 query = query.OrderBy(x => x.MinutesInGame);
             }
-            if (request.sort == "hoursDesc")
+            if (request.Sort == "hoursDesc")
             {
                 query = query.OrderByDescending(x => x.MinutesInGame);
             }
 
             var aggregateProfileHasGame = query
-        .Where(p => p.ProfileId == request.profileId)
+        .Where(p => p.ProfileId == request.ProfileId)
         .Join(_context.Games, phg => phg.GameId, g => g.Id, (phg, g) => new AggregateProfileHasGame
         (
             g.Id,
@@ -61,8 +61,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
             g.HeaderImage,
             phg.MinutesInGame / 60,
             phg.StatusGame
-        ))
-        .ToList();
+        )).ToList();
 
             return Task.FromResult(aggregateProfileHasGame);
         }

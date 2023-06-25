@@ -2,7 +2,6 @@
 using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
 {
@@ -16,114 +15,58 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
 
         public async Task<List<Game>> Handle(GetGamesQuery request, CancellationToken cancellationToken)
         {
-            //int skipGame = request.page * 50;
-            //List<Game> games = new();
-
-            //if (request.sort == "titleAtoZ")
-            //{
-            //    games = _context.Games.OrderBy(x => x.Title).Skip(skipGame).Take(50).ToList();
-            //}
-            //if (request.sort == "titleZtoA")
-            //{
-            //    games = _context.Games.OrderByDescending(x => x.Title).Skip(skipGame).Take(50).ToList();
-            //}
-            //if (request.sort == "dateAscending")
-            //{
-            //    games = _context.Games.OrderBy(x => x.ReleaseDate).Skip(skipGame).Take(50).ToList();
-            //}
-            //if (request.sort == "dateDescending")
-            //{
-            //    games = _context.Games.OrderByDescending(x => x.ReleaseDate).Skip(skipGame).Take(50).ToList();
-            //}
-
-            //if (request.releaseDateOf != DateTime.MinValue && request.releaseDateTo != DateTime.MinValue)
-            //{
-            //    games = games.Where(x => x.ReleaseDate >= request.releaseDateOf && x.ReleaseDate <= request.releaseDateTo).ToList();
-            //}
-            //if (request.releaseDateOf == DateTime.MinValue && request.releaseDateTo != DateTime.MinValue)
-            //{
-            //    games = games.Where(x => x.ReleaseDate <= request.releaseDateTo).ToList();
-            //}
-            //if (request.releaseDateOf != DateTime.MinValue && request.releaseDateTo == DateTime.MinValue)
-            //{
-            //    games = games.Where(x => x.ReleaseDate >= request.releaseDateOf).ToList();
-            //}
-            //if (request.nsfw == "yes")
-            //{
-            //    games = games.Where(x => x.Nsfw == true).ToList();
-            //}
-            //if (request.nsfw == "no")
-            //{
-            //    games = games.Where(x => x.Nsfw == false).ToList();
-            //}
-            //if (request.genresExcluding is not null && request.genresExcluding.Count > 0)
-            //{
-            //    games = games.Where(g => !g.Genres.Any(gg => request.genresExcluding.Contains(gg.GameString))).ToList();
-            //}
-            //if (request.genres is not null && request.genres.Count > 0)
-            //{
-            //    games = games.Where(g => g.Genres.Any(gg => request.genres.Contains(gg.GameString))).ToList();
-            //}
-
-
-            //return Task.FromResult(games);
-            //var games = _context.Games.FromSqlRaw($"select * from Games").OrderBy(x => x.Title).ToList();
-            //var games = _context.Games.FromSqlRaw($"select * from Games").OrderByDescending(x => x.Title).ToList();
-            //var games = _context.Games.FromSqlRaw($"select * from Games order by ReleaseDate ASC OFFSET 0 ROWS").ToList();
-            //var games = _context.Games.FromSqlRaw($"select * from Games order by ReleaseDate DESC OFFSET 0 ROWS").ToList();
             var query = _context.Games.AsQueryable();
 
-            if (request.sort == "titleAtoZ")
+            if (request.Sort == "titleAtoZ")
             {
                 query = query.OrderBy(x => x.Title);
             }
-            else if (request.sort == "titleZtoA")
+            else if (request.Sort == "titleZtoA")
             {
                 query = query.OrderByDescending(x => x.Title);
             }
-            else if (request.sort == "dateAscending")
+            else if (request.Sort == "dateAscending")
             {
                 query = query.OrderBy(x => x.ReleaseDate);
             }
-            else if (request.sort == "dateDescending")
+            else if (request.Sort == "dateDescending")
             {
                 query = query.OrderByDescending(x => x.ReleaseDate);
             }
 
-            if (request.releaseDateOf != DateTime.MinValue && request.releaseDateTo != DateTime.MinValue)
+            if (request.ReleaseDateOf != DateTime.MinValue && request.ReleaseDateTo != DateTime.MinValue)
             {
-                query = query.Where(x => x.ReleaseDate >= request.releaseDateOf && x.ReleaseDate <= request.releaseDateTo);
+                query = query.Where(x => x.ReleaseDate >= request.ReleaseDateOf && x.ReleaseDate <= request.ReleaseDateTo);
             }
-            else if (request.releaseDateOf == DateTime.MinValue && request.releaseDateTo != DateTime.MinValue)
+            else if (request.ReleaseDateOf == DateTime.MinValue && request.ReleaseDateTo != DateTime.MinValue)
             {
-                query = query.Where(x => x.ReleaseDate <= request.releaseDateTo);
+                query = query.Where(x => x.ReleaseDate <= request.ReleaseDateTo);
             }
-            else if (request.releaseDateOf != DateTime.MinValue && request.releaseDateTo == DateTime.MinValue)
+            else if (request.ReleaseDateOf != DateTime.MinValue && request.ReleaseDateTo == DateTime.MinValue)
             {
-                query = query.Where(x => x.ReleaseDate >= request.releaseDateOf);
+                query = query.Where(x => x.ReleaseDate >= request.ReleaseDateOf);
             }
 
-            if (request.nsfw == "yes")
+            if (request.Nsfw == "yes")
             {
                 query = query.Where(x => x.Nsfw == true);
             }
-            else if (request.nsfw == "no")
+            else if (request.Nsfw == "no")
             {
                 query = query.Where(x => x.Nsfw == false);
             }
 
-            if (request.genresExcluding is not null && request.genresExcluding.Count > 0)
+            if (request.GenresExcluding is not null && request.GenresExcluding.Count > 0)
             {
-                query = query.Where(g => !g.Genres.Any(gg => request.genresExcluding.Contains(gg.GameString)));
+                query = query.Where(g => g.Genres.Count(gg => request.GenresExcluding.Contains(gg.GameString)) == 0);
             }
-            if (request.genres is not null && request.genres.Count > 0)
+            if (request.Genres is not null && request.Genres.Count > 0)
             {
-                query = query.Where(g => g.Genres.Any(gg => request.genres.Contains(gg.GameString)));
+                query = query.Where(g => g.Genres.Count(gg => request.Genres.Contains(gg.GameString)) == request.Genres.Count());
             }
 
-            int skipGame = request.page * 50;
+            int skipGame = request.Page * 50;
             query = query.Skip(skipGame).Take(50);
-
             var games = await query.ToListAsync(cancellationToken);
 
             return games;

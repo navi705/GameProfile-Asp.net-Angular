@@ -15,7 +15,7 @@ namespace GameProfile.Application.CQRS.Games.Commands.DeleteGame
 
         public async Task Handle(DeleteGameCommand request, CancellationToken cancellationToken)
         {
-            await _context.ExecuteSqlRawAsync($"DELETE FROM Games WHERE Id = '{request.gameId}'",cancellationToken);
+            await _context.Games.Where(game=> game.Id == request.GameId).ExecuteDeleteAsync(cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

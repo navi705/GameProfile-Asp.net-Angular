@@ -13,7 +13,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
         }
         public Task<List<ProfileHasGames>> Handle(GetProfileHasGameByProfileIdQuery request, CancellationToken cancellationToken)
         {
-            var games = _context.ProfileHasGames.Where(x => x.ProfileId == request.proifleId).ToList();
+            var games = _context.ProfileHasGames.Where(x => x.ProfileId == request.ProifleId).ToList();
             return Task.FromResult( games);
         }
     }

@@ -14,7 +14,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.Create
 
         public async Task Handle(CreateProfileHasGameCommand request, CancellationToken cancellationToken)
         {
-            var profileHasGame = new ProfileHasGames(Guid.Empty, request.profileId, request.gameId, request.statusGameProgressions, request.minutesInGame);
+            var profileHasGame = new ProfileHasGames(Guid.Empty, request.ProfileId, request.GameId, request.StatusGameProgressions, request.MinutesInGame);
             _context.ProfileHasGames.Add(profileHasGame);
             await _context.SaveChangesAsync(cancellationToken);
         }

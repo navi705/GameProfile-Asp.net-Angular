@@ -2,5 +2,5 @@
 
 namespace GameProfile.Application.CQRS.Games.Commands.DeleteGame
 {
-    public sealed record class DeleteGameCommand (Guid gameId) : IRequest;
+    public sealed record class DeleteGameCommand (Guid GameId) : IRequest;
 }

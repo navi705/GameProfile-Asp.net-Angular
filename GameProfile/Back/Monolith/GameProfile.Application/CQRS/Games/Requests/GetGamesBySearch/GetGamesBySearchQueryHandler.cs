@@ -15,7 +15,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGamesBySort
 
         public Task<List<Game>> Handle(GetGamesBySearch request, CancellationToken cancellationToken)
         {
-            var games = _context.Games.Where(x => EF.Functions.Like(x.Title, $"%{request.searchString}%")).Take(5).ToList();
+            var games = _context.Games.Where(x => EF.Functions.Like(x.Title, $"%{request.SearchString}%")).Take(5).ToList();
             return Task.FromResult(games);
         }
     }

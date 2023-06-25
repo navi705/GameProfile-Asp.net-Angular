@@ -16,10 +16,12 @@ namespace GameProfile.Application.CQRS.Profiles.Commands
         }
         public async Task Handle(CreateProfileCommand request, CancellationToken cancellationToken)
         {
-            var name = Name.Create(request.name);
-            var description = Description.Create(request.description);
-            var steamId = new List<StringForEntity>();
-            steamId.Add(new StringForEntity( request.steamId));
+            var name = Name.Create(request.Name);
+            var description = Description.Create(request.Description);
+            var steamId = new List<StringForEntity>
+            {
+                new StringForEntity(request.SteamId)
+            };
             var profile = new Profile(Guid.Empty, name, description, steamId);
             _context.Profiles.Add(profile);
             await _context.SaveChangesAsync(cancellationToken);

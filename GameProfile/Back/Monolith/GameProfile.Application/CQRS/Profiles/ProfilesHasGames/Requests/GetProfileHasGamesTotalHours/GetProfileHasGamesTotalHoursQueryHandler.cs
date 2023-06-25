@@ -1,6 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Enums.Profile;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours
 {
@@ -15,24 +16,24 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
         public async Task<int> Handle(GetProfileHasGamesTotalHoursQuery request, CancellationToken cancellationToken)
         {
             var query = _context.ProfileHasGames.AsQueryable();
-            if (request.filter == "1")
+            if (request.Filter == "1")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Playing);
             }
-            if (request.filter == "2")
+            if (request.Filter == "2")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Completed);
             }
-            if (request.filter == "3")
+            if (request.Filter == "3")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Dropped);
             }
-            if (request.filter == "4")
+            if (request.Filter == "4")
             {
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Planned);
             }
 
-            return query.Where(x => x.ProfileId == request.profieId).Sum(x => x.MinutesInGame)/60;
+            return await query.Where(x => x.ProfileId == request.ProfieId).SumAsync(x => x.MinutesInGame)/60;
         }
     }
 }

@@ -5,6 +5,11 @@ namespace GameProfile.Domain.ValueObjects
     {
         public abstract IEnumerable<object> GetAtomicValues();
 
+        public bool Equals(ValueObject? other)
+        {
+            return other is not null && ValuesAreEqual(other);
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is ValueObject valueObject && ValuesAreEqual(valueObject);
@@ -18,11 +23,6 @@ namespace GameProfile.Domain.ValueObjects
         private bool ValuesAreEqual(ValueObject other)
         {
             return GetAtomicValues().SequenceEqual(other.GetAtomicValues());
-        }
-
-        public bool Equals(ValueObject? other)
-        {
-            return other is not null && ValuesAreEqual(other);
         }
     }
 }

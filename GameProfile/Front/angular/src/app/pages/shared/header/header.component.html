@@ -1,7 +1,8 @@
 <header>
     <mat-toolbar color="primary" aria-label="Top Toolbar" >
-        <div class="header-container">
-        <nav>
+        <div class="header-container"> 
+            <mat-icon class="burger"(click)="toggleMenu()">{{isMenuOpen ? "close" : "menu"}}</mat-icon>
+        <nav class="menu">          
            <a href="/" id="logo">GameProfile</a>
            <a mat-button class="nav-a" routerLink="games" routerLinkActive="nav-a-selected">Games</a>
            <a>Find Teammate</a>        

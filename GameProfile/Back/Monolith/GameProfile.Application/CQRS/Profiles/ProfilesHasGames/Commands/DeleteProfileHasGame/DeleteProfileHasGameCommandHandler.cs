@@ -1,5 +1,6 @@
 ﻿using GameProfile.Application.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProfileHasGame
 {
@@ -14,7 +15,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.Delete
 
         public async Task Handle(DeleteProfileHasGameCommand request, CancellationToken cancellationToken)
         {
-            await _context.ExecuteSqlRawAsync($"DELETE FROM ProfileHasGames WHERE GameId = '{request.gameId}' and ProfileId = '{request.userId}' ", cancellationToken);
+            await _context.ProfileHasGames.Where(x => x.GameId == request.GameId && x.ProfileId == request.ProfileId).ExecuteDeleteAsync(cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

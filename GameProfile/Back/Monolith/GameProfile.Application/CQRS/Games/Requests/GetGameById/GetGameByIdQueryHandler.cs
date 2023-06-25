@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GameProfile.Application.CQRS.Games.Commands.Requests
 {
-    public sealed class GetGameByIdQueryHandler : IRequestHandler<GetGameByIdQuery,Game>
+    public sealed class GetGameByIdQueryHandler : IRequestHandler<GetGameByIdQuery,Game?>
     {
         private readonly IDatabaseContext _context;
 
@@ -13,10 +13,9 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests
             _context = context;
         }
 
-        public async Task<Game> Handle(GetGameByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Game?> Handle(GetGameByIdQuery request, CancellationToken cancellationToken)
         {
-            var game = await _context.Games.FindAsync(request.GameId);
-            
+            var game = await _context.Games.FindAsync(request.GameId,cancellationToken);
             return game;
         }
     }

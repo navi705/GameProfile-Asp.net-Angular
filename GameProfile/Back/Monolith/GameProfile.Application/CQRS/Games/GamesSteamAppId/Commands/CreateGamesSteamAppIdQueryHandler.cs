@@ -14,7 +14,7 @@ namespace GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands
 
         public async Task Handle(CreateGamesSteamAppIdQuery request, CancellationToken cancellationToken)
         {
-            var gameSteamId = new GameSteamId(Guid.Empty, request.gameId, request.steamAppId);
+            var gameSteamId = new GameSteamId(Guid.Empty, request.GameId, request.SteamAppId);
 
             _context.GameSteamIds.Add(gameSteamId);
             await _context.SaveChangesAsync(cancellationToken); 

@@ -1,5 +1,7 @@
 ﻿using GameProfile.Application.Data;
+using GameProfile.Domain.Entities.Profile;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame
 {
@@ -14,7 +16,10 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.Update
 
         public async Task Handle(UpdateProfileHasGameCommand request, CancellationToken cancellationToken)
         {
-            await _context.ExecuteSqlInterpolatedAsync($"update ProfileHasGames set StatusGame = {request.StatusGame}, MinutesInGame ={request.hours * 60} where GameId = {request.gameId} and ProfileId= {request.profileId}", cancellationToken);
+            var recordId = _context.ProfileHasGames.Where(x => x.GameId == request.GameId && x.ProfileId == request.ProfileId).Select(x => x.Id).FirstOrDefault();
+            await _context.ProfileHasGames.Where(x => x.GameId == request.GameId && x.ProfileId == request.ProfileId).ExecuteDeleteAsync(cancellationToken);
+            var profileHasGame = new ProfileHasGames(recordId, request.ProfileId,request.GameId,request.StatusGame, request.Hours * 60);
+            _context.ProfileHasGames.Add(profileHasGame);
             await _context.SaveChangesAsync(cancellationToken);
 
         }

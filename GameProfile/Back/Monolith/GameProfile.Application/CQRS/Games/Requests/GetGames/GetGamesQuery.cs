@@ -4,11 +4,11 @@ using MediatR;
 namespace GameProfile.Application.CQRS.Games.Commands.Requests
 {
     public sealed record class GetGamesQuery (
-        string sort,
-        int page,
-        string nsfw,
-        DateTime releaseDateOf,
-        DateTime releaseDateTo,
-        List<string> genres,
-        List<string> genresExcluding) : IRequest<List<Game>>;
+        string Sort,
+        int Page,
+        string Nsfw,
+        DateTime ReleaseDateOf,
+        DateTime ReleaseDateTo,
+        List<string> Genres,
+        List<string> GenresExcluding) : IRequest<List<Game>>;
 }

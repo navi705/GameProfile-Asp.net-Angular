@@ -54,7 +54,7 @@ namespace GameProfile.WebAPI.Controllers
                 profile = await Sender.Send(query);
                 foreach (var item in games.games)
                 {
-                    var query3 = new GetGamesSteamAppIdBySteamIdQuery(item.appid);
+                    var query3 = new GetGamesIdBySteamIdQuery(item.appid);
                     var res = await Sender.Send(query3);
                     if (res is null)
                     {

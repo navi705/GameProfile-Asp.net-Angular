@@ -1,5 +1,4 @@
 ﻿using GameProfile.Application.Data;
-using GameProfile.Domain.ValueObjects.Game;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +15,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGenres
         public Task<List<string>> Handle(GetGenresQuery request, CancellationToken cancellationToken)
         { 
             var genres = _context.Games.AsNoTracking().SelectMany(x=> x.Genres).Select(x => x.GameString).Distinct().ToList();
+            genres = genres.OrderBy(x=>x).ToList();
             return Task.FromResult(genres);
         }
     }

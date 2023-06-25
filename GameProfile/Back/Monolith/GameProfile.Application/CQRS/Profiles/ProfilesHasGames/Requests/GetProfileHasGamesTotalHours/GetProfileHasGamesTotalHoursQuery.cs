@@ -2,5 +2,5 @@
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours
 {
-    public sealed record class GetProfileHasGamesTotalHoursQuery(Guid profieId,string filter) :IRequest<int>;
+    public sealed record class GetProfileHasGamesTotalHoursQuery(Guid ProfieId,string Filter) :IRequest<int>;
 }

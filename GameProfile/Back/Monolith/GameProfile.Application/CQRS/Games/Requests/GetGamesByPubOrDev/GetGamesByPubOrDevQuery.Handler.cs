@@ -16,14 +16,14 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev
         public Task<List<Game>> Handle(GetGamesByPubOrDevQuery request, CancellationToken cancellationToken)
         {
             List<Game> games = new();
-            if (request.type == "developer")
+            if (request.Type == "developer")
             {
-                games = _context.Games.Where(g => g.Developers.Any(d => d.GameString == request.who)).ToList();
+                games = _context.Games.Where(g => g.Developers.Any(d => d.GameString == request.Who)).ToList();
 
             }
-            if (request.type == "publisher")
+            if (request.Type == "publisher")
             {
-                games = _context.Games.Where(g => g.Publishers.Any(d => d.GameString == request.who)).ToList();
+                games = _context.Games.Where(g => g.Publishers.Any(d => d.GameString == request.Who)).ToList();
             }
 
             return Task.FromResult(games);
