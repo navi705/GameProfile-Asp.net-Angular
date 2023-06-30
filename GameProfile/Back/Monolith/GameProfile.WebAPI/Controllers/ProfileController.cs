@@ -1,8 +1,6 @@
 ﻿using GameProfile.Application;
-using GameProfile.Application.CQRS.Games.Commands.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame;
-using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGameByProfileId;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId;
 using GameProfile.Application.CQRS.Profiles.Requests.GetProfileById;
@@ -32,22 +30,6 @@ namespace GameProfile.WebAPI.Controllers
             {
                 return Unauthorized();
             }
-            // SteamApi steamApi = new();
-            //var query = new GetProfileByIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
-            //var profile = await Sender.Send(query);
-            //var games = steamApi.SteamOwnedGames(profile.SteamIds.First().StringFor);
-            //var games = steamApi.SteamOwnedGames("76561198085715972");
-            //var aboba = games.Result.games.Select(game => game.appid);
-            //var str = string.Join(",", aboba);
-
-            //var query = new GetProfileHasGameByProfileIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
-            //var profileHasGames = await Sender.Send(query);
-            //var games = new List<GameForProfile>();
-            //foreach (var item in profileHasGames)
-            //{
-            //    var game = await Sender.Send(new GetGameByIdQuery(item.GameId));
-            //    games.Add(new GameForProfile() { Id = game.Id, HeaderImage = game.HeaderImage, Title = game.Title, Hours = item.MinutesInGame / 60, StatusGame = item.StatusGame });
-            //}
             var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),filter,sort);
             var games = await Sender.Send(qeury);
 
@@ -108,7 +90,6 @@ namespace GameProfile.WebAPI.Controllers
             await Sender.Send(query);
             return Ok();
         }
-        // delete in future 
         public class AnswerForProfile
         {
             public string NickName { get; set; }

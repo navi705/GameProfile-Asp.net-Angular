@@ -8,9 +8,9 @@ namespace GameProfile.Infrastructure.Steam
 {
     public class SteamApi
     {
-        private HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient = new();
 
-        public async Task<SteamGameFromApi> GetgameInfo(int appID)
+        public async Task<SteamGameFromApi?> GetgameInfo(int appID)
         {
             HttpResponseMessage response;
             SteamGameFromApi game = new();

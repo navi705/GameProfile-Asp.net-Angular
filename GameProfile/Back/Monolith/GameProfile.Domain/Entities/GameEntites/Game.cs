@@ -28,9 +28,8 @@ namespace GameProfile.Domain.Entities.GameEntites
         /// <summary>
         /// EF constructor
         /// </summary>
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         private Game(Guid id,
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
                     string title,
                     DateTime releaseDate,
                     Uri headerImage,
@@ -56,15 +55,15 @@ namespace GameProfile.Domain.Entities.GameEntites
 
         public string Description { get; private set; }
 
-        public ICollection<UriForGame> Screenshots { get; private set; }
+        public ICollection<UriForGame>? Screenshots { get; private set; }
 
-        public ICollection<StringForGame> Genres { get; private set; }
+        public ICollection<StringForGame>? Genres { get; private set; }
 
-        public ICollection<StringForGame> Publishers { get; private set; }
+        public ICollection<StringForGame>? Publishers { get; private set; }
 
-        public ICollection<StringForGame> Developers { get; private set; }
+        public ICollection<StringForGame>? Developers { get; private set; }
 
-        public ICollection<UriForGame> ShopsLinkBuyGame { get; private set; }
+        public ICollection<UriForGame>? ShopsLinkBuyGame { get; private set; }
 
         //reference property
         public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }

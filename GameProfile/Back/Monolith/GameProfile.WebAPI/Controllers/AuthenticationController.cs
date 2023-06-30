@@ -31,7 +31,7 @@ namespace GameProfile.WebAPI.Controllers
         public async Task<IActionResult> LoginBySteam(SteamOpenIdData steamOpenIdData)
         {
             SteamApi steamApi = new();
-            string idUser = steamOpenIdData.openidclaimed_id.Substring(37);
+            string idUser = steamOpenIdData.openidclaimed_id[37..];
             if (await steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
             {
                 return Unauthorized();
@@ -40,7 +40,7 @@ namespace GameProfile.WebAPI.Controllers
             var games = await steamApi.SteamOwnedGames(idUser);
             if (games.games is null)
             {
-                return BadRequest("Check your profule settings");
+                return BadRequest("Check your profile settings");
             }
 
             var userInfo = await steamApi.SteamUserGetPlayerSummaries(idUser);
@@ -83,7 +83,7 @@ namespace GameProfile.WebAPI.Controllers
             }
             profile = await Sender.Send(query);
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+            ClaimsIdentity claimsIdentity = new(claims, "Cookies");
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             var getCache = await _cacheService.GetAsync<UserCache>(profile.Id.ToString());
@@ -100,7 +100,7 @@ namespace GameProfile.WebAPI.Controllers
 
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
 
-            var anser = new AnswerLoginSteam() { name = userInfo[1], avatar = userInfo[0] };
+            var anser = new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0] };
 
             return Ok(anser);
         }
@@ -121,7 +121,7 @@ namespace GameProfile.WebAPI.Controllers
     }
     class AnswerLoginSteam
     {
-        public string name { get; set; }
-        public string avatar { get; set; }
+        public string Name { get; set; }
+        public string Avatar { get; set; }
     }
 }
