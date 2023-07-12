@@ -6,6 +6,7 @@ using MediatR;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -59,3 +60,4 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 
 app.Run();
+public partial class Program { }// for testing

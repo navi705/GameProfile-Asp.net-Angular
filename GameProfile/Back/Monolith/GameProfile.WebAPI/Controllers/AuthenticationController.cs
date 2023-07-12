@@ -15,6 +15,7 @@ using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProf
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
 using GameProfile.Application.Games.Commands.CreateGame;
+using GameProfile.WebAPI.Shared;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace GameProfile.WebAPI.Controllers
         {
             SteamApi steamApi = new();
             string idUser = steamOpenIdData.openidclaimed_id[37..];
+            
             if (await steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
             {
                 return Unauthorized();
@@ -79,7 +81,6 @@ namespace GameProfile.WebAPI.Controllers
                     }
                     await Sender.Send(new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever));
                 }
-
             }
             profile = await Sender.Send(query);
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };
@@ -92,22 +93,28 @@ namespace GameProfile.WebAPI.Controllers
             {
                 list = getCache.DeviceList;
             }
-            
 
-            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]),DeviceList=list };
+            // cookie for redis
+            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]), DeviceList = list };
             var cookie = Response.Headers["Set-Cookie"].ToString().Split('=')[1].Split(';')[0];
-            userCache.DeviceList.Add(new() { UserAgent = Request.Headers.UserAgent.ToString(), SessionCookie = cookie });
 
+            if (list.Where(x => x.UserAgent == Request.Headers.UserAgent.ToString()).Count() > 0)
+            {
+                list.Where(x => x.UserAgent == Request.Headers.UserAgent.ToString()).First().SessionCookie = cookie;
+            }
+            else
+            {
+                userCache.DeviceList.Add(new() { UserAgent = Request.Headers.UserAgent.ToString(), SessionCookie = cookie });
+            }
+           
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
 
-            var anser = new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0] };
-
-            return Ok(anser);
+            return Ok(new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0]});
         }
 
-
-        [HttpPost("logout")]
+        
         [Authorize]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();

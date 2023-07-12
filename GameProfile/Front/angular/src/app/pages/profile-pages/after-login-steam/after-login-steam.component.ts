@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
+import { catchError, of } from 'rxjs';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -10,8 +11,10 @@ import { ProfileService } from 'src/app/services/profile.service';
 })
 export class AfterLoginSteamComponent {
   error:any;
+  isNotLoading = false;
   constructor(private route: ActivatedRoute, private profile: ProfileService) { }
   async ngOnInit() {
+
     this.route.queryParams.subscribe(params => {
       if (params['openid.assoc_handle'] == undefined)
         window.location.href = "/login";
@@ -27,13 +30,24 @@ export class AfterLoginSteamComponent {
         'openidreturn_to': params['openid.return_to'],
         'openidresponse_nonce': params['openid.response_nonce']
       };
-      this.profile.getLoginWithSteam(object).subscribe((response: any) => {
-        if(response == 'Check your profule settings'){
-          this.error = 'Check your profule settings';
-          return;
+
+      this.profile.getLoginWithSteam(object).pipe(
+        catchError(error => {
+          if (error.status === 400) {
+            this.isNotLoading = true;
+            console.log("xui")
+            this.error = 'Check your profile settings. Your profile is private or your game details private.';
+          } 
+          return of(null);
+        })
+      )
+      .subscribe((response: any) => {  
+        if(response != null){
+          window.location.href = "/profile";
         }
-        window.location.href = "/profile";
+
       });
     });
+
   }
 }

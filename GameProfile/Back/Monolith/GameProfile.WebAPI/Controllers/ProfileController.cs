@@ -7,8 +7,10 @@ using GameProfile.Application.CQRS.Profiles.Requests.GetProfileById;
 using GameProfile.Domain.AggregateRoots.Profile;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Persistence.Caching;
+using GameProfile.WebAPI.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameProfile.WebAPI.Controllers
@@ -22,14 +24,12 @@ namespace GameProfile.WebAPI.Controllers
         }
 
         [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpGet("profile")]
         public async Task<IActionResult> Profile(string? filter,string? sort)
         {
             var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
-            if (!userCache.DeviceList.Any(device => device.UserAgent == Request.Headers.UserAgent && device.SessionCookie == Request.Cookies[".Auth.Cookies"]))
-            {
-                return Unauthorized();
-            }
+
             var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),filter,sort);
             var games = await Sender.Send(qeury);
 
@@ -56,6 +56,10 @@ namespace GameProfile.WebAPI.Controllers
         public async Task<IActionResult> GetProfileAvatar()
         {
             var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
+            if(userCache is null)
+            {
+                return Ok();
+            }
             if (!userCache.DeviceList.Any(device => device.UserAgent == Request.Headers.UserAgent && device.SessionCookie == Request.Cookies[".Auth.Cookies"]))
             {
                 return Unauthorized();
@@ -64,28 +68,20 @@ namespace GameProfile.WebAPI.Controllers
         }
 
         [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpPut("profile/update/game")]
         public async Task<IActionResult> UpdateProileHasGame(Guid gameId, int hours, StatusGameProgressions statusGame)
         {
-            var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
-            if (!userCache.DeviceList.Any(device => device.UserAgent == Request.Headers.UserAgent && device.SessionCookie == Request.Cookies[".Auth.Cookies"]))
-            {
-                return Unauthorized();
-            }
-
             var query = new UpdateProfileHasGameCommand(gameId, hours, statusGame, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
             await Sender.Send(query);
             return Ok();
         }
+
         [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpDelete("profile/delete/game")]
         public async Task<IActionResult> DeleteProileHasGame(Guid gameId)
         {
-            var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
-            if (!userCache.DeviceList.Any(device => device.UserAgent == Request.Headers.UserAgent && device.SessionCookie == Request.Cookies[".Auth.Cookies"]))
-            {
-                return Unauthorized();
-            }
             var query = new DeleteProfileHasGameCommand(gameId,new Guid((HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
             await Sender.Send(query);
             return Ok();

@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameProfile.WebAPI", "GameP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EAA74873-FA76-411C-9816-4501F2FD1A08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameProfile.Unit.Tests", "GameProfile.Architecture.Tests\GameProfile.Unit.Tests.csproj", "{803E28AB-EB22-488B-A558-C34811A46A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameProfile.Unit.Tests", "GameProfile.Architecture.Tests\GameProfile.Unit.Tests.csproj", "{803E28AB-EB22-488B-A558-C34811A46A2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

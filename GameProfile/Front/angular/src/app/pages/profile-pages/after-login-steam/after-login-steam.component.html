@@ -1,5 +1,5 @@
 <div class="container-page">
-    <mat-spinner diameter="300" class="loading"></mat-spinner>
+    <mat-spinner diameter="300" class="loading" *ngIf="!isNotLoading" ></mat-spinner>
     <p>Please wait until we receive your games. It is taking so long because our database has not yet received all the games from steam. </p>
-    <p>{{error}}</p>
+    <p class="error">{{error}}</p>
 </div>
