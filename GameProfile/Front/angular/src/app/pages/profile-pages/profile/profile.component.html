@@ -17,16 +17,18 @@
         <button mat-button [ngClass]="{ 'active': selectedState === 'completed' }" (click)="selectState('completed')">Completed</button>
         <button mat-button [ngClass]="{ 'active': selectedState === 'dropped' }" (click)="selectState('dropped')">Dropped</button>
         <button mat-button [ngClass]="{ 'active': selectedState === 'planned' }" (click)="selectState('planned')">Planned</button>
-        <mat-form-field >
-            <mat-label>Sorting</mat-label>
-            <mat-select [(ngModel)]="sort">
-                <mat-option [value]="'titleAtoZ'">Title A to Z</mat-option>
-                <mat-option [value]="'titleZtoA'">Title Z to A </mat-option>
-                <mat-option [value]="'hoursAsc'"> Hours Ascending"</mat-option>
-                <mat-option [value]="'hoursDesc'">Hours Descending</mat-option>
-            </mat-select>
-        </mat-form-field>
       </div>
+      <div class="sort">
+        <mat-form-field class="sort" >
+        <mat-label>Sorting</mat-label>
+        <mat-select [(ngModel)]="sort" (selectionChange)="selectState(selectedState)">
+            <mat-option [value]="'titleAtoZ'">Title A to Z</mat-option>
+            <mat-option [value]="'titleZtoA'">Title Z to A </mat-option>
+            <mat-option [value]="'hoursAsc'"> Hours Ascending"</mat-option>
+            <mat-option [value]="'hoursDesc'">Hours Descending</mat-option>
+        </mat-select>
+    </mat-form-field>
+    </div>
     <div class="timeAll">
         <span>Total time in yours games:{{profile.totalHours}} hours</span>
     </div>

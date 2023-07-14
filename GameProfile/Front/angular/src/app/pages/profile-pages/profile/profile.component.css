@@ -47,3 +47,20 @@
 .active{
     color: #00acc1;
 }
+@media (max-width: 650px) 
+{
+        .container-page {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+      
+        .game-list {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        
+         
+}

@@ -1,42 +1,43 @@
 <header>
-    <mat-toolbar color="primary" aria-label="Top Toolbar" >
-        <div class="header-container"> 
-            <mat-icon class="burger"(click)="toggleMenu()">{{isMenuOpen ? "close" : "menu"}}</mat-icon>
-        <nav class="menu">          
-           <a href="/" id="logo">GameProfile</a>
-           <a mat-button class="nav-a" routerLink="games" routerLinkActive="nav-a-selected">Games</a>
-           <a>Find Teammate</a>        
-           <a>Forum</a>
-           <a mat-button class="nav-a" routerLink="stats" routerLinkActive="nav-a-selected">Stats</a>     
-        </nav>       
-        <div class="search">
-        <mat-icon>search</mat-icon>   
+  <mat-toolbar color="primary" aria-label="Top Toolbar">
+    <div class="header-container" [class.show-menu]="isMenuOpen">
+      <mat-icon class="burger" (click)="toggleMenu()">{{isMenuOpen ? "close" : "menu"}}</mat-icon>
+      <nav class="menu">
+        <a href="/" id="logo">GameProfile</a>
+        <a mat-button class="nav-a" routerLink="games" routerLinkActive="nav-a-selected">Games</a>
+        <a>Find Teammate</a>
+        <a>Forum</a>
+        <a mat-button class="nav-a" routerLink="stats" routerLinkActive="nav-a-selected">Stats</a>
+      </nav>
+      <div class="search">
+        <mat-icon>search</mat-icon>
         <input class="search-input"
-        [matAutocomplete]="auto"
-        [(ngModel)]="searchString"
-        [ngModelOptions]="{standalone: true}"
-        (input)="onSearchChange()"
-        > 
-        <mat-autocomplete #auto="matAutocomplete" >   
-            <mat-option *ngFor="let game of findGames | async">              
-                    <a href="/game?id={{game.id}}">
-                    <div class="aboba">
-                    <img [src]="game.headerImage" [height]="50" [width]="150">
-                    <span class="">{{game.title}}</span>
-                    </div>
-                    </a>
-            </mat-option>   
-        </mat-autocomplete>      
-    </div>
-        <div class="login" *ngIf="image == undefined; else elseBlock">
-            <a href="/login"> Login in </a>      
+          [matAutocomplete]="auto"
+          [(ngModel)]="searchString"
+          [ngModelOptions]="{standalone: true}"
+          (input)="onSearchChange()"
+        >
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let game of findGames | async">
+            <a href="/game?id={{game.id}}">
+              <div class="aboba">
+                <img [src]="game.headerImage" [height]="50" [width]="150">
+                <span class="">{{game.title}}</span>
+              </div>
+            </a>
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+      <div *ngIf="image == undefined; else elseBlock">
+        <div class="login">
+          <a href="/login"> Login in </a>
         </div>
-        <ng-template #elseBlock> 
-            <div class="login"> 
-                <a href="/profile" ><img src="{{image}}" class="avatar" /> </a> 
-            </div> 
-        </ng-template>
+      </div>
+      <ng-template #elseBlock>
+        <div class="login">
+          <a href="/profile"><img src="{{image}}" class="avatar" /></a>
+        </div>
+      </ng-template>
     </div>
-    </mat-toolbar>
-    
+  </mat-toolbar>
 </header>

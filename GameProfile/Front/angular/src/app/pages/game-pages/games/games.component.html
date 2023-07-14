@@ -14,7 +14,10 @@
                     </div>
             </div>
         </div>
-        <div class="right-wrapper">
+        <button mat-icon-button (click)="toggleFilters()" class="burger-filter-button">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+        <div class="right-wrapper" [class.show-wrapper]="showFilters">
                 <mat-form-field class="sorting"> 
                 <mat-label>Choose a sorting</mat-label>
                 <mat-select [(value)]="sortFilters.Sorting" >
@@ -33,7 +36,7 @@
                             <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
                             <mat-datepicker #pickerOf></mat-datepicker>
                           </mat-form-field>
-                    <span>—</span>
+                    <span class="dash">—</span>
                     <mat-form-field  >
                         <input matInput [matDatepicker]="pickerTo" placeholder="To"  [(ngModel)]="sortTemp.dateTo">
                         <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
