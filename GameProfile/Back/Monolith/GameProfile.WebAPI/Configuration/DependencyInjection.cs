@@ -1,5 +1,6 @@
 ﻿using GameProfile.Application;
 using GameProfile.Application.Data;
+using GameProfile.Infrastructure.Steam;
 using GameProfile.Persistence;
 using GameProfile.Persistence.Caching;
 using GameProfile.Persistence.Options;
@@ -11,7 +12,7 @@ namespace GameProfile.Presentation.Configuration
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddPersistence(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
 
             var dbOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
@@ -28,7 +29,8 @@ namespace GameProfile.Presentation.Configuration
                     optionsBuilder.EnableDetailedErrors(dbOptions.EnableDetailedErrors);
                     optionsBuilder.EnableSensitiveDataLogging(dbOptions.EnableDetailedErrors);
                 });
-            services.AddStackExchangeRedisCache(options => {
+            services.AddStackExchangeRedisCache(options =>
+            {
                 options.Configuration = redisConnectionString;
             });
 
@@ -36,10 +38,10 @@ namespace GameProfile.Presentation.Configuration
             services.AddDistributedMemoryCache();
             services.AddSingleton<ICacheService, CacheService>();
 
-            return services;    
+            return services;
         }
-        
-        public static IServiceCollection AddApplication (this IServiceCollection services)
+
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(GameProfile.Application.AssemblyReference.Assembly));
             return services;
@@ -51,7 +53,8 @@ namespace GameProfile.Presentation.Configuration
             return services;
         }
 
-        public static IServiceCollection AddAuthentications(this IServiceCollection services,IConfiguration configuration) {
+        public static IServiceCollection AddAuthentications(this IServiceCollection services, IConfiguration configuration)
+        {
 
             services.AddAuthentication(options =>
             {
@@ -79,6 +82,13 @@ namespace GameProfile.Presentation.Configuration
                                       .AllowAnyMethod());
             });
 
+            return services;
+        }
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        {
+            // singelton or scoped? ai say scoped but i need check performance 
+            services.AddScoped<ISteamApi>(provider =>
+                 new SteamApi(configuration.GetValue<string>("SteamCMD")));
             return services;
         }
     }

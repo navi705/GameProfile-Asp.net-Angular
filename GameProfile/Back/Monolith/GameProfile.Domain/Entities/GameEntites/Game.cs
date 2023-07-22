@@ -9,20 +9,25 @@ namespace GameProfile.Domain.Entities.GameEntites
                     string title,
                     DateTime releaseDate,
                     Uri headerImage,
+                    Uri backgroundImage,
                     bool nsfw,
                     string description,
                     ICollection<StringForGame> developers,
                     ICollection<StringForGame> publishers,
                     ICollection<StringForGame> genres,
+                    ICollection<StringForGame> tags,
                     ICollection<UriForGame> screenshots,
                     ICollection<UriForGame> shopsLinkBuyGame,
-                    int achievementsCount) : this(id,title,releaseDate,headerImage,nsfw,description,achievementsCount)
+                    ICollection<Review> reviews,
+                    int achievementsCount) : this(id, title, releaseDate, headerImage, nsfw, description, achievementsCount, backgroundImage)
         {
             Developers = developers;
             Publishers = publishers;
             Genres = genres;
+            Tags = tags;
             Screenshots = screenshots;
             ShopsLinkBuyGame = shopsLinkBuyGame;
+            Reviews = reviews;
         }
 
         /// <summary>
@@ -35,7 +40,8 @@ namespace GameProfile.Domain.Entities.GameEntites
                     Uri headerImage,
                     bool nsfw,
                     string description,
-                    int achievementsCount) : base(id)
+                    int achievementsCount,
+                    Uri backgroundImage) : base(id)
         {
             Title = title;
             ReleaseDate = releaseDate;
@@ -43,6 +49,7 @@ namespace GameProfile.Domain.Entities.GameEntites
             Nsfw = nsfw;
             Description = description;
             AchievementsCount = achievementsCount;
+            BackgroundImage = backgroundImage;
         }
 
         public string Title { get; private set; }
@@ -50,6 +57,8 @@ namespace GameProfile.Domain.Entities.GameEntites
         public DateTime ReleaseDate { get; private set; }
 
         public Uri HeaderImage { get; private set; }
+
+        public Uri BackgroundImage { get; private set; }
 
         public bool Nsfw { get; private set; }
 
@@ -65,6 +74,9 @@ namespace GameProfile.Domain.Entities.GameEntites
 
         public ICollection<UriForGame>? ShopsLinkBuyGame { get; private set; }
 
+        public ICollection<Review>? Reviews { get; private set; }
+
+        public ICollection<StringForGame>? Tags { get; private set; }
         //reference property
         public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
 

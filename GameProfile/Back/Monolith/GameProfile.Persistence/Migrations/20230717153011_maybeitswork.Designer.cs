@@ -4,6 +4,7 @@ using GameProfile.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameProfile.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230717153011_maybeitswork")]
+    partial class maybeitswork
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace GameProfile.Persistence.Migrations
 
                     b.Property<int>("AchievementsCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("BackgroundImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -82,26 +81,6 @@ namespace GameProfile.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("GameSteamIds");
-                });
-
-            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.NotGameSteamId", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SteamAppId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("SteamAppId")
-                        .IsUnique();
-
-                    b.ToTable("NotGameSteamIds");
                 });
 
             modelBuilder.Entity("GameProfile.Domain.Entities.Profile.Profile", b =>

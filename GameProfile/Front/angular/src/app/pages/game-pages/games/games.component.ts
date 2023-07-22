@@ -73,12 +73,10 @@ export class GamesComponent {
         }
       }
     });
-    console.log(this.sortFilters)
     this.gameService.fetchGamesBySortFilters(this.sortFilters).subscribe(response => this.games = response);
   }
 
   public changeCheckbox1(): void {
-    console.log(this.filtersArray);
     this.sortTemp.nsfw++;
     if (this.sortTemp.nsfw == 3) {
       this.sortFilters.Nsfw = undefined;
@@ -115,6 +113,5 @@ export class GamesComponent {
   }
   toggleFilters() {
     this.showFilters = !this.showFilters;
-    console.log(this.showFilters);
   }
 } 

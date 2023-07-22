@@ -3,7 +3,6 @@ using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Entities.Profile;
 using GameProfile.Persistence.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace GameProfile.Persistence
 {
@@ -20,6 +19,7 @@ namespace GameProfile.Persistence
             modelBuilder.ApplyConfiguration(new ProfileConfigure());
             modelBuilder.ApplyConfiguration(new ProfileHasGamesConfigure());
             modelBuilder.ApplyConfiguration(new GameSteamIdConfigure());
+            modelBuilder.ApplyConfiguration(new NotSteamGameConfigure());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -37,5 +37,6 @@ namespace GameProfile.Persistence
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<ProfileHasGames> ProfileHasGames { get; set; }
         public DbSet<GameSteamId> GameSteamIds { get; set; }
+        public DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
     }
 }

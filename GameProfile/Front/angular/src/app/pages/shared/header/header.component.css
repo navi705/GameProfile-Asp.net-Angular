@@ -73,7 +73,7 @@ nav a {
 }
 
 .login {
-  margin-left: auto;
+  margin-left: 5px;
 }
 
 #logo {
@@ -93,6 +93,7 @@ nav a {
 
 .avatar {
   border-radius: 100%;
+  margin-left: auto;
 }
 
 .burger {

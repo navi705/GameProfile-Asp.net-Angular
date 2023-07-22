@@ -15,37 +15,41 @@ using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProf
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
 using GameProfile.Application.Games.Commands.CreateGame;
-using GameProfile.WebAPI.Shared;
 
 namespace GameProfile.WebAPI.Controllers
 {
     public sealed class AuthenticationController : ApiController
     {
         private readonly ICacheService _cacheService;
-        public AuthenticationController(ISender sender, ICacheService cacheService) : base(sender)
+        private readonly ILogger<AuthenticationController> _logger;
+        private readonly ISteamApi _steamApi;
+        public AuthenticationController(ISender sender, ICacheService cacheService, ILogger<AuthenticationController> logger, ISteamApi steamApi) : base(sender)
         {
             _cacheService = cacheService;
+            _logger = logger;
+            _steamApi = steamApi;
         }
 
         [AllowAnonymous]
         [HttpPost("login/steam")]
         public async Task<IActionResult> LoginBySteam(SteamOpenIdData steamOpenIdData)
         {
-            SteamApi steamApi = new();
+            //SteamApi steamApi = new();
             string idUser = steamOpenIdData.openidclaimed_id[37..];
-            
-            if (await steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
+            if (await _steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
             {
+                _logger.LogInformation("Auth not correct");
                 return Unauthorized();
             }
 
-            var games = await steamApi.SteamOwnedGames(idUser);
+            var games = await _steamApi.SteamOwnedGames(idUser);
             if (games.games is null)
             {
+                _logger.LogInformation($"Profile is close {idUser}");
                 return BadRequest("Check your profile settings");
             }
 
-            var userInfo = await steamApi.SteamUserGetPlayerSummaries(idUser);
+            var userInfo = await _steamApi.SteamUserGetPlayerSummaries(idUser);
 
             var query = new GetProfileQuery(idUser);
             var profile = await Sender.Send(query);
@@ -54,18 +58,20 @@ namespace GameProfile.WebAPI.Controllers
                 var query2 = new CreateProfileCommand(userInfo[1], "", idUser);
                 await Sender.Send(query2);
                 profile = await Sender.Send(query);
+                _logger.LogInformation($"Profile is added Id-{idUser} NickName-{userInfo[1]}");
                 foreach (var item in games.games)
                 {
                     var query3 = new GetGamesIdBySteamIdQuery(item.appid);
                     var res = await Sender.Send(query3);
                     if (res is null)
                     {
-                        var game = await steamApi.GetgameInfo(item.appid);
+                        var game = await _steamApi.GetgameInfoByCmd(item.appid);
                         if (game is null)
                         {
+                            _logger.LogInformation($"Game from Steam api none {item.appid}");
                             continue;
                         }
-                        await Sender.Send(new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0));
+                        //await Sender.Send(new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0));
                         var query6 = await Sender.Send(new GetGameByNameQuery(game.Name));
                         await Sender.Send(new CreateGamesSteamAppIdQuery(query6.Id, item.appid));
                         res = await Sender.Send(query3);
@@ -80,6 +86,7 @@ namespace GameProfile.WebAPI.Controllers
                         statusGame = StatusGameProgressions.Dropped;
                     }
                     await Sender.Send(new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever));
+                    _logger.LogInformation($"Add game to profile {userInfo[1]} {res.GameId}");
                 }
             }
             profile = await Sender.Send(query);
@@ -108,7 +115,7 @@ namespace GameProfile.WebAPI.Controllers
             }
            
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
-
+            _logger.LogInformation($"{userInfo[1]} is Steam login");
             return Ok(new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0]});
         }
 
@@ -122,6 +129,7 @@ namespace GameProfile.WebAPI.Controllers
             var cache = userCache.DeviceList.Where(device => device.UserAgent == Request.Headers.UserAgent).FirstOrDefault();
             cache.SessionCookie = "";
             await _cacheService.SetAsync(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value, userCache);
+            _logger.LogInformation($"Logged out {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value}");
             return Ok();
         }
 

@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GameProfile.Domain.Entities;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using GameProfile.Domain.Entities.Profile;
 using GameProfile.Domain.Entities.GameEntites;
 
@@ -15,6 +13,8 @@ namespace GameProfile.Application.Data
         DbSet<ProfileHasGames> ProfileHasGames { get; set; }
 
         DbSet<GameSteamId> GameSteamIds { get; set; }
+
+        DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
 

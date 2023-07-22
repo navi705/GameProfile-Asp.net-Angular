@@ -4,6 +4,7 @@ using GameProfile.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameProfile.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230717165116_maybeitswor")]
+    partial class maybeitswor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,26 +85,6 @@ namespace GameProfile.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("GameSteamIds");
-                });
-
-            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.NotGameSteamId", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SteamAppId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("SteamAppId")
-                        .IsUnique();
-
-                    b.ToTable("NotGameSteamIds");
                 });
 
             modelBuilder.Entity("GameProfile.Domain.Entities.Profile.Profile", b =>

@@ -1,136 +1,115 @@
 ﻿using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Steam.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Text.Json;
+using System.Globalization;
+using System.Net.Http;
 
 namespace GameProfile.Infrastructure.Steam
 {
-    public class SteamApi
+    public class SteamApi : ISteamApi
     {
         private readonly HttpClient _httpClient = new();
-
-        public async Task<SteamGameFromApi?> GetgameInfo(int appID)
+        private readonly string _steamCmdUri;
+        public SteamApi(string steamCmdUri)
         {
-            // refactoring in future when i will edit db
-            HttpResponseMessage response;
-            SteamGameFromApi game = new();
-            response = await _httpClient.GetAsync($"http://localhost:8000/v1/info/{appID}");
-            JsonDocument document;
-            try
-            {
-                document = JsonDocument.Parse(response.Content.ReadAsStringAsync().Result.ToString());
-            }
-            catch
-            {
-                return null;
-            }
-            JsonElement data;
-            try
-            {
-                data = document.RootElement.GetProperty("data").GetProperty($"{appID}").GetProperty("common");
-            }
-            catch
-            {
-                return null;
-            }
-            JsonElement type = data.GetProperty("type");
-            JsonElement associations = new();
-            try
-            {
-                associations = data.GetProperty("associations");
-            }
-            catch
-            {
-                return null;
-            }
-            JsonElement genr = new();
-            try
-            {
-                genr = data.GetProperty("genres");
-            }
-            catch
-            {
-                return null;
-            }
+            _steamCmdUri = steamCmdUri;
+        }
 
-            var aqwe = type.ToString();
-            if (type.ToString() != "Game" && type.ToString() != "game")
-            {
-                return null;
-            }
-            game.Name = data.GetProperty("name").ToString();
+        public async Task<SteamGameFromApi?> GetgameInfoByCmd(int appID)
+        {
             try
             {
-                game.Nsfw = data.GetProperty("has_adult_content_sex").ToString() == "0" ? false : true;
-            }
-            catch
-            {
-                game.Nsfw = false;
-            }
-
-            try
-            {
-                long number = long.Parse(data.GetProperty("steam_release_date").ToString());
-                game.ReleaseTime = DateTimeOffset.FromUnixTimeSeconds(number).UtcDateTime;
-            }
-            catch
-            {
-            }
-            game.HeaderImg = new Uri($"https://cdn.cloudflare.steamstatic.com/steam/apps/{appID}/header.jpg");
-            int i = 0;
-            while (true)
-            {
-                try
+                var response = await _httpClient.GetAsync($"{_steamCmdUri}/v1/info/{appID}");
+                if (!response.IsSuccessStatusCode)
                 {
-                    if (associations.GetProperty($"{i}").GetProperty("type").ToString() == "developer" || associations.GetProperty($"{i}").GetProperty("type").ToString() == "publisher")
+                    return null;
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(json);
+
+                var commonData = data["data"]?[appID.ToString()]?["common"];
+                if (commonData == null || commonData["type"]?.ToString() != "Game" && commonData["type"]?.ToString() != "game")
+                {
+                    return null;
+                }
+                else
+                {
+                    
+                }
+
+
+
+                var game = new SteamGameFromApi
+                {
+                    Name = commonData.Value<string>("name"),
+                    Nsfw = commonData.Value<string>("has_adult_content_sex") == "1",
+                    // ReleaseTime = DateTimeOffset.FromUnixTimeSeconds(commonData["steam_release_date"].ToObject<long>()).UtcDateTime,
+                    HeaderImg = new Uri($"https://cdn.cloudflare.steamstatic.com/steam/apps/{appID}/header.jpg")
+                };
+
+                //if (commonData["associations"] != null)
+                //{
+                //    foreach (var association in commonData["associations"])
+                //    {
+                //        var type = association.Value<string>("type");
+                //        var name = association.Value<string>("name");
+                //        if (type == "developer")
+                //        {
+                //            game.Developers.Add(new(name));
+                //        }
+                //        else if (type == "publisher")
+                //        {
+                //            game.Publishers.Add(new(name));
+                //        }
+                //    }
+                //}
+
+                //var genresData = data["genres"];
+                //if (genresData != null)
+                //{
+                //    var genres = genresData.ToObject<Dictionary<string, string>>();
+                //    foreach (var genreId in commonData["genres"] ?? Enumerable.Empty<JToken>())
+                //    {
+                //        if (genres.TryGetValue(genreId.ToString(), out var genre))
+                //        {
+                //            game.Genres.Add(new(genre));
+                //        }
+                //    }
+                //}
+                var tagsJson = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Steam/tags.json"));
+                var tagsDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(tagsJson);
+                var tagsData = commonData["store_tags"];
+                if (tagsData != null)
+                {
+                    var tags = new List<StringForGame>();
+                    foreach (var tagId in tagsData)
                     {
-                        if (associations.GetProperty($"{i}").GetProperty("type").ToString() == "developer")
-                        {
-                            var namef = associations.GetProperty($"{i}").GetProperty("name").ToString();
-                            game.Developers.Add(new(namef));
-                        }
-                        if (associations.GetProperty($"{i}").GetProperty("type").ToString() == "publisher")
-                        {
-                            var namef = associations.GetProperty($"{i}").GetProperty("name").ToString();
-                            game.Publishers.Add(new(namef));
-                        }
+                        var jsonTag = tagId.ToString();
+                        var temp = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>("{" + jsonTag + "}");
+                        var idtag = temp.First().Value;
+                        tagsDict.TryGetValue(idtag, out var tagName);
+                        tags.Add(new StringForGame(tagName));
+
                     }
+                    game.Tags = tags;
                 }
-                catch
-                {
-                    break;
-                }
-                i++;
+
+                return game;
             }
-            i = 0;
-            StreamReader r = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Steam/genres.json"));
-            string json = r.ReadToEnd();
-            JsonDocument document1 = JsonDocument.Parse(json);
-            JsonElement element = document1.RootElement;
-            var arr = JsonSerializer.Deserialize<Dictionary<string, string>>(element);
-            while (true)
+            catch
             {
-                try
-                {
-                    var getIdGenre = genr.GetProperty($"{i}").ToString();
-                    game.Genres.Add(new(arr[getIdGenre]));
-                }
-                catch
-                {
-                    break;
-                }
-                i++;
+                return null;
             }
-            Debug.WriteLine(appID);
-            return game;
         }
 
         public async Task<ListGames> GetGamesList()
         {
             HttpResponseMessage response;
             response = await _httpClient.GetAsync("http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json");
-            var games = JsonSerializer.Deserialize<ListGames>(response.Content.ReadAsStringAsync().Result.ToString());
+            var games = System.Text.Json.JsonSerializer.Deserialize<ListGames>(response.Content.ReadAsStringAsync().Result.ToString());
             return games;
         }
         public async Task<bool> CheckOpenIdSteam(SteamOpenIdData steamOpenIdData)
@@ -160,7 +139,7 @@ namespace GameProfile.Infrastructure.Steam
         {
             HttpResponseMessage response;
             response = await _httpClient.GetAsync("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=E3F8346565FF771EDB7691695BB4A081&steamids=" + id);
-            var answer = JsonSerializer.Deserialize<GetPlayerSummaries>(response.Content.ReadAsStringAsync().Result.ToString());
+            var answer = System.Text.Json.JsonSerializer.Deserialize<GetPlayerSummaries>(response.Content.ReadAsStringAsync().Result.ToString());
             var array = new List<string>();
             array.Add(answer.response.players[0].avatarmedium);
             array.Add(answer.response.players[0].personaname);
@@ -171,9 +150,71 @@ namespace GameProfile.Infrastructure.Steam
         {
             HttpResponseMessage response;
             response = await _httpClient.GetAsync("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=E3F8346565FF771EDB7691695BB4A081&steamid=" + steamId + "&include_played_free_games=true&include_free_sub=true");
-            var answer = JsonSerializer.Deserialize<SteamOwnedGamesApi>(response.Content.ReadAsStringAsync().Result.ToString());
+            var answer = System.Text.Json.JsonSerializer.Deserialize<SteamOwnedGamesApi>(response.Content.ReadAsStringAsync().Result.ToString());
             return answer.response;
         }
+
+        public async Task<SteamGameFromStoreApi> GetGameFromStoreApi(int appId)
+        {
+            var game = new SteamGameFromStoreApi();
+            var response = await _httpClient.GetAsync($"https://store.steampowered.com/api/appdetails/?appids={appId}&cc=en");
+            try
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var data = JObject.Parse(json);
+
+                    var gameData = data[appId.ToString()]["data"];
+
+                    game.Name = gameData["name"]?.ToString() ?? "";
+                    game.IsFree = gameData["is_free"]?.ToObject<bool>() ?? false;
+                    game.Description = gameData["short_description"]?.ToString() ?? "";
+                    game.ImageUrl = gameData["header_image"]?.ToString() ?? "";
+                    game.Website = gameData["website"]?.ToString() ?? "";
+                    game.Developers = gameData["developers"]?.ToObject<string[]>()?.Select(x => new StringForGame(x)).ToList() ?? new List<StringForGame>();
+                    game.Publishers = gameData["publishers"]?.ToObject<string[]>()?.Select(x => new StringForGame(x)).ToList() ?? new List<StringForGame>();
+                    game.MetacriticUrl = gameData["metacritic"]?["url"]?.ToString() ?? "";
+                    game.BackgroundUrl = gameData["background"]?.ToString() ?? "";
+                    DateTime releaseDate = DateTime.TryParseExact(gameData["release_date"]?["date"]?.ToString(), "d MMM, yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out releaseDate) ? releaseDate : DateTime.MinValue;
+                    game.ReleaseDate = releaseDate;
+                    game.AchievementsCount = gameData["achievements"]?["total"]?.ToObject<int>() ?? 0;
+
+                    game.Genres = gameData["genres"]?.ToObject<JArray>()?.Select(x => new StringForGame(x["description"]?.ToString() ?? "")).ToList() ?? new List<StringForGame>();
+                    game.Screenshots = gameData["screenshots"]?.ToObject<JArray>()?.Select(x => new UriForGame(new Uri(x["path_full"]?.ToString()))).ToList() ?? new List<UriForGame>();
+                    if (game.Publishers.First().GameString == "")
+                    {
+                        game.Publishers = new List<StringForGame>();
+                    }
+                }
+                return game;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public async Task<double> GetGameReview(int appID)
+        {
+            var response = await _httpClient.GetAsync($"https://store.steampowered.com/appreviews/{appID}?json=1&language=all");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(json);
+                var positive = data["query_summary"]["total_positive"].ToObject<int>();
+                var total = data["query_summary"]["total_reviews"].ToObject<int>();
+                if(total == 0)
+                {
+                    return 0;
+                }
+                double average = (double)positive / total;
+                var score = average - (average - 0.5) * Math.Pow(2, -Math.Log10(total + 1));
+                return score * 100;
+            }
+            return 0;
+        }
+
     }
     public class SteamGameFromApi
     {
@@ -190,6 +231,8 @@ namespace GameProfile.Infrastructure.Steam
         public List<StringForGame> Publishers { get; set; } = new();
 
         public List<StringForGame> Developers { get; set; } = new();
+
+        public List<StringForGame> Tags { get; set; } = new();
     }
 
     public class SteamOpenIdData
@@ -254,6 +297,23 @@ namespace GameProfile.Infrastructure.Steam
         public int playtime_linux_forever { get; set; }
         public long rtime_last_played { get; set; }
         public int playtime_2weeks { get; set; }
+    }
+
+    public class SteamGameFromStoreApi
+    {
+        public string Name { get; set; }
+        public bool IsFree { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        public string Website { get; set; }
+        public List<StringForGame> Developers { get; set; }
+        public List<StringForGame> Publishers { get; set; }
+        public string MetacriticUrl { get; set; }
+        public string BackgroundUrl { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public List<StringForGame> Genres { get; set; }
+        public List<UriForGame> Screenshots { get; set; }
+        public int AchievementsCount { get; set; }
     }
 
 }

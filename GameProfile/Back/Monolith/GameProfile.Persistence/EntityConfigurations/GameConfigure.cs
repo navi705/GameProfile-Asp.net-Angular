@@ -17,6 +17,8 @@ namespace GameProfile.Persistence.EntityConfigurations
             builder.OwnsMany(game => game.Developers);
             builder.OwnsMany(game => game.Publishers);
             builder.OwnsMany(game => game.ShopsLinkBuyGame);
+            builder.OwnsMany(game => game.Tags);
+            builder.OwnsMany(game => game.Reviews);
         }
     }
 }

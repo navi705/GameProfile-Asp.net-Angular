@@ -12,6 +12,9 @@ import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-cr
 import { StatsPageComponent } from './pages/stats/stats-page/stats-page.component';
 import { NotFoundComponent } from './pages/shared/NotFound/not-found/not-found.component';
 import { HomePageComponent } from './pages/shared/home/home-page/home-page.component';
+import { ProfileViewComponent } from './pages/profile-pages/profile/profile-components/profile-view/profile-view.component';
+import { FindTeammeteSeacrhComponent } from './pages/find-temmate-pages/find-teammete-seacrh/find-teammete-seacrh.component';
+import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
@@ -24,6 +27,9 @@ const routes: Routes = [
   {path: 'game/filter',component:GameFiltersCreatorsComponent},
   {path: 'stats',component:StatsPageComponent},
   {path:'',component: HomePageComponent},
+  {path:'profile/:id',component: ProfileViewComponent},
+  {path:'find-teammate', component: FindTeammeteSeacrhComponent},
+  {path:'forum',component: ForumComponent},
   {path: '**', component: NotFoundComponent},
 ];
 

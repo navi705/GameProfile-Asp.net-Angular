@@ -62,23 +62,23 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> PutGame(Game game)
-        {
-            var query = new CreateGameCommand(game.Title,
-                                  game.ReleaseDate,
-                                  game.HeaderImage,
-                                  game.Nsfw,
-                                  game.Description,
-                                  game.Genres,
-                                  game.Publishers,
-                                  game.Developers,
-                                  game.Screenshots,
-                                  game.ShopsLinkBuyGame,
-                                  game.AchievementsCount);
-            await Sender.Send(query);
-            return Ok();
-        }
+        //[HttpPut]
+        //public async Task<IActionResult> PutGame(Game game)
+        //{
+        //    var query = new CreateGameCommand(game.Title,
+        //                          game.ReleaseDate,
+        //                          game.HeaderImage,
+        //                          game.Nsfw,
+        //                          game.Description,
+        //                          game.Genres,
+        //                          game.Publishers,
+        //                          game.Developers,
+        //                          game.Screenshots,
+        //                          game.ShopsLinkBuyGame,
+        //                          game.AchievementsCount);
+        //    await Sender.Send(query);
+        //    return Ok();
+        //}
         [HttpDelete]
         public async Task<IActionResult> DeleteGame(Guid gameId)
         {

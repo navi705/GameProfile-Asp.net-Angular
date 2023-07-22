@@ -22,12 +22,14 @@ import { AfterLoginSteamComponent } from './pages/profile-pages/after-login-stea
 import { LoginComponent } from './pages/profile-pages/login/login.component';
 import { ProfileComponent } from './pages/profile-pages/profile/profile.component';
 import { AdminGameComponent } from './pages/admin-pages/admin-game/admin-game.component';
-import { GameClass } from './services/models/game';
 import { GameFiltersCreatorsComponent } from './pages/game-pages/game-filters-creators/game-filters-creators.component';
 import { ProfileGamesComponentComponent } from './pages/profile-pages/profile/profile-components/profile-games-component/profile-games-component.component';
 import { StatsPageComponent } from './pages/stats/stats-page/stats-page.component';
 import { NotFoundComponent } from './pages/shared/NotFound/not-found/not-found.component';
 import { HomePageComponent } from './pages/shared/home/home-page/home-page.component';
+import { ProfileViewComponent } from './pages/profile-pages/profile/profile-components/profile-view/profile-view.component';
+import { FindTeammeteSeacrhComponent } from './pages/find-temmate-pages/find-teammete-seacrh/find-teammete-seacrh.component';
+import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -57,6 +59,9 @@ const MY_DATE_FORMAT = {
     StatsPageComponent,
     NotFoundComponent,
     HomePageComponent,
+    ProfileViewComponent,
+    FindTeammeteSeacrhComponent,
+    ForumComponent,
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace GameProfile.Application.Games.Commands.CreateGame
 {
-    internal sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand>
+    public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand>
     {
         private readonly IDatabaseContext _context;
 
@@ -19,16 +19,19 @@ namespace GameProfile.Application.Games.Commands.CreateGame
                                 request.Title,
                                 request.ReleaseDate,
                                 request.HeaderImage,
+                                request.BackgroundImage,
                                 request.NSFW,
                                 request.Description,
                                 request.Developers,
                                 request.Publishers,
-                                request.Genres,                               
+                                request.Genres,
+                                request.Tags,
                                 request.Screenshots,
                                 request.ShopsLinkBuyGame,
+                                request.Reviews,
                                 request.AchievementsCount);
-            _context.Games.Add(game);  
-            await _context.SaveChangesAsync(cancellationToken);         
+            _context.Games.Add(game);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

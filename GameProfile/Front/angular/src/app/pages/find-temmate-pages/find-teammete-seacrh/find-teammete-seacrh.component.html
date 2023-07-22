@@ -1,0 +1,58 @@
+<div class="container-page">   
+    <div class="wrapper"> 
+
+        <div class="teammate-list">
+            <!-- *ngFor="let findteammate of findteammates" -->
+            <div  class="findteammate-container"  >
+                    <div class="findteammate">                                           
+                    <!-- <img mat-card-image class="findteammate-img" src="{{findteammate.headerImage}}"[height]="150" > -->
+                    </div>
+                    <div class="findteammate-content">
+                        
+                    </div>   
+                        
+            </div>
+        </div>
+
+        <button mat-icon-button (click)="toggleFilters()" class="burger-filter-button">
+            <mat-icon>filter_list</mat-icon>
+          </button>
+          
+        <div class="right-wrapper" [class.show-wrapper]="showFilters">
+                <!-- <mat-form-field class="sorting"> 
+                <mat-label>Choose a sorting</mat-label>
+                <mat-select [(value)]="sortFilters.Sorting" >
+                    <mat-option value="titleAtoZ" >Title A to Z</mat-option>
+                    <mat-option value="titleZtoA">Title Z to A</mat-option>           
+                    <mat-option value="dateAscending">Date Ascending</mat-option>           
+                    <mat-option value="dateDescending">Date Descending</mat-option>           
+                </mat-select>
+            </mat-form-field>
+            <div class="filters">
+               <span class="filter-title">Filters</span>
+                <span class="filer-subtitle">Release Date</span>
+                    <div class="dense-1">                  
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="pickerOf" placeholder="Of" [(ngModel)]="sortTemp.dateOf" >
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerOf></mat-datepicker>
+                          </mat-form-field>
+                    <span class="dash">—</span>
+                    <mat-form-field  >
+                        <input matInput [matDatepicker]="pickerTo" placeholder="To"  [(ngModel)]="sortTemp.dateTo">
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerTo></mat-datepicker>
+                      </mat-form-field>   
+                    </div>
+                        <mat-checkbox color="primary" (change)="changeCheckbox1()" [(indeterminate)]="indeterminate" [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}" class="filter-nsfw">Nsfw</mat-checkbox>
+                        <span class="filer-subtitle">Genres</span>
+                        <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
+                            <ng-container *ngIf="filtersArray && filtersArray.length">
+                                <mat-checkbox *cdkVirtualFor="let genre of filtersArray" name="{{genre.name}}" color="primary" (change)="onChange($event)">{{genre.name}}</mat-checkbox>
+                              </ng-container>
+                        </cdk-virtual-scroll-viewport>   
+                    <a mat-button color="primary"  (click)="find()">Find</a>          
+            </div> -->
+        </div>     
+        </div>       
+</div>

@@ -6,12 +6,10 @@ import { GlobalVariable } from '../global';
 @Injectable({
     providedIn: 'root',
   })
-export class FilterService{
+
+  export class FindTeammateService{
     constructor(private http: HttpClient) { }
+    public getTeammates(){
 
-
-    public fetchGenres(){
-        return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL+`game/genres`);    
     }
-    
-}
+  }

@@ -4,6 +4,7 @@ using GameProfile.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameProfile.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230717150359_add_to_game")]
+    partial class add_to_game
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace GameProfile.Persistence.Migrations
 
                     b.Property<int>("AchievementsCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("BackgroundImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -82,26 +81,6 @@ namespace GameProfile.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("GameSteamIds");
-                });
-
-            modelBuilder.Entity("GameProfile.Domain.Entities.GameEntites.NotGameSteamId", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SteamAppId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
-
-                    b.HasIndex("SteamAppId")
-                        .IsUnique();
-
-                    b.ToTable("NotGameSteamIds");
                 });
 
             modelBuilder.Entity("GameProfile.Domain.Entities.Profile.Profile", b =>
@@ -288,7 +267,7 @@ namespace GameProfile.Persistence.Migrations
                                 .HasForeignKey("GameId");
                         });
 
-                    b.OwnsMany("GameProfile.Domain.ValueObjects.Game.Review", "Reviews", b1 =>
+                    b.OwnsMany("GameProfile.Domain.ValueObjects.Game.Reviews", "Reviews", b1 =>
                         {
                             b1.Property<Guid>("GameId")
                                 .HasColumnType("uniqueidentifier");
@@ -299,15 +278,9 @@ namespace GameProfile.Persistence.Migrations
 
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
 
-                            b1.Property<decimal>("Score")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<int>("Site")
-                                .HasColumnType("int");
-
                             b1.HasKey("GameId", "Id");
 
-                            b1.ToTable("Review");
+                            b1.ToTable("Reviews");
 
                             b1.WithOwner()
                                 .HasForeignKey("GameId");

@@ -57,6 +57,10 @@ import { ProfileModel } from './models/profile';
       const params = new HttpParams().set('filter',filter).set('sort',sort);
       return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + 'profile?'+params,httpOptions);
     }
+    public profileId(id: string){
+      // in future
+    }
+
     public getAvatar(){
       const httpOptions = {
         withCredentials: true 
