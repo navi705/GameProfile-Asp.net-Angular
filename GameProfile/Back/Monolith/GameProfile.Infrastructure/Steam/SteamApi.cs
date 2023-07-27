@@ -31,13 +31,13 @@ namespace GameProfile.Infrastructure.Steam
                 var data = JObject.Parse(json);
 
                 var commonData = data["data"]?[appID.ToString()]?["common"];
-                if (commonData == null || commonData["type"]?.ToString() != "Game" && commonData["type"]?.ToString() != "game")
+                if (commonData == null)
                 {
                     return null;
                 }
-                else
+                if (commonData["type"]?.ToString() != "Game" && commonData["type"]?.ToString() != "game")
                 {
-                    
+                    return new SteamGameFromApi() { Name = "" };
                 }
 
 

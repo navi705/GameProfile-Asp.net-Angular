@@ -4,6 +4,7 @@ using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesBySort;
 using GameProfile.Application.CQRS.Games.Requests.GetGenres;
+using GameProfile.Application.CQRS.Games.Requests.GetTags;
 using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.WebAPI.Models;
@@ -44,6 +45,8 @@ namespace GameProfile.WebAPI.Controllers
         {
             List<string> genres = new();
             List<string> genres1 = new();
+            List<string> tags = new();
+            List<string> tagsExcluding = new();
             if (filters.Genres is not null)
             {
                  genres = filters.Genres[0].Split(',').ToList();
@@ -52,13 +55,28 @@ namespace GameProfile.WebAPI.Controllers
             {
                 genres1 = filters.GenresExcluding[0].Split(',').ToList();
             }
-            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1);
+            if(filters.Tags is not null)
+            {
+                tags = filters.Tags[0].Split(',').ToList();
+            }
+            if (filters.TagsExcluding is not null)
+            {
+                tagsExcluding = filters.TagsExcluding[0].Split(',').ToList();
+            }
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("genres")]
         public async Task<IActionResult> GetGenres()
         {
             var query = new GetGenresQuery();
+            return Ok(await Sender.Send(query));
+        }
+
+        [HttpGet("tags")]
+        public async Task<IActionResult> GetTags()
+        {
+            var query = new GetTagsQuery();
             return Ok(await Sender.Send(query));
         }
 

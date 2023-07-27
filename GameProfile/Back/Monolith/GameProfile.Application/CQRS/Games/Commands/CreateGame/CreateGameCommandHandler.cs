@@ -30,7 +30,7 @@ namespace GameProfile.Application.Games.Commands.CreateGame
                                 request.ShopsLinkBuyGame,
                                 request.Reviews,
                                 request.AchievementsCount);
-            _context.Games.Add(game);
+            await _context.Games.AddAsync(game,cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

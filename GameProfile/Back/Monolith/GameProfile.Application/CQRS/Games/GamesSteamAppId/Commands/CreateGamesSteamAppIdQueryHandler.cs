@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands
         {
             var gameSteamId = new GameSteamId(Guid.Empty, request.GameId, request.SteamAppId);
 
-            _context.GameSteamIds.Add(gameSteamId);
+            await _context.GameSteamIds.AddAsync(gameSteamId,cancellationToken);
             await _context.SaveChangesAsync(cancellationToken); 
         }
     }

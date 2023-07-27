@@ -37,6 +37,7 @@
         </button>
 
         <div class="right-wrapper" [class.show-wrapper]="showFilters">
+
             <mat-form-field class="sorting">
                 <mat-label>Choose a sorting</mat-label>
                 <mat-select [(value)]="sortForForum.Sorting">
@@ -46,33 +47,42 @@
                     <mat-option value="dateCreateAscending">Date Create Ascending</mat-option>
                     <mat-option value="dateCreateDescending">Date Create Descending</mat-option>
                 </mat-select>
+                
             </mat-form-field>
             <div class="filters">
+
                 <span class="filter-title">Filters</span>
 
                 <span class="filer-subtitle">Create Post Date</span>
+
                 <div class="dense-1">
+
                     <mat-form-field>
                         <input matInput [matDatepicker]="pickerOf" placeholder="Of"
                             [(ngModel)]="sortForForum.CreateDateOf">
                         <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
                         <mat-datepicker #pickerOf></mat-datepicker>
                     </mat-form-field>
+
                     <span class="dash">—</span>
-                    <mat-form-field>
+
+                    <mat-form-field>                     
                         <input matInput [matDatepicker]="pickerTo" placeholder="To"
                             [(ngModel)]="sortForForum.CreateDateTo">
                         <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
                         <mat-datepicker #pickerTo></mat-datepicker>
                     </mat-form-field>
+
                 </div>
                 <span class="filer-subtitle">Language</span>
+
                                 <!-- <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
                     <ng-container *ngIf="filtersArray && filtersArray.length">
                         <mat-checkbox *cdkVirtualFor="let genre of filtersArray" name="{{genre.name}}" color="primary"
                             (change)="onChange($event)">{{genre.name}}</mat-checkbox>
                     </ng-container>
                 </cdk-virtual-scroll-viewport> -->
+
                 <span class="filer-subtitle">Game</span>
 
                 <mat-checkbox color="primary" (change)="changeClosed()" [(indeterminate)]="indeterminate"
@@ -80,16 +90,21 @@
                     class="filter-closed">Closed</mat-checkbox>
 
                 <span class="filer-subtitle">Rating</span>
+
             <div class="rating-filter">
+
                 <mat-form-field>
                     <mat-label >Of</mat-label>
                     <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');" [(ngModel)]="sortForForum.RatingOf" >
                 </mat-form-field>
+
                 <span class="dash">—</span>
+
                 <mat-form-field >
                     <mat-label>To</mat-label>
                     <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');" [(ngModel)]="sortForForum.RatingTo" >
                 </mat-form-field>
+
             </div>
                 <a mat-button color="primary" (click)="find()">Find</a>
             </div>

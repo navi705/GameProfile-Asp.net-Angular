@@ -10,5 +10,7 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests
         DateTime ReleaseDateOf,
         DateTime ReleaseDateTo,
         List<string> Genres,
-        List<string> GenresExcluding) : IRequest<List<Game>>;
+        List<string> GenresExcluding,
+        List<string> Tags,
+        List<string> TagsExcluding) : IRequest<List<Game>>;
 }

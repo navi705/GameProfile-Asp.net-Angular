@@ -1,6 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Games.Requests.GetGameByName
 {
@@ -12,9 +13,9 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGameByName
             _context = context;
         }
 
-        public Task<Game?> Handle(GetGameByNameQuery request, CancellationToken cancellationToken)
+        public async Task<Game?> Handle(GetGameByNameQuery request, CancellationToken cancellationToken)
         {
-           return Task.FromResult( _context.Games.Where(x => x.Title == request.Name).FirstOrDefault());
+            return await _context.Games.AsNoTracking().FirstOrDefaultAsync(x => x.Title == request.Name);
         }
     }
 }

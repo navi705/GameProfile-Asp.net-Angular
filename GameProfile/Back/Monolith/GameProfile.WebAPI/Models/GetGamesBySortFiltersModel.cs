@@ -14,6 +14,11 @@
 
         public List<string>? Genres { get; set; } 
 
-        public List<string>? GenresExcluding { get; set; } 
+        public List<string>? GenresExcluding { get; set; }
+
+        public List<string>? Tags { get; set; }
+
+        public List<string>? TagsExcluding { get; set; }
+
     }
 }

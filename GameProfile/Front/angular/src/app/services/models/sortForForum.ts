@@ -6,4 +6,8 @@ export class SortForForum{
     Closed?: string;
     RatingOf?: number;
     RatingTo?: number;
+    Language?: string[];
+    LanguageExcluding?: string[];
+    Game?:string[];
+    GameExcluding?:string[];
 }
