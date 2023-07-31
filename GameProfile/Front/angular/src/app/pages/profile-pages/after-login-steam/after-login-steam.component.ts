@@ -35,7 +35,6 @@ export class AfterLoginSteamComponent {
         catchError(error => {
           if (error.status === 400) {
             this.isNotLoading = true;
-            console.log("xui")
             this.error = 'Check your profile settings. Your profile is private or your game details private.';
           } 
           return of(null);

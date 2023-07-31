@@ -12,9 +12,10 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 const MaterialComponents = [MatToolbarModule, MatCardModule,MatButtonModule,MatInputModule,MatCheckboxModule,MatButtonToggleModule,MatSelectModule,MatDatepickerModule
-,MatNativeDateModule,MatAutocompleteModule,MatIconModule,ScrollingModule,MatProgressSpinnerModule];
+,MatNativeDateModule,MatAutocompleteModule,MatIconModule,ScrollingModule,MatProgressSpinnerModule,MatSnackBarModule];
 
 @NgModule({
 imports: [MaterialComponents],

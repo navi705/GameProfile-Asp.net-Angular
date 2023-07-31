@@ -58,10 +58,39 @@
                     </ng-container>
                 </cdk-virtual-scroll-viewport>
 
-                
+                <span class="filer-subtitle">Tags</span>
 
-                <cdk-virtual-scroll-viewport itemSize="auto" class="list-tags">
+                <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
+                    <ng-container *ngIf="tagsArray && tagsArray.length">
+                        <mat-checkbox *cdkVirtualFor="let genre of tagsArray" name="{{genre.name}}" color="primary"
+                            (change)="onChangeTags($event)">{{genre.name}}</mat-checkbox>
+                    </ng-container>
+                </cdk-virtual-scroll-viewport>
 
+                <span class="filer-subtitle">Rate</span>
+
+                <div class="rate">
+                    <mat-form-field>
+                        <mat-label>Of</mat-label>
+                        <input matInput type="number" min="0" max="10" oninput="validity.valid||(value='');"
+                            [(ngModel)]="sortFilters.RateOf">
+                    </mat-form-field>
+
+                    <span class="dash">—</span>
+
+                    <mat-form-field>
+                        <mat-label>To</mat-label>
+                        <input matInput type="number" min="0" max="10" oninput="validity.valid||(value=''); "
+                            [(ngModel)]="sortFilters.RateTo">
+                    </mat-form-field>
+                </div>
+                  
+                <span class="filer-subtitle">Status Game Progressions</span>
+                <cdk-virtual-scroll-viewport itemSize="auto" class="list-status">
+                    <ng-container *ngIf="gamesStatusArray && gamesStatusArray.length">
+                        <mat-checkbox *cdkVirtualFor="let status of gamesStatusArray" name="{{status.number}}" color="primary"
+                            (change)="onChangeStatusProgressions($event)">{{gameStatus[status.number]}}</mat-checkbox>
+                    </ng-container>
                 </cdk-virtual-scroll-viewport>
 
                 <a mat-button color="primary" (click)="find()">Find</a>

@@ -12,5 +12,7 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests
         List<string> Genres,
         List<string> GenresExcluding,
         List<string> Tags,
-        List<string> TagsExcluding) : IRequest<List<Game>>;
+        List<string> TagsExcluding,
+        decimal? RateOf,
+        decimal? RateTo) : IRequest<List<Game>>;
 }

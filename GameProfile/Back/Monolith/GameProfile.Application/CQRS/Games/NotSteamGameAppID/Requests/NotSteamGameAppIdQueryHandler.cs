@@ -16,15 +16,14 @@ namespace GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests
         public async Task<bool> Handle(NotSteamGameAppIdQuery request, CancellationToken cancellationToken)
         {
             var app = await _context.NotGameSteamIds.AsNoTracking().FirstOrDefaultAsync(x=>x.SteamAppId == request.AppId,cancellationToken);
-            if (app == null)
-            {
-                return true;
-            }
-            else
+            if (app is null)
             {
                 return false;
             }
-           
+            else
+            {
+                return true;
+            }         
         }
     }
 }

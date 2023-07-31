@@ -12,6 +12,7 @@ namespace GameProfile.Persistence.EntityConfigurations
             builder.Property(game => game.Id).ValueGeneratedOnAdd();
             builder.HasIndex(game => game.Id).IsUnique();
 
+            builder.Property(x => x.Title).UseCollation("Latin1_General_100_CS_AS_SC");
             builder.OwnsMany(game => game.Screenshots);
             builder.OwnsMany(game => game.Genres);
             builder.OwnsMany(game => game.Developers);

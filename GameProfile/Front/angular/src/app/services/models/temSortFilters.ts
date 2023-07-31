@@ -14,3 +14,12 @@ export class GenresCheckBox{
         this.click = click;
       }
 }
+
+export class EnumsCheckBox{
+    public number?:number;
+    public click:number = 0;
+    constructor(number?: number, click: number = 0) {
+        this.number = number;
+        this.click = click;
+      }
+}

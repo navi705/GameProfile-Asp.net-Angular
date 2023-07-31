@@ -1,3 +1,4 @@
+import { StatusGameProgressions } from "./game";
 
 export class SotrtFilter{
     Sorting?: string;
@@ -7,4 +8,10 @@ export class SotrtFilter{
     Nsfw?: string;
     Genres?: string[];
     GenresExcluding? : string[] ;
+    Tags?: string[];
+    TagsExcluding? : string[] ;
+    RateOf?: number;
+    RateTo?: number;
+    StatusGameProgressions?:StatusGameProgressions[];
+    StatusGameProgressionsExcluding?:StatusGameProgressions[];
 }

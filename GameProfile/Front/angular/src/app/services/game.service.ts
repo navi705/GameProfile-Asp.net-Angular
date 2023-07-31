@@ -36,7 +36,7 @@ import { SotrtFilter } from './models/sortFilters';
       params = params.append(key, sortFilters[key]);
       });
   
-        //console.log(GlobalVariable.BASE_API_URL + 'game/games?' +params);
+        console.log(GlobalVariable.BASE_API_URL + 'game/games?' +params);
         return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games?' +params);   
       }     
     public fecthGameByString(title:string){

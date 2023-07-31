@@ -67,18 +67,31 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
 
             if (request.TagsExcluding is not null && request.TagsExcluding.Count > 0)
             {
-                query = query.Where(g => g.Genres.Count(gg => request.TagsExcluding.Contains(gg.GameString)) == 0);
+                query = query.Where(g => g.Tags.Count(gg => request.TagsExcluding.Contains(gg.GameString)) == 0);
             }
             if (request.Tags is not null && request.Tags.Count > 0)
             {
                 query = query.Where(g => g.Tags.Count(gg => request.Tags.Contains(gg.GameString)) == request.Tags.Count());
             }
 
+            if(request.RateOf is not null && request.RateTo is not null)
+            {
+                query = query.Where(x => x.Reviews.Average(x=>x.Score) >= request.RateOf && x.Reviews.Average(x => x.Score) <= request.RateTo);
+            }
+            else if(request.RateOf is not null && request.RateTo is null)
+            {
+                query = query.Where(x => x.Reviews.Average(x => x.Score) >= request.RateOf );
+            }
+            else if (request.RateOf is  null && request.RateTo is not null)
+            {
+                query = query.Where(x => x.Reviews.Average(x => x.Score) <= request.RateTo);
+            }
+
 
 
             int skipGame = request.Page * 50;
             query = query.Skip(skipGame).Take(50);
-            var games = await query.Select(x=>new Game(x.Id,x.Title,x.ReleaseDate,x.HeaderImage,null,x.Nsfw,null,x.Developers,x.Publishers,x.Genres,x.Tags,null,null,x.Reviews,0)).ToListAsync(cancellationToken);
+            var games = await query.Select(x=>new Game(x.Id,x.Title,x.ReleaseDate,x.HeaderImage,null,x.Nsfw,null,x.Developers,x.Publishers,x.Genres,null,null,null,x.Reviews,0)).ToListAsync(cancellationToken);
 
             return games;
         }

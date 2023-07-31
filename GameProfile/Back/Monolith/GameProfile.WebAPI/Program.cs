@@ -7,13 +7,9 @@ using MediatR;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
 using GameProfile.Domain.ValueObjects.Game;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using GameProfile.Domain.Enums.Game;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
-using GameProfile.Infrastructure.Steam.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Command.Create;
 
@@ -69,7 +65,7 @@ app.MapPut("minimaApi", async (IMediator mediator, ISteamApi steamApi) =>
         }
         try
         {
-            var gameCmd = await steamApi.GetgameInfoByCmd(513860);
+            var gameCmd = await steamApi.GetgameInfoByCmd(item.appid);
             if (gameCmd == null)
             {
                 Debug.WriteLine($"{item.appid} null iteration {i}");
@@ -83,7 +79,7 @@ app.MapPut("minimaApi", async (IMediator mediator, ISteamApi steamApi) =>
                 i++;
                 continue;
             }
-            var gameStore = await steamApi.GetGameFromStoreApi(513860);
+            var gameStore = await steamApi.GetGameFromStoreApi(item.appid);
             if (gameStore is null)
             {
                 Debug.WriteLine($"{item.appid} null iteration {i}");
@@ -178,11 +174,6 @@ app.MapPut("AddGameFromJson", async (IMediator mediator) =>
     int i = 0;
     foreach(var game in gamesFromJson)
     {
-        //i++;
-        //if(i< 27410)
-        //{
-        //    continue;
-        //}
         try {
             int startIndex = game.Screenshots.First().Uri.ToString().IndexOf("/apps/") + 6;
             int endIndex = game.Screenshots.First().Uri.ToString().IndexOf("/", startIndex);

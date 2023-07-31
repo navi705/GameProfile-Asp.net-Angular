@@ -63,7 +63,7 @@ namespace GameProfile.WebAPI.Controllers
             {
                 tagsExcluding = filters.TagsExcluding[0].Split(',').ToList();
             }
-            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding);
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,filters.RateOf,filters.RateTo);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("genres")]

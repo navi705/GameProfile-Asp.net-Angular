@@ -14,7 +14,9 @@ using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
-using GameProfile.Application.Games.Commands.CreateGame;
+using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
+using GameProfile.WebAPI.ApiCompilation;
+using static GameProfile.Infrastructure.Steam.Models.ListGames;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -23,11 +25,13 @@ namespace GameProfile.WebAPI.Controllers
         private readonly ICacheService _cacheService;
         private readonly ILogger<AuthenticationController> _logger;
         private readonly ISteamApi _steamApi;
+        private readonly SteamApiCompilation _steamApiCompilation;
         public AuthenticationController(ISender sender, ICacheService cacheService, ILogger<AuthenticationController> logger, ISteamApi steamApi) : base(sender)
         {
             _cacheService = cacheService;
             _logger = logger;
             _steamApi = steamApi;
+            _steamApiCompilation = new(sender,steamApi);
         }
 
         [AllowAnonymous]
@@ -53,6 +57,7 @@ namespace GameProfile.WebAPI.Controllers
 
             var query = new GetProfileQuery(idUser);
             var profile = await Sender.Send(query);
+
             if (profile is null)
             {
                 var query2 = new CreateProfileCommand(userInfo[1], "", idUser);
@@ -61,21 +66,25 @@ namespace GameProfile.WebAPI.Controllers
                 _logger.LogInformation($"Profile is added Id-{idUser} NickName-{userInfo[1]}");
                 foreach (var item in games.games)
                 {
-                    var query3 = new GetGamesIdBySteamIdQuery(item.appid);
-                    var res = await Sender.Send(query3);
-                    if (res is null)
+                    if(item.appid == 115320)
                     {
-                        var game = await _steamApi.GetgameInfoByCmd(item.appid);
-                        if (game is null)
-                        {
-                            _logger.LogInformation($"Game from Steam api none {item.appid}");
-                            continue;
-                        }
-                        //await Sender.Send(new CreateGameCommand(game.Name, game.ReleaseTime, game.HeaderImg, game.Nsfw, "", game.Genres, game.Publishers, game.Developers, null, null, 0));
-                        var query6 = await Sender.Send(new GetGameByNameQuery(game.Name));
-                        await Sender.Send(new CreateGamesSteamAppIdQuery(query6.Id, item.appid));
-                        res = await Sender.Send(query3);
+                        _logger.LogInformation("aboba");
                     }
+                    Guid gameId = Guid.Empty;
+                    var checkHaveSteamId = await Sender.Send(new GetGamesIdBySteamIdQuery(item.appid));
+                    if (checkHaveSteamId is null){
+                        gameId = await _steamApiCompilation.AddGame(item.appid);
+                    }
+                    else
+                    {
+                        gameId = checkHaveSteamId.GameId;
+                    }
+                    
+                    if(gameId == Guid.Empty)
+                    {
+                        continue;
+                    }
+
                     var statusGame = StatusGameProgressions.Playing;
                     if (item.rtime_last_played == 0)
                     {
@@ -85,10 +94,11 @@ namespace GameProfile.WebAPI.Controllers
                     {
                         statusGame = StatusGameProgressions.Dropped;
                     }
-                    await Sender.Send(new CreateProfileHasGameCommand(profile.Id, res.GameId, statusGame, item.playtime_forever));
-                    _logger.LogInformation($"Add game to profile {userInfo[1]} {res.GameId}");
+                    await Sender.Send(new CreateProfileHasGameCommand(profile.Id, gameId, statusGame, item.playtime_forever));
+                    _logger.LogInformation($"Add game to profile {userInfo[1]} {gameId}");
                 }
             }
+
             profile = await Sender.Send(query);
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };
             ClaimsIdentity claimsIdentity = new(claims, "Cookies");

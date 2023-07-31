@@ -2,7 +2,7 @@ import { Component} from '@angular/core';
 import {Observable} from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 import { Game } from 'src/app/services/models/game';
-import { of } from 'rxjs';
+import { of, catchError } from 'rxjs';
 import { ProfileService } from 'src/app/services/profile.service';
 
 @Component({
@@ -24,7 +24,26 @@ import { ProfileService } from 'src/app/services/profile.service';
     }
 
     ngOnInit(): void {     
-      this.profileService.getAvatar().subscribe(response=> this.image = response);
+      //this.profileService.getAvatar().subscribe(response=> this.image = response);
+
+      if(localStorage.getItem('auth') != 'false' ){
+
+        this.profileService.getAvatar().pipe(
+          catchError(error => {
+            if (error.status === 401) {
+              localStorage.setItem('auth', 'false');
+            }
+            return of(null);
+          })
+        ).subscribe(response => {
+          if (response) {
+          this.image = response;
+          localStorage.setItem('auth', 'true');
+          }
+        });
+
+      }
+
     }
     onSearchChange(): void {  
       if(this.searchString == ""){

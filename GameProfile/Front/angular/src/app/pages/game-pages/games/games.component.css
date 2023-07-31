@@ -87,6 +87,14 @@
   display: none;
 }
 
+.rate{
+  margin-left: auto;
+  margin-right: auto;
+}
+.list-status{
+  height: 65px;
+}
+
 @media (max-width: 650px) {
   .burger-filter-button {
     background-color: #00acc1;

@@ -23,3 +23,8 @@ a{
 a:hover{
     color: #00acc1;
 }
+.mat-mdc-snack-bar-container.error-snackbar {
+    --mdc-snackbar-container-color: #121212 !important;
+    --mat-mdc-snack-bar-button-color: #1de9b6 !important;
+    --mdc-snackbar-supporting-text-color: red !important;
+  }

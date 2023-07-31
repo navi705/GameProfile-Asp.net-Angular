@@ -1,4 +1,8 @@
-﻿namespace GameProfile.WebAPI.Models
+﻿
+
+using GameProfile.Domain.Enums.Profile;
+
+namespace GameProfile.WebAPI.Models
 {
     public class GetGamesBySortFiltersModel
     {
@@ -19,6 +23,14 @@
         public List<string>? Tags { get; set; }
 
         public List<string>? TagsExcluding { get; set; }
+
+        public decimal? RateOf { get; set; }
+
+        public decimal? RateTo { get; set; }
+
+        public List<StatusGameProgressions>? StatusGameProgressions { get; set; }
+
+        public List<StatusGameProgressions>? StatusGameProgressionsExcluding { get; set; }
 
     }
 }

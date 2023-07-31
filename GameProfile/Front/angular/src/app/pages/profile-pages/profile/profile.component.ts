@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { GameList, ProfileModel } from 'src/app/services/models/profile';
 import { ProfileService } from 'src/app/services/profile.service';
+import { of, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -36,7 +37,23 @@ export class ProfileComponent {
   constructor(private profileService: ProfileService) {
   }
   ngOnInit(): void {
-    this.profileService.profile("",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length;});
+    // this.profileService.profile("",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; if (response) {
+    //   localStorage.setItem('auth', 'true');
+    //   }
+    //   else
+    //   {localStorage.setItem('auth','false');
+    //     window.location.href = '/';}
+    // });
+    this.profileService.profile("",this.sort).pipe(
+      catchError(error => {
+        if (error.status === 401 || error.status === 404) {
+          localStorage.setItem('auth', 'false');
+          window.location.href = '/';}
+        return of(null);
+      })
+    ).subscribe(response => {  if (response) { this.profile = response;this.gamesCount = this.profile.gameList.length;
+      localStorage.setItem('auth', 'true');}});
+
 
   }
   public updateGame(game: GameList) {
