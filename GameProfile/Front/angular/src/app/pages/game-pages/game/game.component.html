@@ -1,13 +1,24 @@
-<!-- <div class="game-container">
-<div class="game-shared">
-    <img src="{{game?.headerImage}}" >
-    <div class="game-description">
-        <h2>{{game?.title}}</h2>
-        <p>{{game?.releaseDate}}</p>
-        <p>Genre: {{game?.genres}}</p>
-        <p>{{game?.description}}</p>
-        <p>Achievements count: {{game?.achievementsCount}}</p>
-    </div> 
-</div>
+<div class="container-page" [style.background-image]="'url(' + game?.backgroundImage + ')'">
+    <div class="game-container">
+        <div class="game-shared">
 
-</div> -->
+            <div class="header-image">
+                <img src="{{game?.headerImage}}">
+            </div>
+           
+            <div class="game-description">
+                <h2>{{game?.title}}</h2>
+                <span>Avarage Rating: {{averageScore()}}</span>
+                <span>{{game?.releaseDate.slice(0,-9)}}</span>
+                <span>Reviews: <a *ngFor="let item of game.reviews">{{item.score}} </a></span>
+                <span>Genres: <span *ngFor="let item of game.genres">{{item.gameString}} </span></span>
+                <p>Tags: <span *ngFor="let item of game.tags">{{item.gameString}} </span></p>
+                <p>{{game?.description}}</p>
+                <p>Achievements count: {{game?.achievementsCount}}</p>
+                <p>Nsfw: {{game?.nsfw}}</p>
+                <p>Links: <a *ngFor="let item of game.shopsLinkBuyGame">{{item.uri}} </a></p>
+            </div>
+            
+        </div>       
+    </div>
+</div>
