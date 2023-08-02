@@ -3,7 +3,7 @@ using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
+namespace GameProfile.Application.CQRS.Games.Requests.GetGames
 {
     public sealed class GetGamesQueryHandler : IRequestHandler<GetGamesQuery, List<Game>>
     {
@@ -74,24 +74,31 @@ namespace GameProfile.Application.CQRS.Games.Commands.Requests.GetGames
                 query = query.Where(g => g.Tags.Count(gg => request.Tags.Contains(gg.GameString)) == request.Tags.Count());
             }
 
-            if(request.RateOf is not null && request.RateTo is not null)
+            if (request.RateOf is not null && request.RateTo is not null)
             {
-                query = query.Where(x => x.Reviews.Average(x=>x.Score) >= request.RateOf && x.Reviews.Average(x => x.Score) <= request.RateTo);
+                query = query.Where(x => x.Reviews.Average(x => x.Score) >= request.RateOf && x.Reviews.Average(x => x.Score) <= request.RateTo);
             }
-            else if(request.RateOf is not null && request.RateTo is null)
+            else if (request.RateOf is not null && request.RateTo is null)
             {
-                query = query.Where(x => x.Reviews.Average(x => x.Score) >= request.RateOf );
+                query = query.Where(x => x.Reviews.Average(x => x.Score) >= request.RateOf);
             }
-            else if (request.RateOf is  null && request.RateTo is not null)
+            else if (request.RateOf is null && request.RateTo is not null)
             {
                 query = query.Where(x => x.Reviews.Average(x => x.Score) <= request.RateTo);
             }
 
-
+            if (request.StatusGame is not null && request.StatusGame.Count > 0)
+            {
+                query = query.Where(g => g.ProfileHasGames.Any(p => request.StatusGame.Contains(p.StatusGame)));
+            }
+            if (request.StatusGameExcluding is not null && request.StatusGameExcluding.Count > 0)
+            {
+                query = query.Where(g => !g.ProfileHasGames.Any(p => request.StatusGameExcluding.Contains(p.StatusGame)));
+            }
 
             int skipGame = request.Page * 50;
             query = query.Skip(skipGame).Take(50);
-            var games = await query.Select(x=>new Game(x.Id,x.Title,x.ReleaseDate,x.HeaderImage,null,x.Nsfw,null,x.Developers,x.Publishers,x.Genres,null,null,null,x.Reviews,0)).ToListAsync(cancellationToken);
+            var games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
 
             return games;
         }

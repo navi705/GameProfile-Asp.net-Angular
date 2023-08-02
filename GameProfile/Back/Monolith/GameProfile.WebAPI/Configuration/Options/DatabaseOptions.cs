@@ -1,4 +1,4 @@
-﻿namespace GameProfile.Persistence.Options
+﻿namespace GameProfile.WebAPI.Configuration.Options
 {
     public class DatabaseOptions
     {

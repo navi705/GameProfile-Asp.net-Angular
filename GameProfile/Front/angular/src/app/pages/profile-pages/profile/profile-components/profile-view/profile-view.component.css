@@ -47,6 +47,10 @@
 .active{
     color: #00acc1;
 }
+.game-list{
+  font-size: 20px;
+  text-align: center;
+}
 @media (max-width: 650px) 
 {
         .container-page {

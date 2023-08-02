@@ -1,4 +1,5 @@
-﻿using GameProfile.Domain.Entities.Profile;
+﻿using GameProfile.Domain.Entities.Forum;
+using GameProfile.Domain.Entities.ProfileEntites;
 using GameProfile.Domain.ValueObjects.Game;
 
 namespace GameProfile.Domain.Entities.GameEntites
@@ -79,6 +80,9 @@ namespace GameProfile.Domain.Entities.GameEntites
         public ICollection<StringForGame>? Tags { get; private set; }
         //reference property
         public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
+
+        // reference property
+        public ICollection<Post> Posts { get; set; }
 
         public int AchievementsCount { get; private set; }
     }

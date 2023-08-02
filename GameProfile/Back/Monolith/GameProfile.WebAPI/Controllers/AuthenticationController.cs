@@ -66,10 +66,10 @@ namespace GameProfile.WebAPI.Controllers
                 _logger.LogInformation($"Profile is added Id-{idUser} NickName-{userInfo[1]}");
                 foreach (var item in games.games)
                 {
-                    if(item.appid == 115320)
-                    {
-                        _logger.LogInformation("aboba");
-                    }
+                    //if(item.appid == 115320)
+                    //{
+                    //    _logger.LogInformation("aboba");
+                    //}
                     Guid gameId = Guid.Empty;
                     var checkHaveSteamId = await Sender.Send(new GetGamesIdBySteamIdQuery(item.appid));
                     if (checkHaveSteamId is null){

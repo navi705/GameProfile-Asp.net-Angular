@@ -1,5 +1,5 @@
 ﻿using GameProfile.Application.Data;
-using GameProfile.Domain.Entities.Profile;
+using GameProfile.Domain.Entities.ProfileEntites;
 using GameProfile.Domain.ValueObjects;
 using GameProfile.Domain.ValueObjects.Profile;
 using MediatR;

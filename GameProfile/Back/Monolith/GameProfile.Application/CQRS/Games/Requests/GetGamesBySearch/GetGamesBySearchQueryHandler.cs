@@ -3,7 +3,7 @@ using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameProfile.Application.CQRS.Games.Requests.GetGamesBySort
+namespace GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch
 {
     public sealed record class GetGamesBySearchQueryHandler : IRequestHandler<GetGamesBySearch, List<Game>>
     {

@@ -1,5 +1,5 @@
 ﻿using GameProfile.Application.Data;
-using GameProfile.Domain.Entities.Profile;
+using GameProfile.Domain.Entities.ProfileEntites;
 using MediatR;
 
 namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById

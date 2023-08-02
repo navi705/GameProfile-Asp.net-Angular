@@ -1,8 +1,6 @@
-using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Infrastructure.Steam;
 using GameProfile.Infrastructure.Shared;
-using GameProfile.Presentation.Configuration;
 using MediatR;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
@@ -12,6 +10,8 @@ using System.Diagnostics;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Command.Create;
+using GameProfile.WebAPI.Configuration;
+using GameProfile.Application.CQRS.Games.Commands.CreateGame;
 
 var builder = WebApplication.CreateBuilder(args);
 

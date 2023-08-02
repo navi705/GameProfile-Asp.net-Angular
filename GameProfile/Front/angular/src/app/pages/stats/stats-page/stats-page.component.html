@@ -12,7 +12,7 @@
             <tbody>
               <tr *ngFor="let stat of stats; let i = index">
                 <td>{{ i + 1 }}</td>
-                <td>{{ stat.profileName.value }}</td>
+                <td><a  href="profile/{{stat.id}}">{{ stat.profileName.value }}</a></td>
                 <td>{{ stat.totalHours }}</td>
                 <td>{{ stat.countGames }}</td>
               </tr>

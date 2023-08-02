@@ -1,7 +1,8 @@
-﻿using GameProfile.Domain.ValueObjects;
+﻿using GameProfile.Domain.Entities.Forum;
+using GameProfile.Domain.ValueObjects;
 using GameProfile.Domain.ValueObjects.Profile;
 
-namespace GameProfile.Domain.Entities.Profile
+namespace GameProfile.Domain.Entities.ProfileEntites
 {
     public sealed class Profile : Entity
     {
@@ -28,8 +29,13 @@ namespace GameProfile.Domain.Entities.Profile
         public Description Description { get; private set; }
 
         public ICollection<StringForEntity> SteamIds { get; private set; }
-        // references property
+        //refrences properties ef core
         public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
+        public ICollection<Post> Posts { get; set; }
 
+        public ICollection<MessagePost> Messages { get; set; }
+
+        public ICollection<Replie> Replies { get; set; }
+        
     }
 }

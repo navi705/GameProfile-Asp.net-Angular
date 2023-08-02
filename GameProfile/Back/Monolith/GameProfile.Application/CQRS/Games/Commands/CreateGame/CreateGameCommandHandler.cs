@@ -2,7 +2,7 @@
 using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
 
-namespace GameProfile.Application.Games.Commands.CreateGame
+namespace GameProfile.Application.CQRS.Games.Commands.CreateGame
 {
     public sealed class CreateGameCommandHandler : IRequestHandler<CreateGameCommand>
     {
@@ -30,7 +30,7 @@ namespace GameProfile.Application.Games.Commands.CreateGame
                                 request.ShopsLinkBuyGame,
                                 request.Reviews,
                                 request.AchievementsCount);
-            await _context.Games.AddAsync(game,cancellationToken);
+            await _context.Games.AddAsync(game, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

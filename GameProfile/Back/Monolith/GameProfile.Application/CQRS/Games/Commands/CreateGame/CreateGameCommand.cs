@@ -1,7 +1,7 @@
 ﻿using GameProfile.Domain.ValueObjects.Game;
 using MediatR;
 
-namespace GameProfile.Application.Games.Commands.CreateGame
+namespace GameProfile.Application.CQRS.Games.Commands.CreateGame
 {
     public sealed record class CreateGameCommand(string Title,
                                                  DateTime ReleaseDate,

@@ -1,12 +1,13 @@
 ﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
-using GameProfile.Application.CQRS.Games.Commands.Requests;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
+using GameProfile.Application.CQRS.Games.Requests.GetGameById;
+using GameProfile.Application.CQRS.Games.Requests.GetGames;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev;
-using GameProfile.Application.CQRS.Games.Requests.GetGamesBySort;
+using GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch;
 using GameProfile.Application.CQRS.Games.Requests.GetGenres;
 using GameProfile.Application.CQRS.Games.Requests.GetTags;
-using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Entities.GameEntites;
+using GameProfile.Domain.Enums.Profile;
 using GameProfile.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,8 @@ namespace GameProfile.WebAPI.Controllers
             List<string> genres1 = new();
             List<string> tags = new();
             List<string> tagsExcluding = new();
+            List<StatusGameProgressions> statusGame = new();
+            List<StatusGameProgressions> statusGameExcluding = new();
             if (filters.Genres is not null)
             {
                  genres = filters.Genres[0].Split(',').ToList();
@@ -63,7 +66,15 @@ namespace GameProfile.WebAPI.Controllers
             {
                 tagsExcluding = filters.TagsExcluding[0].Split(',').ToList();
             }
-            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,filters.RateOf,filters.RateTo);
+            if(filters.StatusGameProgressions is not null && filters.StatusGameProgressions != "")
+            {
+                statusGame = filters.StatusGameProgressions.Split(',').Select(x => (StatusGameProgressions)Enum.Parse(typeof(StatusGameProgressions), x.Trim())).ToList();
+            }
+            if (filters.StatusGameProgressionsExcluding is not null && filters.StatusGameProgressionsExcluding != "")
+            {
+                statusGameExcluding = filters.StatusGameProgressionsExcluding.Split(',').Select(x => (StatusGameProgressions)Enum.Parse(typeof(StatusGameProgressions), x.Trim())).ToList();
+            }
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,statusGame,statusGameExcluding,filters.RateOf,filters.RateTo);
             return Ok(await Sender.Send(query));
         }
         [HttpGet("genres")]

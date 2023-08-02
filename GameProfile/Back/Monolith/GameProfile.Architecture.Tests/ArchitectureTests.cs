@@ -1,7 +1,7 @@
 using NetArchTest.Rules;
 using FluentAssertions;
 
-namespace GameProfile.Architecture.Tests
+namespace GameProfile.Unit.Tests
 {
     public class ArchitectureTests
     {

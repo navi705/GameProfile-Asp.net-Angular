@@ -3,12 +3,12 @@ using GameProfile.Application.Data;
 using GameProfile.Infrastructure.Steam;
 using GameProfile.Persistence;
 using GameProfile.Persistence.Caching;
-using GameProfile.Persistence.Options;
+using GameProfile.WebAPI.Configuration.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace GameProfile.Presentation.Configuration
+namespace GameProfile.WebAPI.Configuration
 {
     public static class DependencyInjection
     {
@@ -43,7 +43,7 @@ namespace GameProfile.Presentation.Configuration
 
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(GameProfile.Application.AssemblyReference.Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Application.AssemblyReference.Assembly));
             return services;
         }
 

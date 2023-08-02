@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProfileService } from 'src/app/services/profile.service';
 import { GameList, ProfileModel } from 'src/app/services/models/profile';
+import { filter } from 'rxjs';
+import { StatusGameProgressions } from 'src/app/services/models/game';
 
 @Component({
   selector: 'app-profile-view',
@@ -14,31 +16,32 @@ export class ProfileViewComponent {
   gamesCount:number = 0;
   selectedState: string = 'all';
   sort:string = "hoursDesc";
+  gameStatus = StatusGameProgressions;
 
   constructor(private route: ActivatedRoute,private profileService: ProfileService) { }
   
   selectState(state: string) {
     this.selectedState = state;
     if(this.selectedState == 'all'){
-      this.profileService.profile("",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
+      this.profileService.profileId(this.id,"",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'playing'){
-      this.profileService.profile("1",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
+      this.profileService.profileId(this.id,"1",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'completed'){
-      this.profileService.profile("2",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
+      this.profileService.profileId(this.id,"2",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'dropped'){
-      this.profileService.profile("3",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
+      this.profileService.profileId(this.id,"3",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
     }
     if(this.selectedState == 'planned'){
-      this.profileService.profile("4",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
+      this.profileService.profileId(this.id,"4",this.sort).subscribe(response => { this.profile = response;this.gamesCount = this.profile.gameList.length; });
     }
   }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log(this.id)
+    this.profileService.profileId(this.id,this.selectedState,this.sort).subscribe(response => {this.profile = response; this.gamesCount = this.profile.gameList.length;});
   }
 
 }

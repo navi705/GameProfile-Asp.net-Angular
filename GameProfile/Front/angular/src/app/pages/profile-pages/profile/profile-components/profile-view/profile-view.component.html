@@ -1,35 +1,39 @@
 <div class="container-page">
     <div class="profile-info-container">
-        <img src="https://avatars.akamai.steamstatic.com/15ac8351b9d83aba0f4dcd4d38a22108b0534ea0_full.jpg">
+        <img src="{{profile.avatar}}">
         <div class="profile-text-info">
-            <span class="nickname">KABAN TRAHAT</span>
-            <span>ЭТО ПОЛЕ для Описания профиля да это админ все я руси KABAN TRAHAT</span>
+            <span class="nickname">{{profile.nickName}}</span>
+            <span>{{profile.description}}</span>
         </div>
     </div>
-    <span>У меня 1000 игр</span>
+    <span>{{gamesCount}}</span>
     <div class="game-menu">
         <button mat-button [ngClass]="{ 'active': selectedState === 'all' }" (click)="selectState('all')">All</button>
-        <button mat-button [ngClass]="{ 'active': selectedState === 'playing' }" (click)="selectState('playing')">Playing</button>
-        <button mat-button [ngClass]="{ 'active': selectedState === 'completed' }" (click)="selectState('completed')">Completed</button>
-        <button mat-button [ngClass]="{ 'active': selectedState === 'dropped' }" (click)="selectState('dropped')">Dropped</button>
-        <button mat-button [ngClass]="{ 'active': selectedState === 'planned' }" (click)="selectState('planned')">Planned</button>
-      </div>
-      <div class="sort">
-        <mat-form-field class="sort" >
-        <mat-label>Sorting</mat-label>
-        <mat-select [(ngModel)]="sort" (selectionChange)="selectState(selectedState)">
-            <mat-option [value]="'titleAtoZ'">Title A to Z</mat-option>
-            <mat-option [value]="'titleZtoA'">Title Z to A </mat-option>
-            <mat-option [value]="'hoursAsc'"> Hours Ascending"</mat-option>
-            <mat-option [value]="'hoursDesc'">Hours Descending</mat-option>
-        </mat-select>
-    </mat-form-field>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'playing' }"
+            (click)="selectState('playing')">Playing</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'completed' }"
+            (click)="selectState('completed')">Completed</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'dropped' }"
+            (click)="selectState('dropped')">Dropped</button>
+        <button mat-button [ngClass]="{ 'active': selectedState === 'planned' }"
+            (click)="selectState('planned')">Planned</button>
+    </div>
+    <div class="sort">
+        <mat-form-field class="sort">
+            <mat-label>Sorting</mat-label>
+            <mat-select [(ngModel)]="sort" (selectionChange)="selectState(selectedState)">
+                <mat-option [value]="'titleAtoZ'">Title A to Z</mat-option>
+                <mat-option [value]="'titleZtoA'">Title Z to A </mat-option>
+                <mat-option [value]="'hoursAsc'"> Hours Ascending"</mat-option>
+                <mat-option [value]="'hoursDesc'">Hours Descending</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div class="timeAll">
-        <span>Total time in yours games: 5000 hours</span>
+        <span>Total time in games:{{profile.totalHours}} hours</span>
     </div>
 
-    <!-- <div class="game-list">
+    <div class="game-list">
         <div *ngFor="let game of profile.gameList">
             <div class="game-container">
                 <a href="game?id={{game.id}}"
@@ -40,20 +44,9 @@
 
                 <img src="{{game.headerImage}}" [height]="115" [width]="250" class="game-image" />
 
-                <mat-form-field class="sorting">
-                    <mat-label >hours</mat-label>
-                    <input matInput type="number" min="0" max="876000" oninput="validity.valid||(value='');" [(ngModel)]="game.hours" >
-                </mat-form-field>
-                <mat-form-field class="sorting">
-                    <mat-label  >Status</mat-label>
-                    <mat-select [(value)]="game.statusGame">
-                        <mat-option [value]="1">Playing</mat-option>
-                        <mat-option [value]="2">Completed</mat-option>
-                        <mat-option [value]="3">Dropped</mat-option>
-                        <mat-option [value]="4">Planned</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <span>{{game.hours}}</span>
+                <span>{{gameStatus[game.statusGame]}}</span>
             </div>
         </div>
-    </div> -->
+    </div>
 </div>

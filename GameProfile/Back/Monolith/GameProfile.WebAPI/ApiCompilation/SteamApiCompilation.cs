@@ -1,9 +1,9 @@
-﻿using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
+﻿using GameProfile.Application.CQRS.Games.Commands.CreateGame;
+using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Command.Create;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
-using GameProfile.Application.Games.Commands.CreateGame;
 using GameProfile.Domain.Enums.Game;
 using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Shared;

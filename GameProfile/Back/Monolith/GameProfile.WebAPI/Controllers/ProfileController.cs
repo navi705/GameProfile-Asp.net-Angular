@@ -50,6 +50,33 @@ namespace GameProfile.WebAPI.Controllers
 
             return Ok(answer);
         }
+        [AllowAnonymous]
+        [HttpGet("profile/{profileId}")]
+        public async Task<IActionResult> ProfileViewId(string? filter, string? sort,Guid profileId)
+        {
+            var userCache = await _cacheService.GetAsync<UserCache>(profileId.ToString());
+
+            var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(profileId, filter, sort);
+            var games = await Sender.Send(qeury);
+
+            var qeury2 = new GetProfileByIdQuery(profileId);
+            var profile = await Sender.Send(qeury2);
+
+            var query3 = new GetProfileHasGamesTotalHoursQuery(profileId, filter);
+            var hours = await Sender.Send(query3);
+
+            var answer = new AnswerForProfile()
+            {
+                NickName = profile.Name.Value.ToString(),
+                Description = profile.Description.Value.ToString(),
+                Avatar = userCache.AvatarImage.ToString().Replace("_medium", "_full"),
+                TotalHours = hours,
+                GameList = games
+            };
+
+            return Ok(answer);
+        }
+
 
         [Authorize]
         [HttpGet("profile/avatar")]

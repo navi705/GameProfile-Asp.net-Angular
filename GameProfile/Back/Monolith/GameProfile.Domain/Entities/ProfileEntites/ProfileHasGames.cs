@@ -1,7 +1,7 @@
 ﻿using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Enums.Profile;
 
-namespace GameProfile.Domain.Entities.Profile
+namespace GameProfile.Domain.Entities.ProfileEntites
 {
     public sealed class ProfileHasGames : Entity
     {
@@ -9,8 +9,8 @@ namespace GameProfile.Domain.Entities.Profile
                                Guid profileId,
                                Guid gameId,
                                StatusGameProgressions statusGame,
-                               int minutesInGame) : this(id,profileId,gameId,minutesInGame)
-        {  
+                               int minutesInGame) : this(id, profileId, gameId, minutesInGame)
+        {
             StatusGame = statusGame;
         }
 

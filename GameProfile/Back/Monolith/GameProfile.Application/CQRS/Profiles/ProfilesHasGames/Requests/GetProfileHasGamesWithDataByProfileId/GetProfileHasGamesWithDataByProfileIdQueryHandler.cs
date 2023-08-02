@@ -1,9 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.AggregateRoots.Profile;
-using GameProfile.Domain.Entities.Profile;
 using GameProfile.Domain.Enums.Profile;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId
 {

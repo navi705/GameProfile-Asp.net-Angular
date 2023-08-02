@@ -28,9 +28,9 @@ namespace GameProfile.WebAPI.Models
 
         public decimal? RateTo { get; set; }
 
-        public List<StatusGameProgressions>? StatusGameProgressions { get; set; }
+        public string? StatusGameProgressions { get; set; }
 
-        public List<StatusGameProgressions>? StatusGameProgressionsExcluding { get; set; }
+        public string? StatusGameProgressionsExcluding { get; set; }
 
     }
 }

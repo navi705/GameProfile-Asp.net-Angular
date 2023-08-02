@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GameProfile.Domain.Entities.Profile;
 using GameProfile.Domain.Entities.GameEntites;
+using GameProfile.Domain.Entities.ProfileEntites;
+using GameProfile.Domain.Entities.Forum;
 
 namespace GameProfile.Application.Data
 {
@@ -9,6 +10,12 @@ namespace GameProfile.Application.Data
         DbSet<Game> Games { get; set; }
 
         DbSet<Profile> Profiles { get; set; }
+
+        DbSet<Post> Posts { get; set; }
+
+        DbSet<MessagePost> MessagePosts { get; set; }
+
+        DbSet<Replie> Replies { get; set; }
 
         DbSet<ProfileHasGames> ProfileHasGames { get; set; }
 
