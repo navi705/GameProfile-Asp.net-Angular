@@ -75,8 +75,9 @@
   font-weight: 500;
 }
 
-.filter-nsfw {
-  margin: 0px 150px 0px auto;
+.filter-ns{
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .list-genres {

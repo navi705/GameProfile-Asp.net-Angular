@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 
 import { GameService } from 'src/app/services/game.service';
+import { ProfileService } from 'src/app/services/profile.service';
+import { StatusGameProgressions } from 'src/app/services/models/game';
 
 
 
@@ -16,9 +18,13 @@ import { GameService } from 'src/app/services/game.service';
 export class GameComponent {
   id: any;
   game: any;
+  hours:number = 0;
+  status = StatusGameProgressions.NONE;
+
   constructor(
     private route: ActivatedRoute,
-    private gameService: GameService
+    private gameService: GameService,
+    private profileSerivce: ProfileService
   ) { }
 
   ngOnInit(): void {
@@ -26,6 +32,9 @@ export class GameComponent {
       this.id = params['id'];
       this.gameService.fetchGame(this.id).subscribe(response => this.game = response);
     });
+    if(localStorage.getItem("auth") === "true"){
+      this.profileSerivce.getGameProfile(this.id).subscribe(response=>{ this.hours= response.hours; this.status = response.statusGame;});
+    }
   }
   averageScore(): number {
     if (!this.game?.reviews || this.game?.reviews.length === 0) {
@@ -37,4 +46,20 @@ export class GameComponent {
     return sum / scores.length;
   }
 
+  isAuthenticated(): boolean {
+    const authValue = localStorage.getItem('auth');
+   if(authValue === 'true'){
+    return true
+   }
+    return false;
+  }
+  
+  addGameToProfile(){
+    if(this.status == StatusGameProgressions.NONE){
+      return;
+    }
+    this.profileSerivce.addGame(this.id,this.status,this.hours).subscribe();
+  }
+
 } 
+

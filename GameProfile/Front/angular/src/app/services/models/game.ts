@@ -74,5 +74,6 @@ export interface Game {
       Playing=1,
       Completed=2,
       Dropped=3,
-      Planned=4
+      Planned=4,
+      NONE=0
   }

@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { GlobalVariable } from '../global';
 import { GameForProfile, StatusGameProgressions } from './models/game';
-import { ProfileModel } from './models/profile';
+import { GameList, ProfileModel } from './models/profile';
 
 
 @Injectable({
@@ -80,5 +80,19 @@ import { ProfileModel } from './models/profile';
         withCredentials: true 
       };
       return this.http.delete(GlobalVariable.BASE_API_URL + 'profile/delete/game?gameId='+gameId,httpOptions);
+    }
+    public addGame(gameId:string,status:StatusGameProgressions, hours:number){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      const params = new HttpParams().set('gameId',gameId).set('status',status).set('hours',hours);
+      return this.http.put(GlobalVariable.BASE_API_URL + 'profile/add/game?'+params,null,httpOptions); 
+    }
+    public getGameProfile(gameId:string) {
+      const httpOptions = {
+        withCredentials: true 
+      };
+      const params = new HttpParams().set('gameId',gameId);
+      return this.http.get<GameList>(GlobalVariable.BASE_API_URL + 'profile/get/game?'+params,httpOptions); 
     }
   }

@@ -1,11 +1,28 @@
 <div class="container-page" [style.background-image]="'url(' + game?.backgroundImage + ')'">
     <div class="game-container">
         <div class="game-shared">
-
             <div class="header-image">
                 <img src="{{game?.headerImage}}">
+                <div class="add-game" *ngIf="isAuthenticated()" >
+                    <mat-form-field class="sorting">
+                        <mat-label>Status</mat-label>
+                        <mat-select [(value)]="status">
+                            <mat-option [value]="1">Playing</mat-option>
+                            <mat-option [value]="2">Completed</mat-option>
+                            <mat-option [value]="3">Dropped</mat-option>
+                            <mat-option [value]="4">Planned</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="sorting ">
+                        <mat-label>hours</mat-label>
+                        <input matInput type="number" min="0" max="876000" oninput="validity.valid||(value='');"
+                            [(ngModel)]="hours">
+                    </mat-form-field>
+                    <button mat-raised-button color="accent" (click)="addGameToProfile()">Save changes</button>
+                </div>
+
             </div>
-           
+
             <div class="game-description">
                 <h2>{{game?.title}}</h2>
                 <span>Avarage Rating: {{averageScore()}}</span>
@@ -18,7 +35,8 @@
                 <p>Nsfw: {{game?.nsfw}}</p>
                 <p>Links: <a *ngFor="let item of game.shopsLinkBuyGame">{{item.uri}} </a></p>
             </div>
-            
-        </div>       
+
+        </div>
+
     </div>
 </div>

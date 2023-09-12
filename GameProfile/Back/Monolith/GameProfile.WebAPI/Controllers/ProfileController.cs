@@ -1,8 +1,10 @@
 ﻿using GameProfile.Application;
+using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId;
+using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasOneGame;
 using GameProfile.Application.CQRS.Profiles.Requests.GetProfileById;
 using GameProfile.Domain.AggregateRoots.Profile;
 using GameProfile.Domain.Enums.Profile;
@@ -10,7 +12,6 @@ using GameProfile.Persistence.Caching;
 using GameProfile.WebAPI.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameProfile.WebAPI.Controllers
@@ -113,6 +114,27 @@ namespace GameProfile.WebAPI.Controllers
             await Sender.Send(query);
             return Ok();
         }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("profile/add/game")]
+        public async Task<IActionResult> ProfileHasGameAddGame(Guid gameId,StatusGameProgressions status,int hours )
+        {
+            var query = new CreateProfileHasGameCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),gameId,status,hours * 60);
+            await Sender.Send(query);
+            return Ok();
+        }
+
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpGet("profile/get/game")]
+        public async Task<IActionResult> ProfileHasGameGetGame(Guid gameId)
+        {
+            var query = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);    
+            return Ok(await Sender.Send(query));
+        }
+
         public class AnswerForProfile
         {
             public string NickName { get; set; }

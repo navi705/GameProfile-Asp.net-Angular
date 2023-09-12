@@ -7,7 +7,6 @@ import { MaterialModule } from './pages/shared/modules/material.module';
 import { FormsModule } from '@angular/forms';
 import {
   DateAdapter,
-  MatNativeDateModule,
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
@@ -69,7 +68,7 @@ const MY_DATE_FORMAT = {
     HttpClientModule,
     BrowserAnimationsModule,
     MaterialModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [ {
     provide: DateAdapter,

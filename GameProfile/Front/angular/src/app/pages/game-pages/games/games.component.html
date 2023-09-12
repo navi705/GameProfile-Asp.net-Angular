@@ -46,9 +46,15 @@
                         <mat-datepicker #pickerTo></mat-datepicker>
                     </mat-form-field>
                 </div>
-                <mat-checkbox color="primary" (change)="changeCheckbox1()" [(indeterminate)]="indeterminate"
-                    [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}"
-                    class="filter-nsfw">Nsfw</mat-checkbox>
+
+                <div class="filer-subtitle">
+                    <span class="filer-title">Nsfw:</span>
+
+                    <mat-checkbox color="primary" (change)="changeCheckbox1()" [(indeterminate)]="indeterminate"
+                        [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}"
+                        class="filter-nsfw">Nsfw</mat-checkbox>
+                </div>
+
                 <span class="filer-subtitle">Genres</span>
 
                 <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
@@ -84,11 +90,12 @@
                             [(ngModel)]="sortFilters.RateTo">
                     </mat-form-field>
                 </div>
-                  
+
                 <span class="filer-subtitle">Status Game Progressions</span>
                 <cdk-virtual-scroll-viewport itemSize="auto" class="list-status">
                     <ng-container *ngIf="gamesStatusArray && gamesStatusArray.length">
-                        <mat-checkbox *cdkVirtualFor="let status of gamesStatusArray" name="{{status.number}}" color="primary"
+                        <mat-checkbox *cdkVirtualFor="let status of gamesStatusArray" name="{{status.number}}"
+                            color="primary"
                             (change)="onChangeStatusProgressions($event)">{{gameStatus[status.number]}}</mat-checkbox>
                     </ng-container>
                 </cdk-virtual-scroll-viewport>
