@@ -1,7 +1,14 @@
 <div class="container-page">
     <div class="topic-post">
         <div class="topic-post-rating">
-            <span>{{post.rating}}</span>
+            <span class="rating">{{post.rating}}</span>
+            <button mat-icon-button (click)="addRating('positive')">
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              
+              <button mat-icon-button (click)="addRating('negative')">
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
         </div>
         <div class="topic-post-body">
             <div class="topic-post-title">

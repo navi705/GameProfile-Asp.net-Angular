@@ -95,4 +95,6 @@ import { GameList, ProfileModel } from './models/profile';
       const params = new HttpParams().set('gameId',gameId);
       return this.http.get<GameList>(GlobalVariable.BASE_API_URL + 'profile/get/game?'+params,httpOptions); 
     }
+
+    
   }

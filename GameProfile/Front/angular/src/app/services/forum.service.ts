@@ -89,4 +89,11 @@ export class ForumService {
     return this.http.put(GlobalVariable.BASE_API_URL + 'forum/replie/update?' + params, null, this.httpOptions);
   }
 
+  public addRating(postId: string, rating: string) {
+    const httpOptions = {
+      withCredentials: true
+    };
+    const params = new HttpParams().set('postId', postId).set('rating', rating);
+    return this.http.post(GlobalVariable.BASE_API_URL + 'forum/rating?' + params, null, httpOptions);
+  }
 }

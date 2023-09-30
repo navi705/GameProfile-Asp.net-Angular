@@ -1,7 +1,12 @@
 ﻿using GameProfile.Application.CQRS.Forum.Commands.CloseOrOpen;
 using GameProfile.Application.CQRS.Forum.Commands.Create;
 using GameProfile.Application.CQRS.Forum.Commands.Delete;
+using GameProfile.Application.CQRS.Forum.Commands.UpdateRating;
 using GameProfile.Application.CQRS.Forum.Commands.UpdateTimeUpdate;
+using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Create;
+using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Delete;
+using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Update;
+using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Requests.GetByProfileIdPostId;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands.Create;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands.Delete;
@@ -177,6 +182,73 @@ namespace GameProfile.WebAPI.Controllers
 
             var query = new CloseOrOpenForumCommand(id, close);
             await Sender.Send(query);
+            return Ok();
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPost("rating")]
+        public async Task<IActionResult> PostAddRating(Guid postId, string rating)
+        {
+            var postHaveRating = await Sender.Send(new GetByProfilePostIdPostHaveRatingFromProfileQuery(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
+
+            if (postHaveRating is null)
+            {
+                if (rating == "positive")
+                {
+                    var query = new CreatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), true);
+                    await Sender.Send(query);
+
+                    await Sender.Send(new UpdateRatingPostCommand(postId, 1));
+                }
+                else
+                {
+                    var query = new CreatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), false);
+                    await Sender.Send(query);
+
+                    await Sender.Send(new UpdateRatingPostCommand(postId, -1));
+                }
+            }
+            else
+            {
+
+                if (rating == "positive")
+                {
+                    if (postHaveRating.IsPositive == false)
+                    {
+                        var query = new UpdatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), true);
+                        await Sender.Send(query);
+
+                        await Sender.Send(new UpdateRatingPostCommand(postId, 2));
+                    }
+                    else
+                    {
+                        var query = new DeletePostHaveRatingFromProfileCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
+                        await Sender.Send(query);
+
+                        await Sender.Send(new UpdateRatingPostCommand(postId, -1));
+                    }
+                }
+                else
+                {
+                    if (postHaveRating.IsPositive == true)
+                    {
+                        var query = new UpdatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), false);
+                        await Sender.Send(query);
+
+                        await Sender.Send(new UpdateRatingPostCommand(postId, -2));
+                    }
+                    else
+                    {
+                        var query = new DeletePostHaveRatingFromProfileCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
+                        await Sender.Send(query);
+
+                        await Sender.Send(new UpdateRatingPostCommand(postId, 1));
+                    }
+                }
+            }
+
+
             return Ok();
         }
 

@@ -36,6 +36,8 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public ICollection<MessagePost> Messages { get; set; }
 
         public ICollection<Replie> Replies { get; set; }
+
+        public ICollection<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
         
     }
 }

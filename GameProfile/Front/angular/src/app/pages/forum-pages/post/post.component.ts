@@ -110,4 +110,8 @@ export class PostComponent {
     }
   }
 
+  addRating(rating:string):void{
+    this.forumService.addRating(this.post.id,rating).subscribe(x => { window.location.reload() });
+  }
+
 }

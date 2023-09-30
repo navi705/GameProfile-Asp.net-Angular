@@ -56,7 +56,7 @@ namespace GameProfile.Domain.Entities.Forum
 
         public Guid Author { get; private set; }
 
-        public int Rating { get; private set; }
+        public int Rating { get; set; }
 
         public bool Closed { get;  set; } = false;
 
@@ -72,5 +72,7 @@ namespace GameProfile.Domain.Entities.Forum
 
         // refrences properties
         public Profile Profile { get; set; }
+
+        public ICollection<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace GameProfile.Persistence
             modelBuilder.ApplyConfiguration(new ReplieConfiguration());
             modelBuilder.ApplyConfiguration(new MessagePostConfiguration());
             modelBuilder.ApplyConfiguration(new ForumConfiguration());
+            modelBuilder.ApplyConfiguration(new PostHaveRatingFromProfileConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -45,6 +46,8 @@ namespace GameProfile.Persistence
         public DbSet<ProfileHasGames> ProfileHasGames { get; set; }
         public DbSet<GameSteamId> GameSteamIds { get; set; }
         public DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
+
+        public DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
 
         //Forum
         public DbSet<Post> Posts { get; set; }

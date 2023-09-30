@@ -23,6 +23,8 @@ namespace GameProfile.Application.Data
 
         DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
 
+        DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
 
         Task<int> ExecuteSqlInterpolatedAsync(FormattableString sql, CancellationToken cancellationToken = default);
