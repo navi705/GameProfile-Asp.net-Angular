@@ -49,7 +49,11 @@ namespace GameProfile.WebAPI.Configuration
 
         public static IServiceCollection AddPresentation(this IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.MaxDepth = 300; // default is 64
+            });
+  
             return services;
         }
 

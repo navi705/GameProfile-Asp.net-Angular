@@ -42,6 +42,7 @@ export class AfterLoginSteamComponent {
       )
       .subscribe((response: any) => {  
         if(response != null){
+          localStorage.setItem('userId',response.id)
           window.location.href = "/profile";
         }
 

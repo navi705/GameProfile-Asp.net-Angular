@@ -15,6 +15,8 @@ import { HomePageComponent } from './pages/shared/home/home-page/home-page.compo
 import { ProfileViewComponent } from './pages/profile-pages/profile/profile-components/profile-view/profile-view.component';
 import { FindTeammeteSeacrhComponent } from './pages/find-temmate-pages/find-teammete-seacrh/find-teammete-seacrh.component';
 import { ForumComponent } from './pages/forum-pages/forum/forum.component';
+import { AddForumPostComponent } from './pages/forum-pages/add-forum-post/add-forum-post.component';
+import { PostComponent } from './pages/forum-pages/post/post.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
@@ -30,6 +32,8 @@ const routes: Routes = [
   {path:'profile/:id',component: ProfileViewComponent},
   {path:'find-teammate', component: FindTeammeteSeacrhComponent},
   {path:'forum',component: ForumComponent},
+  {path:'forum/add',component: AddForumPostComponent},
+  {path:'forum/:id',component:PostComponent},
   {path: '**', component: NotFoundComponent},
 ];
 

@@ -24,6 +24,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
             phg.MinutesInGame / 60,
             phg.StatusGame
         )).FirstOrDefaultAsync();
+            
             return query;
         }
     }

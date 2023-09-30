@@ -19,7 +19,9 @@ export class GameComponent {
   id: any;
   game: any;
   hours:number = 0;
+  hoursBefore:number=-1;
   status = StatusGameProgressions.NONE;
+  statusBefore = StatusGameProgressions.NONE;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +35,8 @@ export class GameComponent {
       this.gameService.fetchGame(this.id).subscribe(response => this.game = response);
     });
     if(localStorage.getItem("auth") === "true"){
-      this.profileSerivce.getGameProfile(this.id).subscribe(response=>{ this.hours= response.hours; this.status = response.statusGame;});
+      this.profileSerivce.getGameProfile(this.id).subscribe(response=>{ this.hours= response.hours; this.status = response.statusGame; 
+        this.hoursBefore = response.hours; this.statusBefore = response.statusGame});
     }
   }
   averageScore(): number {
@@ -55,6 +58,9 @@ export class GameComponent {
   }
   
   addGameToProfile(){
+    if(this.hours != this.hoursBefore || this.status != this.statusBefore){
+      this.profileSerivce.updateGame(this.id,this.hours,this.status).subscribe();
+    }
     if(this.status == StatusGameProgressions.NONE){
       return;
     }

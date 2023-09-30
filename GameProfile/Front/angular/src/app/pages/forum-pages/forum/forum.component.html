@@ -3,20 +3,19 @@
     <div class="search">
         <mat-icon class="search-icon">search</mat-icon>
         <input class="search-input" (keyup.enter)="find()" [(ngModel)]="sortForForum.SearchString">
+        <a mat-raised-button color="accent" routerLink="add">Create Post</a>
     </div>
 
     <div class="wrapper">
 
         <div class="forum-list">
-            <!-- *ngFor="let forum of forums" -->
-
-            <div class="forum-container">
-                <div class="forum">
+            <div class="forum-container" *ngFor="let post of posts">
+                <!-- <div class="forum">
                     <img class="forum-img"
                         src="https://avatars.steamstatic.com/15ac8351b9d83aba0f4dcd4d38a22108b0534ea0_medium.jpg"
                         [height]="70">
-                </div>
-                <div class="forum-content">
+                </div> -->
+                <!-- <div class="forum-content">
                     <a href="">Title post</a>
                     <span>Description asfsadfsad fsadf dsaf asdf sdaf asdasdsa first 30+- chars</span>
                     <span>Rating</span>
@@ -26,7 +25,26 @@
                     <a href="">Game</a>
                     <a href="">Theme</a>
                     <a href="">Author post</a>
+                </div> -->
+
+                <div class="forum">
+                    <span class="rating">{{post.rating}}</span>
                 </div>
+                <div class="forum-content">
+                    <a href="forum/{{post.id}}" class="forum-title">{{post.title}}</a>
+                    <span class="description">{{post.description.slice(0,30)}}</span>
+                    <span>Created: {{post.created.slice(0,10)}}</span>
+                    <span>Languages: <span *ngFor="let language of post.languages">{{language.stringFor}} </span>
+                    </span>
+                    <span *ngIf="post.closed == true;else elseBloc">Status: Closed</span>
+                    <ng-template #elseBloc>
+                        <span>Status: Open</span>
+                    </ng-template>
+                    <span>Games: <a href="game?id={{game.id}}" *ngFor="let game of post.games">{{game.title}} </a> </span>
+                    <span>Topic: {{post.topic}}</span>
+                    <span>Author: <a href="profile/{{post.author}}">{{post.profile.name.value}}</a></span>
+                </div>
+
 
             </div>
 
@@ -42,12 +60,12 @@
                 <mat-label>Choose a sorting</mat-label>
                 <mat-select [(value)]="sortForForum.Sorting">
                     <mat-option value="lastReplies">Last Replies</mat-option>
+                    <mat-option value="countRating">Rating Descending</mat-option>
                     <mat-option value="countReplies">Count Replies</mat-option>
-                    <mat-option value="countLikes">Count Likes</mat-option>
                     <mat-option value="dateCreateAscending">Date Create Ascending</mat-option>
                     <mat-option value="dateCreateDescending">Date Create Descending</mat-option>
                 </mat-select>
-                
+
             </mat-form-field>
             <div class="filters">
 
@@ -59,16 +77,16 @@
 
                     <mat-form-field>
                         <input matInput [matDatepicker]="pickerOf" placeholder="Of"
-                            [(ngModel)]="sortForForum.CreateDateOf">
+                            [(ngModel)]="dateOf">
                         <mat-datepicker-toggle matIconSuffix [for]="pickerOf"></mat-datepicker-toggle>
                         <mat-datepicker #pickerOf></mat-datepicker>
                     </mat-form-field>
 
                     <span class="dash">—</span>
 
-                    <mat-form-field>                     
+                    <mat-form-field>
                         <input matInput [matDatepicker]="pickerTo" placeholder="To"
-                            [(ngModel)]="sortForForum.CreateDateTo">
+                            [(ngModel)]="dateTo">
                         <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
                         <mat-datepicker #pickerTo></mat-datepicker>
                     </mat-form-field>
@@ -76,36 +94,75 @@
                 </div>
                 <span class="filer-subtitle">Language</span>
 
-                                <!-- <cdk-virtual-scroll-viewport itemSize="auto" class="list-genres">
-                    <ng-container *ngIf="filtersArray && filtersArray.length">
-                        <mat-checkbox *cdkVirtualFor="let genre of filtersArray" name="{{genre.name}}" color="primary"
-                            (change)="onChange($event)">{{genre.name}}</mat-checkbox>
-                    </ng-container>
-                </cdk-virtual-scroll-viewport> -->
+                <mat-form-field>
+                    <mat-label>Languages</mat-label>
+                    <mat-chip-grid  #chipGridLanguage aria-label="Fruit selectionL" >
+                      <mat-chip-row *ngFor="let language of sortForForum.Language" (removed)="removeLanguage(language)" >
+                          {{language}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + language" >
+                          <mat-icon color="warn">cancel</mat-icon>
+                        </button>
+                      </mat-chip-row>
+                    </mat-chip-grid>
+                    <input [(ngModel)]="searchStringLanguage"
+                    [ngModelOptions]="{standalone: true}" (input)="onSearchChangeLanguage()"
+                      [matChipInputFor]="chipGridLanguage" [matAutocomplete]="autoLanguages" 
+                      />
+                    <mat-autocomplete  #autoLanguages="matAutocomplete"  (optionSelected)="selectedLanguage($event)">
+                      <mat-option *ngFor="let language of findLanguages | async" [value]="language">
+                          <span>{{language}}</span>
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
 
                 <span class="filer-subtitle">Game</span>
+                <mat-form-field>
+                    <mat-label>Game</mat-label>
+                    <mat-chip-grid  #chipGrid aria-label="Fruit selection" >
+                      <mat-chip-row *ngFor="let game of games" (removed)="remove(game)" >
+                          {{game.title}}
+                        <button matChipRemove [attr.aria-label]="'remove ' + game" >
+                          <mat-icon color="warn">cancel</mat-icon>
+                        </button>
+                      </mat-chip-row>
+                    </mat-chip-grid>
+                    <input placeholder="Game/Games" [(ngModel)]="searchString"
+                    [ngModelOptions]="{standalone: true}" (input)="onSearchChange()"
+                      [matChipInputFor]="chipGrid" [matAutocomplete]="auto" 
+                      />
+                    <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="selected($event)">
+                      <mat-option *ngFor="let game of findGames | async" [value]="game">
+                          <div>
+                            <img [src]="game.headerImage" [height]="50" [width]="150">
+                            <span>{{game.title}}</span>
+                          </div>
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
 
-                <mat-checkbox color="primary" (change)="changeClosed()" [(indeterminate)]="indeterminate"
-                    [(ngModel)]="sortForForum.Closed" [ngModelOptions]="{standalone: true}"
-                    class="filter-closed">Closed</mat-checkbox>
+                  <mat-checkbox color="primary" (change)="changeClosed()" [(indeterminate)]="indeterminate"
+                  [(ngModel)]="sortForForum.Closed" [ngModelOptions]="{standalone: true}"
+                  class="filter-closed">Closed</mat-checkbox>
 
                 <span class="filer-subtitle">Rating</span>
 
-            <div class="rating-filter">
+                <div class="rating-filter">
 
-                <mat-form-field>
-                    <mat-label >Of</mat-label>
-                    <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');" [(ngModel)]="sortForForum.RatingOf" >
-                </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Of</mat-label>
+                        <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');"
+                            [(ngModel)]="sortForForum.RateOf">
+                    </mat-form-field>
 
-                <span class="dash">—</span>
+                    <span class="dash">—</span>
 
-                <mat-form-field >
-                    <mat-label>To</mat-label>
-                    <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');" [(ngModel)]="sortForForum.RatingTo" >
-                </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>To</mat-label>
+                        <input matInput type="number" min="0" max="50000" oninput="validity.valid||(value='');"
+                            [(ngModel)]="sortForForum.RateTo">
+                    </mat-form-field>
 
-            </div>
+                </div>
                 <a mat-button color="primary" (click)="find()">Find</a>
             </div>
 

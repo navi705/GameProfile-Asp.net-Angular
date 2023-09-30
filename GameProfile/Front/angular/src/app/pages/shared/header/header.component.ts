@@ -39,6 +39,7 @@ import { ProfileService } from 'src/app/services/profile.service';
           if (response) {
           this.image = response;
           localStorage.setItem('auth', 'true');
+          
           }
         });
 

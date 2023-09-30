@@ -15,7 +15,7 @@ namespace GameProfile.Domain.Entities.Forum
             Created = created;
         }
 
-        public string Content { get; private set; }
+        public string Content { get; set; }
 
         public DateTime Created { get; private set; }
 

@@ -1,0 +1,76 @@
+<div class="container-page">
+  <div class="wrapper">
+    
+    <mat-form-field class="sorting">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="post.title" maxlength="128">
+    </mat-form-field>
+
+    <mat-form-field class="description sorting ">
+      <mat-label>Description</mat-label>
+      <textarea  maxlength="1024" matInput [(ngModel)]="post.description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="sorting">
+      <mat-label>Topic</mat-label>
+      <mat-select [(value)]="post.topic">
+          <mat-option value="Game">Game</mat-option>
+          <mat-option value="Site">Site</mat-option>
+          <mat-option value="Other">Other</mat-option>
+      </mat-select>
+  </mat-form-field>
+
+      <mat-form-field class="sorting">
+        <mat-label>Game (If you need)</mat-label>
+        <mat-chip-grid  #chipGrid aria-label="Fruit selection" >
+          <mat-chip-row *ngFor="let game of games" (removed)="remove(game)" >
+              {{game.title}}
+            <button matChipRemove [attr.aria-label]="'remove ' + game" >
+              <mat-icon color="warn">cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input placeholder="Game/Games" [(ngModel)]="searchString"
+        [ngModelOptions]="{standalone: true}" (input)="onSearchChange()"
+          [matChipInputFor]="chipGrid" [matAutocomplete]="auto" 
+          />
+        <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="selected($event)">
+          <mat-option *ngFor="let game of findGames | async" [value]="game">
+              <div>
+                <img [src]="game.headerImage" [height]="50" [width]="150">
+                <span>{{game.title}}</span>
+              </div>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    
+      <mat-form-field class="sorting">
+        <mat-label>Languages</mat-label>
+        <mat-chip-grid  #chipGridLanguage aria-label="Fruit selectionL" >
+          <mat-chip-row *ngFor="let language of languagesPick" (removed)="removeLanguage(language)" >
+              {{language}}
+            <button matChipRemove [attr.aria-label]="'remove ' + language" >
+              <mat-icon color="warn">cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input [(ngModel)]="searchStringLanguage"
+        [ngModelOptions]="{standalone: true}" (input)="onSearchChangeLanguage()"
+          [matChipInputFor]="chipGridLanguage" [matAutocomplete]="autoLanguages" 
+          />
+        <mat-autocomplete  #autoLanguages="matAutocomplete"  (optionSelected)="selectedLanguage($event)">
+          <mat-option *ngFor="let language of findLanguages | async" [value]="language">
+              <span>{{language}}</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <span class="error">{{errorMessage}}</span>
+
+    <div class="button-wrapper">
+      <a mat-raised-button color="accent" (click)="createPost()">Create Post</a>
+      <a mat-raised-button color="warn" href="forum">Cancel</a>
+    </div>
+
+  </div>
+</div>

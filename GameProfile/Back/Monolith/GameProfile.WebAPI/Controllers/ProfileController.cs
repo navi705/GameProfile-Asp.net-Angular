@@ -118,8 +118,13 @@ namespace GameProfile.WebAPI.Controllers
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpPut("profile/add/game")]
-        public async Task<IActionResult> ProfileHasGameAddGame(Guid gameId,StatusGameProgressions status,int hours )
+        public async Task<IActionResult> ProfileHasGameAddGame(Guid gameId,StatusGameProgressions status,int hours)
         {
+            var query1 = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);
+            var gameProfile = await Sender.Send(query1);
+            if (gameProfile is not null){
+                return NoContent();
+            }
             var query = new CreateProfileHasGameCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),gameId,status,hours * 60);
             await Sender.Send(query);
             return Ok();

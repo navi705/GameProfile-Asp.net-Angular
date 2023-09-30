@@ -1,0 +1,122 @@
+<div class="container-page">
+    <div class="topic-post">
+        <div class="topic-post-rating">
+            <span>{{post.rating}}</span>
+        </div>
+        <div class="topic-post-body">
+            <div class="topic-post-title">
+                <span class="post-title">{{post.title}}</span>
+                <span>Topic: {{post.topic}}</span>
+                <span>Author: <a href="profile/{{post.author}}">{{post.profile.name.value}}</a></span>
+                <span>Created: {{post.created.slice(0,10)}}</span>
+                <span>Last Update: {{post.updated.slice(0,10)}} </span>
+                <span>Languages: <span *ngFor="let language of post.languages">{{language.stringFor}} </span></span>
+                <span>Games: <a href="game?id={{game.id}}" *ngFor="let game of post.games">{{game.title}} </a> </span>
+
+                <span class="topic-post-status-close" *ngIf="post.closed == true;else elseBloc">Status:
+                    Closed</span>
+                <ng-template #elseBloc>
+                    <span class="topic-post-status-open">Status: Open</span>
+                </ng-template>
+
+            </div>
+            <div class="topic-post-description">
+                <span>{{post.description}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-panel" *ngIf="checkCanClosePost()">
+        <a mat-raised-button color="warn" class="delete" (click)="deletePost()">Delete post</a>
+    </div>
+
+    <div class="content">
+
+        <div class="post-message" *ngFor="let messagePost of post.messagePosts;let j = index">
+            <span><a href="profile/{{messagePost.authorId}}">{{messagePost.profile.name.value}}</a></span>
+            <span>Created: {{messagePost.created.slice(0,10)}}</span>
+            <div class="post-message-control" *ngIf="checkCanControlMessagePost(messagePost.authorId)">
+                <a mat-raised-button (click)="deleteMessagePost(messagePost.id)" color="warn">Delete</a>
+                <a mat-raised-button (click)="editMessagePost(j)" color="accent">Edit</a>
+            </div>
+
+            <span class="post-message-content" *ngIf=" editPost !== j; else edit;">{{messagePost.content}}</span>
+
+            <ng-template #edit>
+                <mat-form-field class="textArea">
+                    <mat-label>Answer</mat-label>
+                    <textarea maxlength="1024" matInput [(ngModel)]="editContentMessagePost"></textarea>
+                </mat-form-field>
+
+                <div class="buttons">
+                    <a mat-raised-button color="accent"
+                        (click)="updateMessagePost(messagePost.id,messagePost.content)">Save</a>
+                    <a mat-raised-button color="primary" (click)="editMessagePost(-1)">Cancel</a>
+                </div>
+
+            </ng-template>
+
+            <a mat-button class="post-message-button" *ngIf="auth();" (click)="addReplieF(j)" color="primary">Replie</a>
+
+            <div class="replie-add" *ngIf="addReplie == j">
+
+                <mat-form-field class="textArea">
+                    <mat-label>Text</mat-label>
+                    <textarea maxlength="1024" matInput [(ngModel)]="replieContent"></textarea>
+                </mat-form-field>
+
+                <div class="buttons">
+                    <a mat-raised-button color="accent" (click)="sendReplie(messagePost.id)">Send</a>
+                    <a mat-raised-button color="warn" (click)="addReplieF(-2)">Cancel</a>
+                </div>
+
+            </div>
+
+
+            <div class="replie" *ngFor="let replie of messagePost.replies;let i = index ">
+                <span><a href="profile/{{replie.authorId}}">{{replie.profile.name.value}}</a></span>
+                <span>Created: {{replie.created.slice(0,10)}}</span>
+                <div class="post-message-control" *ngIf="checkCanControlMessagePost(replie.authorId)">
+                    <a mat-raised-button (click)="deleteReplie(replie.id)" color="warn">Delete</a>
+                    <a mat-raised-button (click)="editReplieF(i,j)" color="accent">Edit</a>
+                </div>
+
+                <span class="post-message-content" *ngIf=" editReplie !== i; else editReplie1;">{{replie.content}}</span>
+
+                <ng-template #editReplie1>
+                    <mat-form-field class="textArea">
+                        <mat-label>Answer</mat-label>
+                        <textarea maxlength="1024" matInput [(ngModel)]="editReplieContent"></textarea>
+                    </mat-form-field>
+
+                    <div class="buttons">
+                        <a mat-raised-button color="accent"
+                            (click)="editReplieQuery(replie.id)">Save</a>
+                        <a mat-raised-button color="primary" (click)="editReplieF(-10,j)">Cancel</a>
+                    </div>
+
+                </ng-template>
+
+            </div>
+
+        </div>
+
+        <div class="add-post-message" *ngIf="auth();else notAuth;">
+
+            <mat-form-field class="textArea">
+                <mat-label>Answer</mat-label>
+                <textarea maxlength="1024" matInput [(ngModel)]="addMessage"></textarea>
+            </mat-form-field>
+
+            <div class="buttons">
+                <a mat-raised-button color="accent" (click)="send()">Send</a>
+                <a mat-raised-button color="primary" *ngIf="checkCanClosePost()" (click)="closeOrOpen()">{{status}}</a>
+            </div>
+
+        </div>
+
+        <ng-template #notAuth>
+            <span>You must be logged in to your account to send a reply</span>
+        </ng-template>
+    </div>
+</div>

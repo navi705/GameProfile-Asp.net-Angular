@@ -1,0 +1,103 @@
+.topic-post{
+    margin-top: 20px;
+    display: flex;
+    background-color:#7a7a7a31;
+    padding: 10px 10px 10px 10px;
+    flex-direction: row;
+    border-radius: 4px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.topic-post-title{
+    display: flex;
+    flex-direction: column;
+}
+.post-title{
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+.topic-post-rating{
+    font-size: 32px;
+    font-weight: 500;
+    margin-right: 1rem;
+}
+.topic-post-description{
+    margin-top:1rem;
+    font-size: 20px;
+}
+.topic-post-status-close{
+    color: #028da0;
+}
+.topic-post-status-open{
+    color: #1de9b6;
+}
+.add-post-message{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.content{
+    /* display: flex;
+    max-width: 1220px;
+    margin-left: auto;
+    margin-right: auto;  */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.textArea{
+    max-width: 1000px;
+    height: 16em;
+}
+.buttons{
+    display: flex;
+    justify-content: space-between;
+}
+.control-panel{
+    margin-top: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+}
+.delete{
+    margin-right: 10px;
+}
+.post-message{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color:#7a7a7a31;
+    padding: 10px 10px 10px 10px;
+    gap:0.5rem;
+}
+.post-message-content{
+    text-align: center;
+    overflow-wrap: break-word;
+}
+.post-message-button{
+    margin-left: auto;
+}
+.post-message-control{
+    display: flex;
+    gap: 1rem;
+}
+.replie-add{
+    display: flex;
+    flex-direction: column;
+}
+.replie{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px 10px 10px;
+    gap:0.5rem;
+    background-color: #08080831 ;
+    max-width: 800px;
+}

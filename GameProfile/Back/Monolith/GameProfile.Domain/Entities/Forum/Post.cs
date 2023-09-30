@@ -58,15 +58,15 @@ namespace GameProfile.Domain.Entities.Forum
 
         public int Rating { get; private set; }
 
-        public bool Closed { get; private set; } = false;
+        public bool Closed { get;  set; } = false;
 
         public DateTime Created { get; private set; }
 
-        public DateTime Updated { get; private set; }
+        public DateTime Updated { get; set; }
 
         public ICollection<StringForEntity> Languages { get; private set; }
 
-        public ICollection<Game>? Games { get; private set; }
+        public ICollection<Game>? Games { get;  set; }
 
         public ICollection<MessagePost>? MessagePosts { get; private set; }
 

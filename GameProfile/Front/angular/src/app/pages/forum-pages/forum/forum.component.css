@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
     justify-self: center;
+    gap: 1rem;
 }
 
 .search-input {
@@ -51,8 +52,9 @@
 }
 
 .forum-title {
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 5px;
+    font-weight: 400;
 }
 
 .forum {
@@ -68,6 +70,7 @@
     display: flex;
     flex-direction: column;
     margin-left: 15px;
+    
 }
 
 .forum-content-span {
@@ -122,6 +125,14 @@
     margin-right: auto;
 }
 
+.rating{
+    font-size: 26px;
+    font-weight: 500;
+}
+.description{
+    margin-bottom: 5px;
+}
+
 @media (max-width: 650px) {
     .burger-filter-button {
         background-color: #00acc1;
@@ -130,7 +141,7 @@
         top: 50%;
         right: 0;
         transform: translate(0, -50%);
-        z-index: 1;
+        z-index: 100;
     }
 
     .forum-container {
@@ -156,13 +167,14 @@
 
     .sorting {
         width: 100%;
+        z-index: 100;
     }
 
     .show-wrapper.right-wrapper {
         display: block !important;
         background-color: #121212;
         position: absolute;
-        top: 50px;
+        top: 100px;
     }
 
     .dash {
@@ -172,5 +184,4 @@
     .dense-1 {
         text-align: center;
     }
-
 }

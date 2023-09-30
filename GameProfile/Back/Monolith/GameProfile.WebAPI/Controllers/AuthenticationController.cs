@@ -126,7 +126,7 @@ namespace GameProfile.WebAPI.Controllers
            
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
             _logger.LogInformation($"{userInfo[1]} is Steam login");
-            return Ok(new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0]});
+            return Ok(new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0],Id=profile.Id.ToString() });
         }
 
         
@@ -148,5 +148,7 @@ namespace GameProfile.WebAPI.Controllers
     {
         public string Name { get; set; }
         public string Avatar { get; set; }
+
+        public string Id { get; set; }
     }
 }
