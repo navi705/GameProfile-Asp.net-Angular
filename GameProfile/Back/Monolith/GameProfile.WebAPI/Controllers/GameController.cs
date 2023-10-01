@@ -1,4 +1,5 @@
-﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
+﻿using GameProfile.Application;
+using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
 using GameProfile.Application.CQRS.Games.Requests.GetGameById;
 using GameProfile.Application.CQRS.Games.Requests.GetGames;
@@ -17,10 +18,11 @@ namespace GameProfile.WebAPI.Controllers
     [Route("game")]
     public sealed class GameController : ApiController
     {
-        public GameController(ISender sender)
+        private readonly ICacheService _cacheService;
+        public GameController(ISender sender, ICacheService cacheService)
             : base(sender)
         {
-
+            _cacheService = cacheService;
         }
         [HttpGet("{gameId}")]
         public async Task<IActionResult> GetGameById(Guid gameId)
@@ -41,6 +43,7 @@ namespace GameProfile.WebAPI.Controllers
             var query = new GetGamesByPubOrDevQuery(type, who);
             return Ok(await Sender.Send(query));
         }
+
         [HttpGet("games")]
         public async Task<IActionResult> GetGames([FromQuery] GetGamesBySortFiltersModel filters)
         {
@@ -74,9 +77,19 @@ namespace GameProfile.WebAPI.Controllers
             {
                 statusGameExcluding = filters.StatusGameProgressionsExcluding.Split(',').Select(x => (StatusGameProgressions)Enum.Parse(typeof(StatusGameProgressions), x.Trim())).ToList();
             }
-            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,statusGame,statusGameExcluding,filters.RateOf,filters.RateTo);
+
+            Guid profileId = Guid.Empty;
+
+            if (HttpContext.User is not null)
+            {
+                profileId = new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
+            }
+
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,statusGame,
+                statusGameExcluding,filters.RateOf,filters.RateTo,profileId);
             return Ok(await Sender.Send(query));
         }
+
         [HttpGet("genres")]
         public async Task<IActionResult> GetGenres()
         {
@@ -84,12 +97,24 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
+        //[Authorize]
+        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        //[HttpPut("genres")]
+        //public async Task<IActionResult> AddGenres()
+        //{
+        //    var query = new GetGenresQuery();
+        //    await Sender.Send(query);
+        //    return Ok();
+        //}
+
+
         [HttpGet("tags")]
         public async Task<IActionResult> GetTags()
         {
             var query = new GetTagsQuery();
             return Ok(await Sender.Send(query));
         }
+
 
         //[HttpPut]
         //public async Task<IActionResult> PutGame(Game game)
@@ -108,6 +133,7 @@ namespace GameProfile.WebAPI.Controllers
         //    await Sender.Send(query);
         //    return Ok();
         //}
+
         [HttpDelete]
         public async Task<IActionResult> DeleteGame(Guid gameId)
         {

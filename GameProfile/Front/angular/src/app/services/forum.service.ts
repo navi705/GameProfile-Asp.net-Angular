@@ -22,7 +22,7 @@ export class ForumService {
         return;
       params = params.append(key, sortForForum[key]);
     });
-    return this.http.get(GlobalVariable.BASE_API_URL + 'forum?' + params);
+    return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'forum?' + params);
   }
 
   public createPost(post: Post) {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using GameProfile.Domain.Entities.ProfileEntites;
 
-namespace GameProfile.Persistence.EntityConfigurations
+namespace GameProfile.Persistence.EntityConfigurations.Profile
 {
     public sealed class ProfileHasGamesConfigure : IEntityTypeConfiguration<ProfileHasGames>
     {

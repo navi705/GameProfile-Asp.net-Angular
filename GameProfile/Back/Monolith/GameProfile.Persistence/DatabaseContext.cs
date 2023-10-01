@@ -4,6 +4,8 @@ using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Entities.ProfileEntites;
 using GameProfile.Persistence.EntityConfigurations;
 using GameProfile.Persistence.EntityConfigurations.Forum;
+using GameProfile.Persistence.EntityConfigurations.Game;
+using GameProfile.Persistence.EntityConfigurations.Profile;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Persistence
@@ -18,8 +20,11 @@ namespace GameProfile.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new GameConfigure());
+
             modelBuilder.ApplyConfiguration(new ProfileConfigure());
             modelBuilder.ApplyConfiguration(new ProfileHasGamesConfigure());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
             modelBuilder.ApplyConfiguration(new GameSteamIdConfigure());
             modelBuilder.ApplyConfiguration(new NotSteamGameConfigure());
 
@@ -44,6 +49,9 @@ namespace GameProfile.Persistence
         public DbSet<Game> Games { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<ProfileHasGames> ProfileHasGames { get; set; }
+
+        public DbSet<Role> Roles { get; set; }
+
         public DbSet<GameSteamId> GameSteamIds { get; set; }
         public DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GameProfile.Persistence.EntityConfigurations
+namespace GameProfile.Persistence.EntityConfigurations.Game
 {
     public sealed class GameSteamIdConfigure : IEntityTypeConfiguration<GameSteamId>
     {
@@ -13,7 +13,7 @@ namespace GameProfile.Persistence.EntityConfigurations
             builder.HasIndex(game => game.Id).IsUnique();
 
             builder.HasIndex(game => game.SteamAppId).IsUnique();
-            
+
         }
     }
 }

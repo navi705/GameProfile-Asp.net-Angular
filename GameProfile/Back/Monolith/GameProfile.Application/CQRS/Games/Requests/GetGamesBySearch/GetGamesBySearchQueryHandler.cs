@@ -13,10 +13,12 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch
             _context = context;
         }
 
-        public Task<List<Game>> Handle(GetGamesBySearch request, CancellationToken cancellationToken)
+        public async Task<List<Game>> Handle(GetGamesBySearch request, CancellationToken cancellationToken)
         {
-            var games = _context.Games.Where(x => EF.Functions.Like(x.Title, $"%{request.SearchString}%")).Take(5).ToList();
-            return Task.FromResult(games);
+            var games = await _context.Games.AsNoTracking().Where(x => EF.Functions.Like(x.Title, $"%{request.SearchString}%"))
+                .Select(x => new Game(x.Id, x.Title, DateTime.UtcNow, x.HeaderImage, null, false, null, null, null, null, null, null, null, null, 0)).Take(5)
+                .ToListAsync(cancellationToken);
+            return games;
         }
     }
 }

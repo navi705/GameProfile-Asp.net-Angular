@@ -38,6 +38,8 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public ICollection<Replie> Replies { get; set; }
 
         public ICollection<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+
+        public ICollection<Role> Roles { get; set; }
         
     }
 }

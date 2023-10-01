@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Moment } from 'moment';
 import { Observable, of } from 'rxjs';
@@ -23,6 +23,8 @@ export class ForumComponent {
   dateOf?: Moment;
   dateTo?: Moment;
 
+  lenghtQueryArrayForNotDuplicate: number = 0;
+
   languages: string[] = ["Afar", "Abkhazian", "Avestan", "Afrikaans", "Akan", "Amharic", "Aragonese", "Arabic", "Assamese", "Avaric", "Aymara", "Azerbaijani", "Bashkir", "Belarusian", "Bulgarian", "Bihari languages", "Bislama", "Bambara", "Bengali", "Tibetan", "Breton", "Bosnian", "Catalan", "Chechen", "Chamorro", "Corsican", "Cree", "Czech", "Church Slavic", "Chuvash", "Welsh", "Danish", "German", "Maldivian", "Dzongkha", "Ewe", "Greek", "English", "Esperanto", "Spanish", "Estonian", "Basque", "Persian", "Fulah", "Finnish", "Fijian", "Faroese", "French", "Western Frisian", "Irish", "Gaelic", "Galician", "Guarani", "Gujarati", "Manx", "Hausa", "Hebrew", "Hindi", "Hiri Motu", "Croatian", "Haitian", "Hungarian", "Armenian", "Herero", "Interlingua", "Indonesian", "Interlingue", "Igbo", "Sichuan Yi", "Inupiaq", "Ido", "Icelandic", "Italian", "Inuktitut", "Japanese", "Javanese", "Georgian", "Kongo", "Kikuyu", "Kuanyama", "Kazakh", "Kalaallisut", "Central Khmer", "Kannada", "Korean", "Kanuri", "Kashmiri", "Kurdish", "Komi", "Cornish", "Kirghiz", "Latin", "Luxembourgish", "Ganda", "Limburgan", "Lingala", "Lao", "Lithuanian", "Luba-Katanga", "Latvian", "Malagasy", "Marshallese", "Maori", "Macedonian", "Malayalam", "Mongolian", "Marathi", "Malay", "Maltese", "Burmese", "Nauru", "Norwegian", "North Ndebele", "Nepali", "Ndonga", "Dutch", "Norwegian", "Norwegian", "South Ndebele", "Navajo", "Chichewa", "Occitan", "Ojibwa", "Oromo", "Oriya", "Ossetic", "Panjabi", "Pali", "Polish", "Pushto", "Portuguese", "Quechua", "Romansh", "Rundi", "Romanian", "Russian", "Kinyarwanda", "Sanskrit", "Sardinian", "Sindhi", "Northern Sami", "Sango", "Sinhala", "Slovak", "Slovenian", "Samoan", "Shona", "Somali", "Albanian", "Serbian", "Swati", "Sotho, Southern", "Sundanese", "Swedish", "Swahili", "Tamil", "Telugu", "Tajik", "Thai", "Tigrinya", "Turkmen", "Tagalog", "Tswana", "Tonga", "Turkish", "Tsonga", "Tatar", "Twi", "Tahitian", "Uighur", "Ukrainian", "Urdu", "Uzbek", "Venda", "Vietnamese", "Volapük", "Walloon", "Wolof", "Xhosa", "Yiddish", "Yoruba", "Zhuang", "Chinese", "Zulu"];
   findLanguages: Observable<string[]> = new Observable<[]>();
   searchStringLanguage: string = '';
@@ -31,11 +33,24 @@ export class ForumComponent {
   findGames: Observable<Game[]> = new Observable<Game[]>();
   games: Game[] = [];
 
-  constructor(private forumService: ForumService, private gameService: GameService) { this.sortForForum.Sorting = 'dateCreateDescending'; }
+  constructor(private forumService: ForumService, private gameService: GameService) { this.sortForForum.Sorting = 'dateCreateDescending'; this.sortForForum.Page = 0; }
 
   ngOnInit(): void {
     console.log(this.sortForForum)
     this.forumService.getPosts(this.sortForForum).subscribe(response => this.posts = response);
+  }
+
+
+  @HostListener("window:scroll", [])
+  onScroll(): void {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+      if (this.lenghtQueryArrayForNotDuplicate == this.posts.length) {
+        return;
+      }
+      this.lenghtQueryArrayForNotDuplicate = this.posts.length;
+      this.sortForForum.Page!++;
+      this.forumService.getPosts(this.sortForForum).subscribe(response => response.forEach(element => this.posts.push(element)));
+    }
   }
 
   toggleFilters(): void {

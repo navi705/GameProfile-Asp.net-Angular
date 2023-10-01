@@ -17,5 +17,6 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
         List<StatusGameProgressions> StatusGame,
         List<StatusGameProgressions> StatusGameExcluding,
         decimal? RateOf,
-        decimal? RateTo) : IRequest<List<Game>>;
+        decimal? RateTo,
+        Guid ProfileId) : IRequest<List<Game>>;
 }

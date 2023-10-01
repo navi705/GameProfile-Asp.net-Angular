@@ -2,11 +2,11 @@
 using GameProfile.Domain.Entities.GameEntites;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GameProfile.Persistence.EntityConfigurations
+namespace GameProfile.Persistence.EntityConfigurations.Game
 {
-    public sealed class GameConfigure : IEntityTypeConfiguration<Game>
+    public sealed class GameConfigure : IEntityTypeConfiguration<GameProfile.Domain.Entities.GameEntites.Game>
     {
-        public void Configure(EntityTypeBuilder<Game> builder)
+        public void Configure(EntityTypeBuilder<GameProfile.Domain.Entities.GameEntites.Game> builder)
         {
             builder.HasKey(game => game.Id);
             builder.Property(game => game.Id).ValueGeneratedOnAdd();

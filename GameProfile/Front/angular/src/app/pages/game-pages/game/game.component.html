@@ -32,7 +32,7 @@
                 <p>{{game?.description}}</p>
                 <p>Achievements count: {{game?.achievementsCount}}</p>
                 <p>Nsfw: {{game?.nsfw}}</p>
-                <p>Links: <a *ngFor="let item of game.shopsLinkBuyGame">{{item.uri}} </a></p>
+                <p>Links: <a *ngFor="let item of game.shopsLinkBuyGame" href="{{item.uri}}">{{item.uri}} </a></p>
             </div>
 
         </div>

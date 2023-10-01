@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GameProfile.Persistence.EntityConfigurations
+namespace GameProfile.Persistence.EntityConfigurations.Game
 {
     public class NotSteamGameConfigure : IEntityTypeConfiguration<NotGameSteamId>
     {

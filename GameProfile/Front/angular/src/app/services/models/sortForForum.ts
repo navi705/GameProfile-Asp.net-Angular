@@ -1,6 +1,7 @@
 export class SortForForum{
     SearchString?: string;
     Sorting?: string;
+    Page?: number;
     CreatedDateOf?:string; 
     CreatedDateTo?:string;
     Closed?: string;

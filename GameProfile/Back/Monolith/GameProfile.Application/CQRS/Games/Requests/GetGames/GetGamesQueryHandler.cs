@@ -89,11 +89,15 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
 
             if (request.StatusGame is not null && request.StatusGame.Count > 0)
             {
-                query = query.Where(g => g.ProfileHasGames.Any(p => request.StatusGame.Contains(p.StatusGame)));
+                query = query.Include(f => f.ProfileHasGames).ThenInclude(f => f.Profile)
+                    .Where(g => g.ProfileHasGames.Any(phg => phg.ProfileId == request.ProfileId && request.StatusGame.Contains(phg.StatusGame)));
+
             }
             if (request.StatusGameExcluding is not null && request.StatusGameExcluding.Count > 0)
             {
-                query = query.Where(g => !g.ProfileHasGames.Any(p => request.StatusGameExcluding.Contains(p.StatusGame)));
+                query = query.Include(f => f.ProfileHasGames)
+                .ThenInclude(phg => phg.Profile)
+                .Where(g => g.ProfileHasGames.All(phg => phg.ProfileId != request.ProfileId || !request.StatusGameExcluding.Contains(phg.StatusGame)));
             }
 
             int skipGame = request.Page * 50;

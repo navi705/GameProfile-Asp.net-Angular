@@ -1,6 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Games.Requests.GetGameById
 {
@@ -15,7 +16,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGameById
 
         public async Task<Game?> Handle(GetGameByIdQuery request, CancellationToken cancellationToken)
         {
-            var game = await _context.Games.FindAsync(request.GameId, cancellationToken);
+            var game = await _context.Games.AsNoTracking().FirstOrDefaultAsync(x=>x.Id==request.GameId, cancellationToken);
             return game;
         }
     }
