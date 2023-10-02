@@ -102,6 +102,40 @@ img {
     background-color:  var(--warn-color);
 }
 
+.rating{
+    margin-top: 1rem;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.rating-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.comments{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.comments-title{
+    font-size: 26px;
+    font-weight: 500
+}
+
+.comment{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 4px;
+    background-color: #7a7a7a31;
+    padding: 10px 10px 10px 10px;
+}
+
 @media (max-width: 650px) {
     .game-shared {
         flex-direction: column;
@@ -141,5 +175,9 @@ img {
     .review-icon-metacritic {
         width: 35%;
     }
+
+    .slider{
+        width: 90%;
+      }
 
 }

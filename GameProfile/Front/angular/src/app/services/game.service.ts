@@ -57,4 +57,17 @@ import { SotrtFilter } from './models/sortFilters';
     public updateGame(game:any,id:string){
       return this.http.put(GlobalVariable.BASE_API_URL + 'game/update?id='+id,game);
     }
+    public getRatingForUser(id:string){
+
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.get<number>(GlobalVariable.BASE_API_URL + 'game/review?gameId='+id,httpOptions); 
+    }
+    public putRatingForUser(id:string,score: number){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/review?gameId='+id+'&score='+score,null,httpOptions); 
+    }
   }

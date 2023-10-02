@@ -12,7 +12,7 @@ namespace GameProfile.Domain.ValueObjects.Game
 
         public SiteReviews Site { get; private set; }
 
-        public decimal Score { get; private set; }
+        public decimal Score { get;  set; }
 
         public override IEnumerable<object> GetAtomicValues()
         {

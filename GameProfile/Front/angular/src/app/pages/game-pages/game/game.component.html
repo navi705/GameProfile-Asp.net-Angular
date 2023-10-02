@@ -1,4 +1,5 @@
-<div class="container-page" [style.background-image]="'url(' + game?.backgroundImage + ')'">
+<div class="container-page" >
+    <div [style.background-image]="'url(' + game?.backgroundImage + ')'">
     <div class="game-container">
         <div class="game-shared">
             <div class="header-image">
@@ -19,31 +20,53 @@
                             [(ngModel)]="hours">
                     </mat-form-field>
                     <button mat-raised-button color="accent" (click)="addGameToProfile()">Save changes</button>
+
+                    <div class="rating">
+                        <div class="rating-content">
+                            <span> <mat-icon color="primary" class="star">star</mat-icon> {{rating}}</span>
+                            <mat-slider class="slider" [max]="10" [min]="0" [step]="1">
+                                <input  matSliderThumb [(ngModel)]="rating" #slider>
+                                 </mat-slider>
+                        </div>           
+                         <button mat-raised-button color="accent" (click)="addRating()">Submit</button>
+
+                    </div>
+
                 </div>
+    
+
             </div>
 
             <div class="game-description">
                 <h2>{{game?.title}} <mat-icon color="primary" class="star">star</mat-icon>{{averageScore()}}</h2>
-                <span>{{game?.description}}</span>
+                <span class="description">{{game?.description}}</span>
                 <span>Developers: <span *ngFor="let developer of game.developers"><a
                             href="/game/filter?type=developer&name={{developer.gameString}}">{{developer.gameString}}</a></span><span> Publishers: <span *ngFor="let publisher of game.publishers"><a
-                                href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span></span>
-                <!-- <span>Publishers: <span *ngFor="let publisher of game.publishers"><a href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span> -->
-                <!-- <span>Avarage Rating: {{averageScore()}}</span> -->
+                                href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span></span>               
                 <span>Release Date: {{game?.releaseDate.slice(0,-9)}}</span>
                 <div class="review-block">Reviews:<div class="review" *ngFor="let item of game.reviews">
                     <img *ngIf="item.site == 1" class="review-icon" src="/assets/steam-logo.svg">
-                    <img *ngIf="item.site == 2"class="review-icon-metacritic" src="/assets/metacritic-logo.svg"> {{item.score}}</div>
+                    <img *ngIf="item.site == 2" class="review-icon" src="/assets/metacritic-logo.svg">
+                    <img *ngIf="item.site == 3" class="review-icon" src="/assets/gameprofile-logo.png">
+                     {{item.score}}</div>
                 </div>
                 <span >Nsfw: <span class="nsfw" [ngClass]="{'nsfw-true': game.nsfw == true,'nsfw-false': game.nsfw ==false}"><span *ngIf="game.nsfw; else noNsfw">Yes</span><ng-template #noNsfw>No</ng-template></span></span>
                 <span>Genres: <span *ngFor="let item of game.genres" class="genre">{{item.gameString}} </span></span>
                 <span>Tags: <span *ngFor="let item of game.tags" class="tag">{{item.gameString}} </span></span>
                 <span>Achievements count: {{game?.achievementsCount}}</span>
                 <span>Links: <a *ngFor="let item of game.shopsLinkBuyGame" href="{{item.uri}}">{{item.uri}} </a></span>
-            </div>
+            </div>         
 
+        </div>       
 
+    </div>
 
-        </div>
+    </div>
+    
+    <div class="comments">
+        <span class="comments-title">Comments</span>
+        
+
     </div>
 </div>
+

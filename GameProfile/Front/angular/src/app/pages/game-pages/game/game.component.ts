@@ -23,6 +23,8 @@ export class GameComponent {
   status = StatusGameProgressions.NONE;
   statusBefore = StatusGameProgressions.NONE;
 
+  rating:number = 0;
+
   constructor(
     private route: ActivatedRoute,
     private gameService: GameService,
@@ -37,6 +39,7 @@ export class GameComponent {
     if(localStorage.getItem("auth") === "true"){
       this.profileSerivce.getGameProfile(this.id).subscribe(response=>{ this.hours= response.hours; this.status = response.statusGame; 
         this.hoursBefore = response.hours; this.statusBefore = response.statusGame});
+        this.gameService.getRatingForUser(this.id).subscribe(response=>{this.rating = response;});
     }
   }
   averageScore(): number {
@@ -44,7 +47,12 @@ export class GameComponent {
       return 0;
     }
   
-    const scores = this.game?.reviews.map((review: { site: number, score: number }) => review.score);
+    const scores = this.game?.reviews.map((review: { site: number, score: number }) => review.score).filter((score: number) => score !== 0);
+  
+    if (scores.length === 0) {
+      return 0;
+    }
+  
     const sum = scores.reduce((acc: number, score: number) => acc + score, 0);
     return sum / scores.length;
   }
@@ -68,5 +76,8 @@ export class GameComponent {
     this.profileSerivce.addGame(this.id,this.status,this.hours).subscribe();
   }
 
+  addRating(){
+    this.gameService.putRatingForUser(this.id,this.rating).subscribe();
+  }
 } 
 

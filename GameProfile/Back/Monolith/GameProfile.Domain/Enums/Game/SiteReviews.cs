@@ -4,5 +4,6 @@
     {
         Steam = 1,
         Metacritic = 2,
+        GameProfile = 3
     }
 }

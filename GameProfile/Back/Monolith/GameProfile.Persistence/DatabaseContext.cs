@@ -33,6 +33,10 @@ namespace GameProfile.Persistence
             modelBuilder.ApplyConfiguration(new ForumConfiguration());
             modelBuilder.ApplyConfiguration(new PostHaveRatingFromProfileConfiguration());
 
+            modelBuilder.ApplyConfiguration(new GameHasRatingFromProfileConfigure());
+            modelBuilder.ApplyConfiguration(new GameCommentHasReplieConfigure());
+            modelBuilder.ApplyConfiguration(new GameHasCommentsConfigure());
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -56,6 +60,12 @@ namespace GameProfile.Persistence
         public DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
 
         public DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+
+        public DbSet<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+
+        public DbSet<GameHasComments> GameHasComments { get; set; }
+
+        public DbSet<GameCommentHasReplie> GameCommentHasReplies { get; set; }
 
         //Forum
         public DbSet<Post> Posts { get; set; }

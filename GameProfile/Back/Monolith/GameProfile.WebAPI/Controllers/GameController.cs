@@ -1,6 +1,11 @@
-﻿using GameProfile.Application;
-using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
+﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
+using GameProfile.Application.CQRS.Games.Commands.UpdateGameReviews;
+using GameProfile.Application.CQRS.Games.GameRating.Commands.Create;
+using GameProfile.Application.CQRS.Games.GameRating.Commands.Delete;
+using GameProfile.Application.CQRS.Games.GameRating.Commands.Update;
+using GameProfile.Application.CQRS.Games.GameRating.Requests.GetAllByGameId;
+using GameProfile.Application.CQRS.Games.GameRating.Requests.GetById;
 using GameProfile.Application.CQRS.Games.Genres.Command.AddGenre;
 using GameProfile.Application.CQRS.Games.Requests.GetGameById;
 using GameProfile.Application.CQRS.Games.Requests.GetGames;
@@ -11,6 +16,7 @@ using GameProfile.Application.CQRS.Games.Requests.GetTags;
 using GameProfile.Application.CQRS.Games.Tags.Commands.AddTag;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Enums.Profile;
+using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.WebAPI.Models;
 using GameProfile.WebAPI.Shared;
 using MediatR;
@@ -22,11 +28,9 @@ namespace GameProfile.WebAPI.Controllers
     [Route("game")]
     public sealed class GameController : ApiController
     {
-        private readonly ICacheService _cacheService;
-        public GameController(ISender sender, ICacheService cacheService)
+        public GameController(ISender sender)
             : base(sender)
         {
-            _cacheService = cacheService;
         }
         [HttpGet("{gameId}")]
         public async Task<IActionResult> GetGameById(Guid gameId)
@@ -59,13 +63,13 @@ namespace GameProfile.WebAPI.Controllers
             List<StatusGameProgressions> statusGameExcluding = new();
             if (filters.Genres is not null)
             {
-                 genres = filters.Genres[0].Split(',').ToList();
+                genres = filters.Genres[0].Split(',').ToList();
             }
             if (filters.GenresExcluding is not null)
             {
                 genres1 = filters.GenresExcluding[0].Split(',').ToList();
             }
-            if(filters.Tags is not null)
+            if (filters.Tags is not null)
             {
                 tags = filters.Tags[0].Split(',').ToList();
             }
@@ -73,7 +77,7 @@ namespace GameProfile.WebAPI.Controllers
             {
                 tagsExcluding = filters.TagsExcluding[0].Split(',').ToList();
             }
-            if(filters.StatusGameProgressions is not null && filters.StatusGameProgressions != "")
+            if (filters.StatusGameProgressions is not null && filters.StatusGameProgressions != "")
             {
                 statusGame = filters.StatusGameProgressions.Split(',').Select(x => (StatusGameProgressions)Enum.Parse(typeof(StatusGameProgressions), x.Trim())).ToList();
             }
@@ -89,8 +93,8 @@ namespace GameProfile.WebAPI.Controllers
                 profileId = new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
             }
 
-            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1,tags,tagsExcluding,statusGame,
-                statusGameExcluding,filters.RateOf,filters.RateTo,profileId);
+            var query = new GetGamesQuery(filters.Sorting, filters.Page, filters.Nsfw, filters.ReleaseDateOf, filters.ReleaseDateTo, genres, genres1, tags, tagsExcluding, statusGame,
+                statusGameExcluding, filters.RateOf, filters.RateTo, profileId);
             return Ok(await Sender.Send(query));
         }
 
@@ -172,5 +176,93 @@ namespace GameProfile.WebAPI.Controllers
             await Sender.Send(query);
             return Ok();
         }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpGet("review")]
+        public async Task<IActionResult> GetGameProfileReview(Guid gameId)
+        {
+            var query = new GetGameHaveRatingFromProfileQuery(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
+            var gameRating = await Sender.Send(query);
+            if (gameRating is not null)
+            {
+                return Ok(gameRating.ReviewScore);
+            }
+            return Ok(0);
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("review")]
+        public async Task<IActionResult> PutGameProfileReview(Guid gameId, int score)
+        {
+            if (score < 0 && score > 10)
+            {
+                return BadRequest();
+            }
+            var query = new GetGameHaveRatingFromProfileQuery(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
+            var gameRating = await Sender.Send(query);
+            if (gameRating is null)
+            {
+                if (score == 0)
+                {
+                    return Ok();
+                }
+                var command = new CreateGameHaveRatingFromProfileCommand(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), score);
+                await Sender.Send(command);
+            }
+            else
+            {
+                if (score == 0)
+                {
+                    var query2 = new DeleteGameHaveRatingFromProfileCommand(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
+                    await Sender.Send(query2);
+
+                    var gameHasRating1 = await Sender.Send(new GetGameHaveRatingFromProfileByGameIdQuery(gameId));
+                    decimal avarageRating1 = 0;
+                    if (gameHasRating1.Count > 0)
+                    {
+                        avarageRating1 = gameHasRating1.Sum(x => x.ReviewScore) / gameHasRating1.Count;
+
+                    }
+                    Review review1 = new(Domain.Enums.Game.SiteReviews.GameProfile, avarageRating1);
+
+                    var command2 = new UpdateGameReviewsCommand(gameId, review1);
+                    await Sender.Send(command2);
+
+                    return Ok();
+                }
+                var command = new UpdateGameHaveRatingFromProfileCommand(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), score);
+                await Sender.Send(command);
+            }
+
+            var gameHasRating = await Sender.Send(new GetGameHaveRatingFromProfileByGameIdQuery(gameId));
+
+            decimal avarageRating = gameHasRating.Sum(x => x.ReviewScore) / gameHasRating.Count;
+
+            Review review = new(Domain.Enums.Game.SiteReviews.GameProfile, avarageRating);
+
+            var command1 = new UpdateGameReviewsCommand(gameId, review);
+
+            await Sender.Send(command1);
+
+            return Ok();
+        }
+
+        //[HttpGet("comments")]
+        //public async Task<IActionResult> GetGameComments(Guid gameId)
+        //{
+
+        //}
+
+
+        //[Authorize]
+        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        //[HttpPut("comments")]
+        //public async Task<IActionResult> PutPost(Guid gameId, string )
+        //{
+
+        //}
+
     }
 }

@@ -104,3 +104,12 @@
     background-color: #08080831 ;
     max-width: 800px;
 }
+@media(max-width: 650px){
+    .topic-post-description{
+        margin-top:1rem;
+        font-size: 20px;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto; 
+    }
+}

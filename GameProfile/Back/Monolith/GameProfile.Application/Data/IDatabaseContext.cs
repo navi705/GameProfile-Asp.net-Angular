@@ -27,6 +27,12 @@ namespace GameProfile.Application.Data
 
         DbSet<Role> Roles { get; set; }
 
+        DbSet<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+
+        DbSet<GameHasComments> GameHasComments { get; set; }
+
+        DbSet<GameCommentHasReplie> GameCommentHasReplies { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
 
         Task<int> ExecuteSqlInterpolatedAsync(FormattableString sql, CancellationToken cancellationToken = default);

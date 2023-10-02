@@ -78,12 +78,18 @@ namespace GameProfile.Domain.Entities.GameEntites
         public ICollection<Review>? Reviews { get; private set; }
 
         public ICollection<StringForGame>? Tags { get; private set; }
-        //reference property
-        public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
-
-        // reference property
-        public ICollection<Post> Posts { get; set; }
 
         public int AchievementsCount { get; private set; }
+        //reference propertys ef core
+        public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
+
+        public ICollection<Post> Posts { get; set; }
+
+        public ICollection<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+
+        public ICollection<GameHasComments> GameHasComments { get; set; }
+
+
+
     }
 }

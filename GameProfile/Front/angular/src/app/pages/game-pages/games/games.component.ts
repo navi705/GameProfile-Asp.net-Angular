@@ -229,7 +229,12 @@ averageScore(game:any): number {
     return 0;
   }
 
-  const scores = game?.reviews.map((review: { site: number, score: number }) => review.score);
+  const scores = game?.reviews.map((review: { site: number, score: number }) => review.score).filter((score: number) => score !== 0);
+
+  if (scores.length === 0) { // check if all scores were zero
+    return 0;
+  }
+
   const sum = scores.reduce((acc: number, score: number) => acc + score, 0);
   return sum / scores.length;
 }

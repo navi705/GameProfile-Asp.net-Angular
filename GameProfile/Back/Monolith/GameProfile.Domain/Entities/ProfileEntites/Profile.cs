@@ -1,4 +1,5 @@
 ﻿using GameProfile.Domain.Entities.Forum;
+using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.ValueObjects;
 using GameProfile.Domain.ValueObjects.Profile;
 
@@ -40,6 +41,12 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public ICollection<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
 
         public ICollection<Role> Roles { get; set; }
+
+        public ICollection<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+
+        public ICollection<GameHasComments> GameHasComments { get; set; }
+
+        public ICollection<GameCommentHasReplie> GameCommentHasReplies { get; set;}
         
     }
 }
