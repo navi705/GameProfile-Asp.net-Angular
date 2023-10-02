@@ -3,7 +3,7 @@
         <div class="game-shared">
             <div class="header-image">
                 <img src="{{game?.headerImage}}">
-                <div class="add-game" *ngIf="isAuthenticated()" >
+                <div class="add-game" *ngIf="isAuthenticated()">
                     <mat-form-field class="sorting">
                         <mat-label>Status</mat-label>
                         <mat-select [(value)]="status">
@@ -23,19 +23,27 @@
             </div>
 
             <div class="game-description">
-                <h2>{{game?.title}}</h2>
-                <span>Avarage Rating: {{averageScore()}}</span>
-                <span>{{game?.releaseDate.slice(0,-9)}}</span>
-                <span>Reviews: <a *ngFor="let item of game.reviews">{{item.score}} </a></span>
-                <span>Genres: <span *ngFor="let item of game.genres">{{item.gameString}} </span></span>
-                <p>Tags: <span *ngFor="let item of game.tags">{{item.gameString}} </span></p>
-                <p>{{game?.description}}</p>
-                <p>Achievements count: {{game?.achievementsCount}}</p>
-                <p>Nsfw: {{game?.nsfw}}</p>
-                <p>Links: <a *ngFor="let item of game.shopsLinkBuyGame" href="{{item.uri}}">{{item.uri}} </a></p>
+                <h2>{{game?.title}} <mat-icon color="primary" class="star">star</mat-icon>{{averageScore()}}</h2>
+                <span>{{game?.description}}</span>
+                <span>Developers: <span *ngFor="let developer of game.developers"><a
+                            href="/game/filter?type=developer&name={{developer.gameString}}">{{developer.gameString}}</a></span><span> Publishers: <span *ngFor="let publisher of game.publishers"><a
+                                href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span></span>
+                <!-- <span>Publishers: <span *ngFor="let publisher of game.publishers"><a href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span> -->
+                <!-- <span>Avarage Rating: {{averageScore()}}</span> -->
+                <span>Release Date: {{game?.releaseDate.slice(0,-9)}}</span>
+                <div class="review-block">Reviews:<div class="review" *ngFor="let item of game.reviews">
+                    <img *ngIf="item.site == 1" class="review-icon" src="/assets/steam-logo.svg">
+                    <img *ngIf="item.site == 2"class="review-icon-metacritic" src="/assets/metacritic-logo.svg"> {{item.score}}</div>
+                </div>
+                <span >Nsfw: <span class="nsfw" [ngClass]="{'nsfw-true': game.nsfw == true,'nsfw-false': game.nsfw ==false}"><span *ngIf="game.nsfw; else noNsfw">Yes</span><ng-template #noNsfw>No</ng-template></span></span>
+                <span>Genres: <span *ngFor="let item of game.genres" class="genre">{{item.gameString}} </span></span>
+                <span>Tags: <span *ngFor="let item of game.tags" class="tag">{{item.gameString}} </span></span>
+                <span>Achievements count: {{game?.achievementsCount}}</span>
+                <span>Links: <a *ngFor="let item of game.shopsLinkBuyGame" href="{{item.uri}}">{{item.uri}} </a></span>
             </div>
 
-        </div>
 
+
+        </div>
     </div>
 </div>

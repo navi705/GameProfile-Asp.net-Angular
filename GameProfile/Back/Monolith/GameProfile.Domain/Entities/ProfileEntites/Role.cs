@@ -4,14 +4,18 @@ namespace GameProfile.Domain.Entities.ProfileEntites
 {
     public class Role : Entity
     {
-        public Role(Guid id, string name, ICollection<StringForEntity>? rights) : this(id, rights)
-        {
-            Name = name;
-        }
-
-        private Role(Guid id, ICollection<StringForEntity>? rights) : base(id)
+        public Role(Guid id, string name, ICollection<StringForEntity>? rights) : this(id, name)
         {
             Rights = rights;
+        }
+
+        /// <summary>
+        /// EF constructor
+        /// </summary>
+        /// 
+        private Role(Guid id, string name) : base(id)
+        {
+           Name = name;
         }
 
         public string Name { get; private set; }

@@ -7,16 +7,19 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGenres
     public sealed class GetGenresQueryHandler : IRequestHandler<GetGenresQuery, List<string>>
     {
         private readonly IDatabaseContext _context;
-        public GetGenresQueryHandler(IDatabaseContext context)
+        private readonly ICacheService _cacheService;
+        public GetGenresQueryHandler(IDatabaseContext context, ICacheService cacheService)
         {
             _context = context;
+            _cacheService = cacheService;
         }
 
-        public Task<List<string>> Handle(GetGenresQuery request, CancellationToken cancellationToken)
-        { 
-            var genres = _context.Games.AsNoTracking().SelectMany(x=> x.Genres).Select(x => x.GameString).Distinct().ToList();
-            genres = genres.OrderBy(x=>x).ToList();
-            return Task.FromResult(genres);
+        public async Task<List<string>> Handle(GetGenresQuery request, CancellationToken cancellationToken)
+        {
+            var genres = await _cacheService.GetAsync<List<string>>("genres");
+            //var genres = _context.Games.AsNoTracking().SelectMany(x=> x.Genres).Select(x => x.GameString).Distinct().ToList();
+            //genres = genres.OrderBy(x=>x).ToList();
+            return genres;
         }
     }
 }

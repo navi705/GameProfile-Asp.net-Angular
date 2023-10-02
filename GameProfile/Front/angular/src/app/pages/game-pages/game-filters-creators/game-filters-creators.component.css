@@ -38,3 +38,16 @@
 .game-content-span{
    margin-bottom: 5px;
 }
+
+@media (max-width: 650px) {
+   .game-container {
+     flex-direction: column;
+     max-width: 100%;
+   }
+ 
+   .game-img {
+     width: 100%;
+     height: auto;
+   }
+ 
+ }

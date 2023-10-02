@@ -10,6 +10,7 @@ export interface Game {
     publishers: publisher[]
     developers: developer[]
     shopsLinkBuyGame: shopsLinkBuyGame[]
+    profileHasGames: any[]
     achievementsCount: number
   }
   

@@ -60,6 +60,7 @@ export class GameComponent {
   addGameToProfile(){
     if(this.hours != this.hoursBefore || this.status != this.statusBefore){
       this.profileSerivce.updateGame(this.id,this.hours,this.status).subscribe();
+      return;
     }
     if(this.status == StatusGameProgressions.NONE){
       return;

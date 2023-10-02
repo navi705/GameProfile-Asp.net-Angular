@@ -1,19 +1,26 @@
 <div class="container-page">
     <div class="wrapper">
         <div class="game-list">
-            <div *ngFor="let game of games" class="game-container">
+            <div *ngFor="let game of games" class="game-container"> 
                 <div class="game">
-                    <img mat-card-image class="game-img" src="{{game.headerImage}}" [height]="150">
+                    <a href="/game?id={{game.id}}"><img mat-card-image class="game-img" src="{{game.headerImage}}"
+                            [height]="150"></a>
                 </div>
                 <div class="game-content">
-                    <a href="/game?id={{game.id}}" class="game-title"><b>{{game.title}}</b></a>
-                    <span class="game-content-span">Release Date: {{game.releaseDate.slice(0,-9)}}</span>
+                    <a href="/game?id={{game.id}}" class="game-title"><b>{{game.title}}</b><mat-icon color="primary" class="star">star</mat-icon>{{averageScore(game)}}</a>
+                    <span class="game-content-span">Release Date: <span *ngIf="game.releaseDate.slice(0,-9) != '0001-01-01'">{{game.releaseDate.slice(0,-9)}}</span> <span *ngIf="game.releaseDate.slice(0,-9) == '0001-01-01'">Coming soon</span></span>
                     <span class="game-content-span">Genre: <span *ngFor="let item of game.genres">{{item.gameString}}
                         </span></span>
                     <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers"
                             href="/game/filter?type=publisher&name={{item.gameString}}">{{item.gameString}} </a></span>
                     <span class="game-content-span">Developer: <a *ngFor="let item of game.developers"
                             href="/game/filter?type=developer&name={{item.gameString}}">{{item.gameString}} </a></span>
+                    <span *ngIf="game.profileHasGames != undefined ? game.profileHasGames.length>0 :false" 
+                        [ngClass]="{
+                            'status-playing': game.profileHasGames[0].statusGame ==1,
+                            'status-completed': game.profileHasGames[0].statusGame ==2,
+                            'status-dropped': game.profileHasGames[0].statusGame ==3,
+                            'status-planned': game.profileHasGames[0].statusGame ==4}">Profile status: {{getStatusText(game.profileHasGames[0].statusGame)}}</span>        
                 </div>
             </div>
         </div>
@@ -52,7 +59,7 @@
 
                     <mat-checkbox color="primary" (change)="changeCheckbox1()" [(indeterminate)]="indeterminate"
                         [(ngModel)]="sortFilters.Nsfw" [ngModelOptions]="{standalone: true}"
-                        class="filter-nsfw">Nsfw</mat-checkbox>
+                        class="filter-nsfw"></mat-checkbox>
                 </div>
 
                 <span class="filer-subtitle">Genres</span>
@@ -91,8 +98,8 @@
                     </mat-form-field>
                 </div>
 
-                <span class="filer-subtitle">Status Game Progressions</span>
-                <cdk-virtual-scroll-viewport itemSize="auto" class="list-status">
+                <span *ngIf="auth()" class="filer-subtitle">Status Game Progressions</span>
+                <cdk-virtual-scroll-viewport itemSize="auto" class="list-status" *ngIf="auth()">
                     <ng-container *ngIf="gamesStatusArray && gamesStatusArray.length">
                         <mat-checkbox *cdkVirtualFor="let status of gamesStatusArray" name="{{status.number}}"
                             color="primary"
@@ -101,7 +108,7 @@
                 </cdk-virtual-scroll-viewport>
 
                 <a mat-button color="primary" (click)="find()">Find</a>
-                
+
             </div>
         </div>
     </div>

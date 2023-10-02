@@ -9,6 +9,9 @@
 }
 
 .game-container {
+  /* add postion for status  */
+  position: relative;
+
   display: flex;
   flex-direction: row;
   background-color: #7a7a7a31;
@@ -75,7 +78,7 @@
   font-weight: 500;
 }
 
-.filter-ns{
+.filter-ns {
   margin-left: auto;
   margin-right: auto;
 }
@@ -88,12 +91,29 @@
   display: none;
 }
 
-.rate{
+.rate {
   margin-left: auto;
   margin-right: auto;
 }
-.list-status{
+
+.list-status {
   height: 65px;
+}
+
+.status-playing {
+  color: var(--accent-color);
+}
+
+.status-completed {
+  color: var(--primary-color);
+}
+
+.status-dropped {
+  color: var(--warn-color);
+}
+
+.status-planned {
+  color: #00c120;
 }
 
 @media (max-width: 650px) {
@@ -131,21 +151,24 @@
   .sorting {
     width: 100%;
   }
-  
-  .show-wrapper.right-wrapper{
+
+  .show-wrapper.right-wrapper {
     display: block !important;
     background-color: #121212;
     position: absolute;
     top: 50px;
   }
- .dash{
-  display: none;
- }
- .dense-1{
-  text-align: center;
- }
- .filter-nsfw{
-  margin-left: auto;
-  margin-right: auto;
- }
+
+  .dash {
+    display: none;
+  }
+
+  .dense-1 {
+    text-align: center;
+  }
+
+  .filter-nsfw {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

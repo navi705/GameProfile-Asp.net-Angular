@@ -1,16 +1,20 @@
 ﻿using GameProfile.Application;
 using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
+using GameProfile.Application.CQRS.Games.Genres.Command.AddGenre;
 using GameProfile.Application.CQRS.Games.Requests.GetGameById;
 using GameProfile.Application.CQRS.Games.Requests.GetGames;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch;
 using GameProfile.Application.CQRS.Games.Requests.GetGenres;
 using GameProfile.Application.CQRS.Games.Requests.GetTags;
+using GameProfile.Application.CQRS.Games.Tags.Commands.AddTag;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.WebAPI.Models;
+using GameProfile.WebAPI.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameProfile.WebAPI.Controllers
@@ -80,7 +84,7 @@ namespace GameProfile.WebAPI.Controllers
 
             Guid profileId = Guid.Empty;
 
-            if (HttpContext.User is not null)
+            if (HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name") is not null)
             {
                 profileId = new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
             }
@@ -97,12 +101,22 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("genres")]
+        public async Task<IActionResult> AddGenres(string genre)
+        {
+            var query = new AddGenreCommand(genre);
+            await Sender.Send(query);
+            return Ok();
+        }
+
         //[Authorize]
         //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        //[HttpPut("genres")]
-        //public async Task<IActionResult> AddGenres()
+        //[HttpDelete("genres")]
+        //public async Task<IActionResult> DeleteGenres(string genre)
         //{
-        //    var query = new GetGenresQuery();
+        //    var query = new AddGenreCommand(genre);
         //    await Sender.Send(query);
         //    return Ok();
         //}
@@ -115,6 +129,16 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("tags")]
+        public async Task<IActionResult> AddTags(string tag)
+        {
+            var query = new AddTagCommand(tag);
+            await Sender.Send(query);
+
+            return Ok();
+        }
 
         //[HttpPut]
         //public async Task<IActionResult> PutGame(Game game)

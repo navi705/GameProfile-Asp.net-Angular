@@ -213,4 +213,25 @@ export class GamesComponent {
   toggleFilters() {
     this.showFilters = !this.showFilters;
   }
+  auth():boolean{
+    if(localStorage.getItem('auth') == 'false' || localStorage.getItem('auth') == undefined)
+      return false;
+    else
+      return true;
+  }
+
+  getStatusText(value: number): string {
+    return StatusGameProgressions[value];
+}
+
+averageScore(game:any): number {
+  if (!game?.reviews || game?.reviews.length === 0) {
+    return 0;
+  }
+
+  const scores = game?.reviews.map((review: { site: number, score: number }) => review.score);
+  const sum = scores.reduce((acc: number, score: number) => acc + score, 0);
+  return sum / scores.length;
+}
+
 } 

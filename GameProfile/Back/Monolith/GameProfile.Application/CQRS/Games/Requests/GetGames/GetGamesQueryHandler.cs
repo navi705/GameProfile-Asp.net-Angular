@@ -19,7 +19,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
 
             if (request.Sort == "titleAtoZ")
             {
-                query = query.OrderBy(x => x.Title);
+                query = query.OrderBy(x => x.Title);               
             }
             else if (request.Sort == "titleZtoA")
             {
@@ -27,7 +27,8 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
             }
             else if (request.Sort == "dateAscending")
             {
-                query = query.OrderBy(x => x.ReleaseDate);
+                //query = query.OrderBy(x => x.ReleaseDate);
+                query = query.OrderBy(x => x.ReleaseDate == DateTime.MinValue ? 1 : 0).ThenBy(x => x.ReleaseDate);
             }
             else if (request.Sort == "dateDescending")
             {
@@ -102,7 +103,25 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
 
             int skipGame = request.Page * 50;
             query = query.Skip(skipGame).Take(50);
-            var games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
+
+            List<Game>? games = new();
+
+            if (request.ProfileId != Guid.Empty)
+            {
+                games = await query.GroupJoin(_context.ProfileHasGames.Where(p => p.ProfileId == request.ProfileId),game => game.Id,
+                    profileGame => profileGame.GameId,
+                    (game, profileGames) => new { Game = game, ProfileGames = profileGames })
+                    .SelectMany(x => x.ProfileGames.DefaultIfEmpty(),
+                    (x, profileGame) => new Game(x.Game.Id, x.Game.Title, x.Game.ReleaseDate, x.Game.HeaderImage, null, x.Game.Nsfw, null, x.Game.Developers, x.Game.Publishers, x.Game.Genres, null, null, null, x.Game.Reviews, 0) {ProfileHasGames = x.Game.ProfileHasGames.Select(g=>new Domain.Entities.ProfileEntites.ProfileHasGames(Guid.Empty,Guid.Empty,Guid.Empty,g.StatusGame,-1)).ToList() })
+                    .ToListAsync(cancellationToken);
+            }
+            else
+            {
+                games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
+
+            }
+
+            //var games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
 
             return games;
         }

@@ -49,7 +49,7 @@
                     <input matInput type="number" min="0" max="876000" oninput="validity.valid||(value='');" [(ngModel)]="game.hours" >
                 </mat-form-field>
                 <mat-form-field class="sorting">
-                    <mat-label  >Status</mat-label>
+                    <mat-label>Status</mat-label>
                     <mat-select [(value)]="game.statusGame">
                         <mat-option [value]="1">Playing</mat-option>
                         <mat-option [value]="2">Completed</mat-option>
