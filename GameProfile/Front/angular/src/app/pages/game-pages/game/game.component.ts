@@ -25,6 +25,18 @@ export class GameComponent {
 
   rating:number = 0;
 
+  comments: any[] = [];
+  comment: string = '';
+
+  editCommentNumber:number = -1;
+  editCommentContent:string = '';
+
+  addReplieNumber:number = -1;
+  addReplieContent:string = '';
+
+  editReplieNumber:number = -1;
+  editReplieContent:string = '';
+
   constructor(
     private route: ActivatedRoute,
     private gameService: GameService,
@@ -35,6 +47,7 @@ export class GameComponent {
     this.route.queryParams.subscribe(params => {
       this.id = params['id'];
       this.gameService.fetchGame(this.id).subscribe(response => this.game = response);
+      this.gameService.getGameComments(this.id).subscribe(response => this.comments = response);
     });
     if(localStorage.getItem("auth") === "true"){
       this.profileSerivce.getGameProfile(this.id).subscribe(response=>{ this.hours= response.hours; this.status = response.statusGame; 
@@ -79,5 +92,62 @@ export class GameComponent {
   addRating(){
     this.gameService.putRatingForUser(this.id,this.rating).subscribe();
   }
+
+  sendComment(): void {
+    if(this.comment == ''){
+      return;
+    }
+    this.gameService.putComment(this.id,this.comment).subscribe(x=>{window.location.reload()});
+  }
+
+  checkCanControlComment(idAuthorMessage:string):boolean{
+    if (localStorage.getItem('userId') == idAuthorMessage) {
+      return true;
+    }
+    return false;
+  }
+
+  deleteComment(commnetId:string){
+    this.gameService.deleteComment(commnetId).subscribe(x=>{window.location.reload()});
+  }
+
+  updateComment(commentId:string,content:string){
+    this.gameService.updateComment(commentId,content).subscribe(x=>{window.location.reload()});
+
+  }
+
+  editComment(i:number):void{
+    this.editCommentNumber= i;
+    if(i>-1){
+      this.editCommentContent = this.comments[i].comment;
+    }
+  }
+
+  addReplieF(i:number,content:string):void{
+    this.addReplieNumber = i;
+    if(i>-1){
+      this.addReplieContent = content;
+    }
+  }
+
+  sendReplie(messagePostID:string,content:string):void{
+    this.gameService.putReplies(messagePostID,content).subscribe(x => { window.location.reload() });
+  }
+
+  deleteReplie(Id:string){
+    this.gameService.deleteReplies(Id).subscribe(x=>{window.location.reload()});
+  }
+
+  updateReplie(id:string,content:string){
+    this.gameService.updateReplies(id,content).subscribe(x=>{window.location.reload()});
+  }
+
+  editReplieF(i:number,content:string):void{
+    this.editReplieNumber= i;
+    if(i>-1){
+      this.editReplieContent = content;
+    }
+  }
+
 } 
 

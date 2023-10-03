@@ -21,11 +21,11 @@ import { PostComponent } from './pages/forum-pages/post/post.component';
 const routes: Routes = [
   {path:'game',component: GameComponent},
   {path:'games',component: GamesComponent},
- // {path:'add-game',component: GameAddComponent},
+  // {path:'game/add-game',component: GameAddComponent},
   {path:'login', component:LoginComponent},
   {path:'after-login-steam',component:AfterLoginSteamComponent},
   {path:'profile',component: ProfileComponent},
- // {path:'admin/game',component:AdminGameComponent},
+  {path:'admin/delete',component:AdminGameComponent},
   {path: 'game/filter',component:GameFiltersCreatorsComponent},
   {path: 'stats',component:StatsPageComponent},
   {path:'',component: HomePageComponent},

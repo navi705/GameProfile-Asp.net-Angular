@@ -1,23 +1,26 @@
-<button mat-raised-button color="accent"><a href="add-game">Add Game</a></button>
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Title</th>
-        <th>ReleaseDate</th>
-        <th>HeaderImage</th>
-        <!-- <th>Nsfw</th> -->
-        <th>Description</th>
-        <!-- <th>AchievementsCount</th> -->
-    </tr>
-    <tr *ngFor="let game of games">
-        <th>{{game.id}}</th>    
-        <th><input [(ngModel)]="game.title"></th>    
-        <th><input [(ngModel)]="game.releaseDate"></th>    
-        <th><input [(ngModel)]="game.headerImage"></th>    
-        <!-- <th>{{game.nsfw}}</th> -->
-        <th><input [(ngModel)]="game.description"></th>
-        <!-- <th>{{game.achievementsCount}}</th>     -->
-        <th><button mat-button color="primary" (click)="deleteGame(game.id)">delete</button></th>
-        <th><button mat-button color="accent" (click)="updateGame(game)">update</button></th>
-    </tr>
-</table>
+<div class="container-page">
+
+    <div class="wrapper">
+
+        <mat-form-field class="sorting">
+            <mat-label>Id</mat-label>
+            <input matInput [(ngModel)]="id">
+        </mat-form-field>
+
+        <mat-form-field class="sorting">
+            <mat-label>Name</mat-label>
+            <mat-select [(value)]="name">
+                <mat-option value="Game">Game</mat-option>
+                <mat-option value="Post">Post</mat-option>
+                <mat-option value="PostMessage">Post Message</mat-option>
+                <mat-option value="PostReplie">Post Replie</mat-option>
+                <mat-option value="GameComment">Game Comment</mat-option>
+                <mat-option value="GameReplie">GameReplie</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <a mat-raised-button color="warn" (click)="delete()">Delete</a>
+
+    </div>
+
+</div>

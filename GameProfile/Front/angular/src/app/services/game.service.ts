@@ -9,6 +9,10 @@ import { SotrtFilter } from './models/sortFilters';
     providedIn: 'root',
   })
   export class GameService{
+     httpOptions = {
+      withCredentials: true 
+    };
+  
     constructor(private http: HttpClient) { }
 
     public fetchGame(id:string){
@@ -70,4 +74,37 @@ import { SotrtFilter } from './models/sortFilters';
       };
       return this.http.put(GlobalVariable.BASE_API_URL + 'game/review?gameId='+id+'&score='+score,null,httpOptions); 
     }
+
+    public getGameComments(id:string){
+      return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'game/comments?gameId='+id); 
+    }
+
+    public putComment(id:string,comment:string){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/comments?gameId='+id+'&comment='+comment,null,httpOptions); 
+    }
+
+    public deleteComment(id:string){
+      return this.http.delete(GlobalVariable.BASE_API_URL + 'game/comments?commentId='+id,this.httpOptions)
+    }
+
+    public updateComment(id:string,comment:string){
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/comments/update?commentId='+id+'&comment='+comment,null,this.httpOptions); 
+    }
+
+    public putReplies(id:string,reply:string){
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/replie?commentId='+id+'&replie='+reply,null,this.httpOptions); 
+    }
+
+    public deleteReplies(id:string){
+      return this.http.delete(GlobalVariable.BASE_API_URL + 'game/replie?replieId='+id,this.httpOptions);
+    }
+
+    public updateReplies(id:string,reply:string){
+      return this.http.put(GlobalVariable.BASE_API_URL + 'game/replie/update?replieId='+id+'&replie='+reply,null,this.httpOptions); 
+
+    }
+
   }

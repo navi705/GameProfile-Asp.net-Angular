@@ -1,6 +1,15 @@
 ﻿using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGame;
 using GameProfile.Application.CQRS.Games.Commands.UpdateGameReviews;
+using GameProfile.Application.CQRS.Games.GameComments.Commands.Create;
+using GameProfile.Application.CQRS.Games.GameComments.Commands.Delete;
+using GameProfile.Application.CQRS.Games.GameComments.Commands.Update;
+using GameProfile.Application.CQRS.Games.GameComments.CommentReplies.Commands.Create;
+using GameProfile.Application.CQRS.Games.GameComments.CommentReplies.Commands.Delete;
+using GameProfile.Application.CQRS.Games.GameComments.CommentReplies.Commands.Update;
+using GameProfile.Application.CQRS.Games.GameComments.CommentReplies.Requests.GetById;
+using GameProfile.Application.CQRS.Games.GameComments.Requests;
+using GameProfile.Application.CQRS.Games.GameComments.Requests.GetById;
 using GameProfile.Application.CQRS.Games.GameRating.Commands.Create;
 using GameProfile.Application.CQRS.Games.GameRating.Commands.Delete;
 using GameProfile.Application.CQRS.Games.GameRating.Commands.Update;
@@ -22,6 +31,7 @@ using GameProfile.WebAPI.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -105,25 +115,25 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
-        [Authorize]
-        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        [HttpPut("genres")]
-        public async Task<IActionResult> AddGenres(string genre)
-        {
-            var query = new AddGenreCommand(genre);
-            await Sender.Send(query);
-            return Ok();
-        }
-
         //[Authorize]
         //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        //[HttpDelete("genres")]
-        //public async Task<IActionResult> DeleteGenres(string genre)
+        //[HttpPut("genres")]
+        //public async Task<IActionResult> AddGenres(string genre)
         //{
         //    var query = new AddGenreCommand(genre);
         //    await Sender.Send(query);
         //    return Ok();
         //}
+
+        ////[Authorize]
+        ////[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        ////[HttpDelete("genres")]
+        ////public async Task<IActionResult> DeleteGenres(string genre)
+        ////{
+        ////    var query = new AddGenreCommand(genre);
+        ////    await Sender.Send(query);
+        ////    return Ok();
+        ////}
 
 
         [HttpGet("tags")]
@@ -133,16 +143,16 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
-        [Authorize]
-        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        [HttpPut("tags")]
-        public async Task<IActionResult> AddTags(string tag)
-        {
-            var query = new AddTagCommand(tag);
-            await Sender.Send(query);
+        //[Authorize]
+        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        //[HttpPut("tags")]
+        //public async Task<IActionResult> AddTags(string tag)
+        //{
+        //    var query = new AddTagCommand(tag);
+        //    await Sender.Send(query);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         //[HttpPut]
         //public async Task<IActionResult> PutGame(Game game)
@@ -249,20 +259,132 @@ namespace GameProfile.WebAPI.Controllers
             return Ok();
         }
 
-        //[HttpGet("comments")]
-        //public async Task<IActionResult> GetGameComments(Guid gameId)
-        //{
+        [HttpGet("comments")]
+        public async Task<IActionResult> GetGameComments(Guid gameId)
+        {
+            var query = new GetGameCommentQuery(gameId);
+            var comments = await Sender.Send(query);
+            return Ok(comments);
+        }
 
-        //}
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("comments")]
+        public async Task<IActionResult> PutGameComment(Guid gameId, string comment)
+        {
+            var query = new CreateGameCommentCommand(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), comment);
+            await Sender.Send(query);
+            return Ok();
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("comments/update")]
+        public async Task<IActionResult> UpdateGameComment(Guid commentId, string comment)
+        {
+            var gameComment = await Sender.Send(new GetGameCommentByIdQuery(commentId));
+
+            if (gameComment is null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                if(gameComment.ProfileId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+                {
+                    return Forbid();
+                }
+            }
+
+            var query = new UpdateGameCommentCommand(commentId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), comment);
+            await Sender.Send(query);
+            return Ok();
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpDelete("comments")]
+        public async Task<IActionResult> DeleteGameComment(Guid commentId)
+        {
+            var gameComment = await Sender.Send(new GetGameCommentByIdQuery(commentId));
+
+            if (gameComment is null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                if (gameComment.ProfileId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+                {
+                    return Forbid();
+                }
+            }
+
+            var query = new DeleteGameCommentCommand(commentId);
+            await Sender.Send(query);
+            return Ok();
+        }
 
 
-        //[Authorize]
-        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        //[HttpPut("comments")]
-        //public async Task<IActionResult> PutPost(Guid gameId, string )
-        //{
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("replie")]
+        public async Task<IActionResult> PutGameReplie(Guid commentId, string replie)
+        {
+            var query = new CreateGameReplieCommand(commentId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), replie);
+            await Sender.Send(query);
+            return Ok();
+        }
 
-        //}
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpDelete("replie")]
+        public async Task<IActionResult> DeleteGameReplie(Guid replieId)
+        {
+            var gameReplie = await Sender.Send(new GetGameReplieByIdQuery(replieId));
+
+            if (gameReplie is null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                if (gameReplie.ProfileId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+                {
+                    return Forbid();
+                }
+            }
+
+            var query = new DeleteGameReplieCommand(replieId);
+            await Sender.Send(query);
+            return Ok();
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("replie/update")]
+        public async Task<IActionResult> UpdateGameReplie(Guid replieId,string replie)
+        {
+            var gameReplie = await Sender.Send(new GetGameReplieByIdQuery(replieId));
+
+            if (gameReplie is null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                if (gameReplie.ProfileId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+                {
+                    return Forbid();
+                }
+            }
+
+            var query = new UpdateGameReplieCommand(replieId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),replie);
+            await Sender.Send(query);
+            return Ok();
+        }
+
 
     }
 }

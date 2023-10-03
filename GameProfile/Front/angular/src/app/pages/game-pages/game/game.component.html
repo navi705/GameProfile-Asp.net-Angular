@@ -43,7 +43,7 @@
                 <span>Developers: <span *ngFor="let developer of game.developers"><a
                             href="/game/filter?type=developer&name={{developer.gameString}}">{{developer.gameString}}</a></span><span> Publishers: <span *ngFor="let publisher of game.publishers"><a
                                 href="/game/filter?type=publisher&name={{publisher.gameString}}">{{publisher.gameString}}</a></span></span></span>               
-                <span>Release Date: {{game?.releaseDate.slice(0,-9)}}</span>
+                <span>Release Date: <span *ngIf="game.releaseDate.slice(0,-9) != '0001-01-01'">{{game.releaseDate.slice(0,-9)}}</span> <span *ngIf="game.releaseDate.slice(0,-9) == '0001-01-01'">Coming soon</span></span>
                 <div class="review-block">Reviews:<div class="review" *ngFor="let item of game.reviews">
                     <img *ngIf="item.site == 1" class="review-icon" src="/assets/steam-logo.svg">
                     <img *ngIf="item.site == 2" class="review-icon" src="/assets/metacritic-logo.svg">
@@ -65,7 +65,105 @@
     
     <div class="comments">
         <span class="comments-title">Comments</span>
-        
+        <span *ngIf="!isAuthenticated()">You must be logged in to your account to send a comment</span>
+
+            <div *ngIf="isAuthenticated()" class="add-comment">
+
+                <mat-form-field class="text-area">
+                    <mat-label>Comment</mat-label>
+                    <textarea maxlength="1024" matInput [(ngModel)]="comment"></textarea>
+                </mat-form-field>
+
+                <a mat-raised-button color="accent" class="button-send" (click)="sendComment()">Send</a>
+
+            </div>
+
+        <div class="comment" *ngFor="let comment of comments;let i = index">
+            <div class="comment-header">
+                <span class="comment-author"><a href="/profile/{{comment.profileId}}">{{comment.profile.name.value}} <span *ngIf="comment.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{comment.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
+                
+                <span class="comment-date">{{comment.createdDate.slice(0,10)}}</span>
+            </div>
+
+            <div *ngIf="checkCanControlComment(comment.profileId)">
+                <a mat-raised-button color="warn" (click)="deleteComment(comment.id)">Delete</a>
+                <a mat-raised-button color="accent" (click)="editComment(i)">Edit</a>
+            </div>
+
+            <div class="comment-content">          
+
+                <span  *ngIf=" editCommentNumber !== i; else edit;" >{{comment.comment}}</span>
+
+                <ng-template #edit>
+                    <div class="edit">
+                    <mat-form-field class="textArea">
+                        <mat-label>Answer</mat-label>
+                        <textarea maxlength="1024" matInput [(ngModel)]="editCommentContent"></textarea>
+                    </mat-form-field>
+
+                    <div class="buttons">
+                        <a mat-raised-button color="accent"
+                            (click)="updateComment(comment.id,editCommentContent)">Save</a>
+                        <a mat-raised-button color="primary" (click)="editComment(-5)">Cancel</a>
+                        </div>
+                    </div>
+
+                </ng-template>                                   
+
+            </div>
+
+            <a mat-button class="replie-button" *ngIf="isAuthenticated();" (click)="addReplieF(i,'')"  color="primary">Replie</a>    
+            
+            
+            <div class="replie-add" *ngIf="addReplieNumber == i">
+
+                <mat-form-field class="textArea">
+                    <mat-label>Text</mat-label>
+                    <textarea maxlength="1024" matInput [(ngModel)]="addReplieContent"></textarea>
+                </mat-form-field>
+
+                <div class="buttons">
+                    <a mat-raised-button color="accent" (click)="sendReplie(comment.id,addReplieContent)">Send</a>
+                    <a mat-raised-button color="warn" (click)="addReplieF(-2,'')">Cancel</a>
+                </div>
+            </div>
+
+            <div class="replies">
+
+                <div class="replie" *ngFor="let replie of comment.gameCommentHasReplies;let j = index">
+                    <div class="replie-header">
+                        <span class="comment-author"><a href="/profile/{{comment.profileId}}">{{comment.profile.name.value}} <span *ngIf="comment.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{comment.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
+                        
+                        <span class="comment-date">{{comment.createdDate.slice(0,10)}}</span>
+                    </div>
+                    <div *ngIf="checkCanControlComment(replie.profileId)">
+                        <a mat-raised-button color="warn" (click)="deleteReplie(replie.id)">Delete</a>
+                        <a mat-raised-button color="accent" (click)="editReplieF(i,replie.replie)">Edit</a>
+                    </div>
+
+                    <div class="replie-content">          
+
+                        <span  *ngIf=" editReplieNumber !== i; else editReplie;" >{{replie.replie}}</span>
+
+                        <ng-template #editReplie>
+                            <div class="edit">
+                            <mat-form-field class="textArea">
+                                <mat-label>Answer</mat-label>
+                                <textarea maxlength="1024" matInput [(ngModel)]="editReplieContent"></textarea>
+                            </mat-form-field>
+
+                            <div class="buttons">
+                                <a mat-raised-button color="accent"
+                                    (click)="updateReplie(replie.id,editReplieContent)">Save</a>
+                                <a mat-raised-button color="primary" (click)="editReplieF(-5,'')">Cancel</a>
+                                </div>
+                            </div>
+
+                        </ng-template>
+
+                </div>
+
+            </div>
 
     </div>
 </div>

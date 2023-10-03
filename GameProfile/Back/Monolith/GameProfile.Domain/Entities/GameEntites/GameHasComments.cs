@@ -16,7 +16,7 @@ namespace GameProfile.Domain.Entities.GameEntites
             Comment = comment;
         }
 
-        public string Comment { get; private set; }
+        public string Comment { get; set; }
 
         public Guid ProfileId { get; private set; }
 

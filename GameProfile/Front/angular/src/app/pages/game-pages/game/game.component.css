@@ -136,6 +136,69 @@ img {
     padding: 10px 10px 10px 10px;
 }
 
+.add-comment{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 50%;   
+}
+
+.button-send{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.comment-header{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment-content{
+    word-break: break-all;
+    text-align: center;
+}
+
+.edit{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.replie-add{
+    display: flex;
+    flex-direction: column;
+}
+
+.replie-button{
+margin-left: auto;
+}
+
+.replie-header{
+    display: flex;
+    flex-direction: column;
+}
+
+.replies{
+    background-color:  #0808086b;
+    max-width: 800px;
+}
+
+.replie-content{
+    text-align: center;
+}
+
 @media (max-width: 650px) {
     .game-shared {
         flex-direction: column;
@@ -176,8 +239,16 @@ img {
         width: 35%;
     }
 
+    .description{
+        word-break: break-all;
+    }
+
     .slider{
         width: 90%;
       }
+
+    .add-comment{
+        width: 100%;
+    }
 
 }
