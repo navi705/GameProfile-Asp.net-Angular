@@ -9,7 +9,8 @@ namespace GameProfile.Domain.Entities.ProfileEntites
                                Guid profileId,
                                Guid gameId,
                                StatusGameProgressions statusGame,
-                               int minutesInGame) : this(id, profileId, gameId, minutesInGame)
+                               int minutesInGame,
+                               int minutesInGameVerified) : this(id, profileId, gameId, minutesInGame,minutesInGameVerified)
         {
             StatusGame = statusGame;
         }
@@ -21,11 +22,13 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         private ProfileHasGames(Guid id,
                                Guid profileId,
                                Guid gameId,
-                               int minutesInGame) : base(id)
+                               int minutesInGame,
+                               int minutesInGameVerified) : base(id)
         {
             ProfileId = profileId;
             GameId = gameId;
             MinutesInGame = minutesInGame;
+            MinutesInGameVerified = minutesInGameVerified;
         }
 
         public Guid ProfileId { get; private set; }
@@ -38,6 +41,8 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public StatusGameProgressions StatusGame { get; private set; }
 
         public int MinutesInGame { get; private set; }
+
+        public int MinutesInGameVerified { get; private set; }
 
     }
 }

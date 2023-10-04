@@ -94,7 +94,7 @@ namespace GameProfile.WebAPI.Controllers
                     {
                         statusGame = StatusGameProgressions.Dropped;
                     }
-                    await Sender.Send(new CreateProfileHasGameCommand(profile.Id, gameId, statusGame, item.playtime_forever));
+                    await Sender.Send(new CreateProfileHasGameCommand(profile.Id, gameId, statusGame, 0, item.playtime_forever));
                     _logger.LogInformation($"Add game to profile {userInfo[1]} {gameId}");
                 }
             }

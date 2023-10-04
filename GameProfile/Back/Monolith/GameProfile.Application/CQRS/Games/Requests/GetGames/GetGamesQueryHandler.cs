@@ -112,7 +112,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
                     profileGame => profileGame.GameId,
                     (game, profileGames) => new { Game = game, ProfileGames = profileGames })
                     .SelectMany(x => x.ProfileGames.DefaultIfEmpty(),
-                    (x, profileGame) => new Game(x.Game.Id, x.Game.Title, x.Game.ReleaseDate, x.Game.HeaderImage, null, x.Game.Nsfw, null, x.Game.Developers, x.Game.Publishers, x.Game.Genres, null, null, null, x.Game.Reviews, 0) {ProfileHasGames = x.Game.ProfileHasGames.Select(g=>new Domain.Entities.ProfileEntites.ProfileHasGames(Guid.Empty,Guid.Empty,Guid.Empty,g.StatusGame,-1)).ToList() })
+                    (x, profileGame) => new Game(x.Game.Id, x.Game.Title, x.Game.ReleaseDate, x.Game.HeaderImage, null, x.Game.Nsfw, null, x.Game.Developers, x.Game.Publishers, x.Game.Genres, null, null, null, x.Game.Reviews, 0) {ProfileHasGames = x.Game.ProfileHasGames.Select(g=>new Domain.Entities.ProfileEntites.ProfileHasGames(Guid.Empty,Guid.Empty,Guid.Empty,g.StatusGame,-1,-1)).ToList() })
                     .ToListAsync(cancellationToken);
             }
             else

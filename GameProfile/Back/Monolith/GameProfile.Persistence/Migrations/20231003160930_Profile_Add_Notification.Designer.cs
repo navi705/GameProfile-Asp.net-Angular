@@ -4,6 +4,7 @@ using GameProfile.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameProfile.Persistence.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20231003160930_Profile_Add_Notification")]
+    partial class Profile_Add_Notification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -366,9 +369,6 @@ namespace GameProfile.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("MinutesInGame")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinutesInGameVerified")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ProfileId")

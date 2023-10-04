@@ -2,6 +2,7 @@
 using GameProfile.Domain.AggregateRoots.Profile;
 using GameProfile.Domain.Enums.Profile;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId
 {
@@ -14,11 +15,11 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
         }
         public Task<List<AggregateProfileHasGame>> Handle(GetProfileHasGamesWithDataByProfileIdQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.ProfileHasGames.AsQueryable();
+            var query = _context.ProfileHasGames.AsNoTracking().AsQueryable();
 
             if (request.Filter == "1")
             {
-               query= query.Where(x=>x.StatusGame == StatusGameProgressions.Playing);
+                query = query.Where(x => x.StatusGame == StatusGameProgressions.Playing);
             }
             if (request.Filter == "2")
             {
@@ -33,7 +34,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Planned);
             }
 
-            if(request.Sort == "titleAtoZ")
+            if (request.Sort == "titleAtoZ")
             {
                 query = query.OrderBy(x => x.Game.Title);
             }
@@ -41,13 +42,28 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
             {
                 query = query.OrderByDescending(x => x.Game.Title);
             }
-            if (request.Sort == "hoursAsc")
+
+            if (request.Verefication == "yes")
             {
-                query = query.OrderBy(x => x.MinutesInGame);
+                if (request.Sort == "hoursAsc")
+                {
+                    query = query.OrderBy(x => x.MinutesInGameVerified);
+                }
+                if (request.Sort == "hoursDesc")
+                {
+                    query = query.OrderByDescending(x => x.MinutesInGameVerified);
+                }
             }
-            if (request.Sort == "hoursDesc")
+            else
             {
-                query = query.OrderByDescending(x => x.MinutesInGame);
+                if (request.Sort == "hoursAsc")
+                {
+                    query = query.OrderBy(x => x.MinutesInGame);
+                }
+                if (request.Sort == "hoursDesc")
+                {
+                    query = query.OrderByDescending(x => x.MinutesInGame);
+                }
             }
 
             var aggregateProfileHasGame = query
@@ -58,7 +74,8 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
             g.Title,
             g.HeaderImage,
             phg.MinutesInGame / 60,
-            phg.StatusGame
+            phg.StatusGame,
+            phg.MinutesInGameVerified / 60
         )).ToList();
 
             return Task.FromResult(aggregateProfileHasGame);

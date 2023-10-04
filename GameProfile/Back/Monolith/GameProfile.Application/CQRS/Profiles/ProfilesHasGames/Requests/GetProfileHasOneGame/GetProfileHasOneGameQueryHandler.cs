@@ -22,7 +22,8 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
             g.Title,
             g.HeaderImage,
             phg.MinutesInGame / 60,
-            phg.StatusGame
+            phg.StatusGame,
+            phg.MinutesInGameVerified / 60
         )).FirstOrDefaultAsync();
             
             return query;

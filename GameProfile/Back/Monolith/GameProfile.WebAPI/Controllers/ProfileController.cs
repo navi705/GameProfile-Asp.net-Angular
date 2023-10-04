@@ -1,10 +1,14 @@
 ﻿using GameProfile.Application;
+using GameProfile.Application.CQRS.Profiles.Notification.Commands.Delete;
+using GameProfile.Application.CQRS.Profiles.Notification.Requests.GetByProfileId;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours;
+using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHoursVerification;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesWithDataByProfileId;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasOneGame;
+using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetTotalHoursForProfile;
 using GameProfile.Application.CQRS.Profiles.Requests.GetProfileById;
 using GameProfile.Domain.AggregateRoots.Profile;
 using GameProfile.Domain.Enums.Profile;
@@ -27,25 +31,40 @@ namespace GameProfile.WebAPI.Controllers
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpGet("profile")]
-        public async Task<IActionResult> Profile(string? filter,string? sort)
+        public async Task<IActionResult> Profile(string? filter, string? sort, string? verification)
         {
             var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
 
-            var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),filter,sort);
+            var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), filter, sort,verification);
             var games = await Sender.Send(qeury);
 
             var qeury2 = new GetProfileByIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
             var profile = await Sender.Send(qeury2);
 
-            var query3 = new GetProfileHasGamesTotalHoursQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),filter);
-            var hours = await Sender.Send(query3);
+           
+            int hoursForSort = 0;
+            if (verification == "yes")
+            {
+                var query4 = new GetProfileHasGamesTotalHoursVerificationQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), filter);
+                hoursForSort = await Sender.Send(query4);
+            }
+            else
+            {
+                var query3 = new GetProfileHasGamesTotalHoursQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), filter);
+                hoursForSort = await Sender.Send(query3);
+            }
+
+            List<int> hoursProfile = await Sender.Send(new GetProfileHasGamesTotalHoursForProfileQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
 
             var answer = new AnswerForProfile()
             {
                 NickName = profile.Name.Value.ToString(),
                 Description = profile.Description.Value.ToString(),
                 Avatar = userCache.AvatarImage.ToString().Replace("_medium", "_full"),
-                TotalHours = hours,
+                TotalHours = hoursProfile[0],
+                TotalHoursVerification = hoursProfile[1],
+                TotalHoursNotVerification = hoursProfile[2],
+                TotalHoursForSort = hoursForSort,
                 GameList = games
             };
 
@@ -53,25 +72,41 @@ namespace GameProfile.WebAPI.Controllers
         }
         [AllowAnonymous]
         [HttpGet("profile/{profileId}")]
-        public async Task<IActionResult> ProfileViewId(string? filter, string? sort,Guid profileId)
+        public async Task<IActionResult> ProfileViewId(string? filter, string? sort, Guid profileId, string? verification)
         {
             var userCache = await _cacheService.GetAsync<UserCache>(profileId.ToString());
+          
 
-            var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(profileId, filter, sort);
+            var qeury = new GetProfileHasGamesWithDataByProfileIdQuery(profileId, filter, sort, verification);
             var games = await Sender.Send(qeury);
 
             var qeury2 = new GetProfileByIdQuery(profileId);
             var profile = await Sender.Send(qeury2);
 
-            var query3 = new GetProfileHasGamesTotalHoursQuery(profileId, filter);
-            var hours = await Sender.Send(query3);
+
+            int hoursForSort = 0;
+            if (verification == "yes")
+            {
+                var query4 = new GetProfileHasGamesTotalHoursVerificationQuery(profileId, filter);
+                hoursForSort = await Sender.Send(query4);
+            }
+            else
+            {
+                var query3 = new GetProfileHasGamesTotalHoursQuery(profileId, filter);
+                hoursForSort = await Sender.Send(query3);
+            }
+
+            List<int> hoursProfile = await Sender.Send(new GetProfileHasGamesTotalHoursForProfileQuery(profileId));
 
             var answer = new AnswerForProfile()
             {
                 NickName = profile.Name.Value.ToString(),
                 Description = profile.Description.Value.ToString(),
                 Avatar = userCache.AvatarImage.ToString().Replace("_medium", "_full"),
-                TotalHours = hours,
+                TotalHours = hoursProfile[0],
+                TotalHoursVerification = hoursProfile[1],
+                TotalHoursNotVerification = hoursProfile[2],
+                TotalHoursForSort = hoursForSort,
                 GameList = games
             };
 
@@ -84,7 +119,7 @@ namespace GameProfile.WebAPI.Controllers
         public async Task<IActionResult> GetProfileAvatar()
         {
             var userCache = await _cacheService.GetAsync<UserCache>(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value);
-            if(userCache is null)
+            if (userCache is null)
             {
                 return Ok();
             }
@@ -100,7 +135,13 @@ namespace GameProfile.WebAPI.Controllers
         [HttpPut("profile/update/game")]
         public async Task<IActionResult> UpdateProileHasGame(Guid gameId, int hours, StatusGameProgressions statusGame)
         {
-            var query = new UpdateProfileHasGameCommand(gameId, hours, statusGame, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
+            var query1 = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);
+            var gameProfile = await Sender.Send(query1);
+            if (gameProfile is null)
+            {
+                return BadRequest();
+            }
+            var query = new UpdateProfileHasGameCommand(gameId, hours, statusGame, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),gameProfile.HoursVereficated);
             await Sender.Send(query);
             return Ok();
         }
@@ -110,7 +151,7 @@ namespace GameProfile.WebAPI.Controllers
         [HttpDelete("profile/delete/game")]
         public async Task<IActionResult> DeleteProileHasGame(Guid gameId)
         {
-            var query = new DeleteProfileHasGameCommand(gameId,new Guid((HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
+            var query = new DeleteProfileHasGameCommand(gameId, new Guid((HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
             await Sender.Send(query);
             return Ok();
         }
@@ -118,14 +159,15 @@ namespace GameProfile.WebAPI.Controllers
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpPut("profile/add/game")]
-        public async Task<IActionResult> ProfileHasGameAddGame(Guid gameId,StatusGameProgressions status,int hours)
+        public async Task<IActionResult> ProfileHasGameAddGame(Guid gameId, StatusGameProgressions status, int hours)
         {
             var query1 = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);
             var gameProfile = await Sender.Send(query1);
-            if (gameProfile is not null){
+            if (gameProfile is not null)
+            {
                 return NoContent();
             }
-            var query = new CreateProfileHasGameCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),gameId,status,hours * 60);
+            var query = new CreateProfileHasGameCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId, status, hours * 60,0);
             await Sender.Send(query);
             return Ok();
         }
@@ -136,8 +178,28 @@ namespace GameProfile.WebAPI.Controllers
         [HttpGet("profile/get/game")]
         public async Task<IActionResult> ProfileHasGameGetGame(Guid gameId)
         {
-            var query = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);    
+            var query = new GetProfileHasOneGameQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), gameId);
             return Ok(await Sender.Send(query));
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpGet("profile/notification")]
+        public async Task<IActionResult> ProfileGetNotification()
+        {
+            var query = new GetProfileNotificationByIdQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value));
+            return Ok(await Sender.Send(query));
+        }
+
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpDelete("profile/notification")]
+        public async Task<IActionResult> ProfileDeleteNotification(string notification)
+        {
+            var query = new DeleteProfileNotificationComand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), notification);
+            await Sender.Send(query);
+            return Ok();
         }
 
         public class AnswerForProfile
@@ -149,6 +211,12 @@ namespace GameProfile.WebAPI.Controllers
             public string Avatar { get; set; }
 
             public int TotalHours { get; set; }
+
+            public int TotalHoursVerification { get; set; }
+
+            public int TotalHoursNotVerification { get; set; }
+
+            public int TotalHoursForSort { get; set; }
 
             public List<AggregateProfileHasGame> GameList { get; set; }
 

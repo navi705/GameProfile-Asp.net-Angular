@@ -30,6 +30,9 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public Description Description { get; private set; }
 
         public ICollection<StringForEntity> SteamIds { get; private set; }
+
+        public ICollection<StringForEntity> NotificationMessages { get; set; }
+
         //refrences properties ef core
         public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
         public ICollection<Post> Posts { get; set; }

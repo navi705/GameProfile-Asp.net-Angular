@@ -18,7 +18,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.Update
         {
             var recordId = _context.ProfileHasGames.Where(x => x.GameId == request.GameId && x.ProfileId == request.ProfileId).Select(x => x.Id).FirstOrDefault();
             await _context.ProfileHasGames.Where(x => x.GameId == request.GameId && x.ProfileId == request.ProfileId).ExecuteDeleteAsync(cancellationToken);
-            var profileHasGame = new ProfileHasGames(recordId, request.ProfileId,request.GameId,request.StatusGame, request.Hours * 60);
+            var profileHasGame = new ProfileHasGames(recordId, request.ProfileId,request.GameId,request.StatusGame, request.Hours * 60,request.HoursInGameVerified * 60);
             _context.ProfileHasGames.Add(profileHasGame);
             await _context.SaveChangesAsync(cancellationToken);
 

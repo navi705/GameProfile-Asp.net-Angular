@@ -1,6 +1,7 @@
 ﻿using GameProfile.Application.Data;
 using GameProfile.Domain.Entities.ProfileEntites;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById
 {
@@ -13,10 +14,10 @@ namespace GameProfile.Application.CQRS.Profiles.Requests.GetProfileById
             _context = context;
         }
 
-        public Task<Profile?> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Profile?> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
         {
-            var query = _context.Profiles.Where(x => x.Id == request.Id).FirstOrDefault();
-            return Task.FromResult(query);
+            var query = await _context.Profiles.AsNoTracking().Where(x => x.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+            return query;
         }
     }
 }

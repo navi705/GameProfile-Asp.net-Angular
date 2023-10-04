@@ -18,6 +18,7 @@ using GameProfile.Application.CQRS.Forum.Replie.Commands.Update;
 using GameProfile.Application.CQRS.Forum.Replie.Requests.GetById;
 using GameProfile.Application.CQRS.Forum.Requests.GetPostById;
 using GameProfile.Application.CQRS.Forum.Requests.GetPostsQuery;
+using GameProfile.Application.CQRS.Profiles.Notification.Commands.Create;
 using GameProfile.Domain.Entities.Forum;
 using GameProfile.WebAPI.Models;
 using GameProfile.WebAPI.Shared;
@@ -262,6 +263,15 @@ namespace GameProfile.WebAPI.Controllers
             var query = new CreateMessagePostCommand(content, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
             await Sender.Send(query);
 
+            // send owner notification
+            var post = await Sender.Send(new GetPostByIdQuery(postId));
+
+            if (post.Author != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+            {
+                var queryNotification = new CreateProfileNotificationComand(post.Author, $"MessagePost {post.Id}");
+                await Sender.Send(queryNotification);
+            }
+
             var queryUpdateTime = new UpdateTimeUpdateCommand(postId);
             await Sender.Send(queryUpdateTime);
 
@@ -327,6 +337,14 @@ namespace GameProfile.WebAPI.Controllers
             var query1 = new GetPostMessageByIdQuery(messagePostId);
 
             var postMessage = await Sender.Send(query1);
+
+            // send owner notification
+
+            if (postMessage.AuthorId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+            {
+                var queryNotification = new CreateProfileNotificationComand(postMessage.AuthorId, $"RepliePost {postMessage.PostId}");
+                await Sender.Send(queryNotification);
+            }
 
             var queryUpdateTime = new UpdateTimeUpdateCommand(postMessage.PostId);
             await Sender.Send(queryUpdateTime);

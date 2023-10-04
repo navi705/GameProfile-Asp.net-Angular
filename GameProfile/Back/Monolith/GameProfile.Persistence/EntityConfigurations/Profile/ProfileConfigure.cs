@@ -16,6 +16,8 @@ namespace GameProfile.Persistence.EntityConfigurations.Profile
             builder.OwnsMany(profile => profile.SteamIds);
             builder.OwnsOne(x => x.Description);
             builder.OwnsOne(x => x.Name);
+            builder.OwnsMany(x => x.NotificationMessages);
+
         }
     }
 }

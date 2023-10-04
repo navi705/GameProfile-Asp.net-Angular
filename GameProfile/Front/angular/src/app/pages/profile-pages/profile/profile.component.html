@@ -1,9 +1,11 @@
 <div class="container-page">
     <div class="profile-info-container">
-        <img src="{{profile.avatar}}">
-        <div class="profile-text-info">
-            <span class="nickname">{{profile.nickName}}</span>
-            <span>{{profile.description}}</span>
+        <span class="nickname">{{profile.nickName}}</span>
+        <img class="avatar" src="{{profile.avatar}}">
+        <div class="time">
+            <span>Total time: {{profile.totalHours}}</span>
+            <span>Verified time: {{profile.totalHoursVerification}}</span>
+            <span>Not validation time: {{profile.totalHoursNotVerification}}</span>
         </div>
     </div>
     <div class="menu">
@@ -24,15 +26,25 @@
         <mat-select [(ngModel)]="sort" (selectionChange)="selectState(selectedState)">
             <mat-option [value]="'titleAtoZ'">Title A to Z</mat-option>
             <mat-option [value]="'titleZtoA'">Title Z to A </mat-option>
-            <mat-option [value]="'hoursAsc'"> Hours Ascending"</mat-option>
+            <mat-option [value]="'hoursAsc'"> Hours Ascending</mat-option>
             <mat-option [value]="'hoursDesc'">Hours Descending</mat-option>
         </mat-select>
     </mat-form-field>
-    </div>
-    <div class="timeAll">
-        <span>Total time in yours games:{{profile.totalHours}} hours</span>
+
+    <mat-form-field class="sort" >
+        <mat-label>Verification hours</mat-label>
+        <mat-select [(ngModel)]="verification" (selectionChange)="selectState(selectedState)">
+            <mat-option [value]="'yes'">Yes</mat-option>
+            <mat-option [value]="'no'">no</mat-option>
+        </mat-select>
+    </mat-form-field>
+
     </div>
 
+    <div>
+        <span class="nickname">Total hours: {{profile.totalHoursForSort}}</span>
+    </div>
+    
     <div class="game-list">
         <div *ngFor="let game of profile.gameList">
             <div class="game-container">
@@ -42,7 +54,9 @@
                     <a href="game?id={{game.id}}">{{game.title}}</a>
                 </ng-template>
 
-                <img src="{{game.headerImage}}" [height]="115" [width]="250" class="game-image" />
+                <a href="game?id={{game.id}}"><img src="{{game.headerImage}}" [height]="115" [width]="250" class="game-image" /></a>
+
+                <span class="hoursVereficated">Hours Vereficated: {{game.hoursVereficated}}</span>
 
                 <mat-form-field class="sorting">
                     <mat-label >hours</mat-label>
@@ -57,8 +71,8 @@
                         <mat-option [value]="4">Planned</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <button mat-raised-button color="accent" (click)="updateGame(game)">Save changes</button>
-                <button mat-raised-button color="warn" (click)="deleteGame(game)">Delete</button>
+                <button class="marg" mat-raised-button color="accent" (click)="updateGame(game)">Save changes</button>
+                <button mat-raised-button color="warn" (click)="deleteGameConfirm(game)">Delete</button>
             </div>
         </div>
     </div>

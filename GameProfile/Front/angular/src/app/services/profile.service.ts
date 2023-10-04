@@ -50,15 +50,15 @@ import { GameList, ProfileModel } from './models/profile';
         console.log(GlobalVariable.BASE_API_URL + 'logout');
         return this.http.post(GlobalVariable.BASE_API_URL + 'logout',{},httpOptions);
     }
-    public profile(filter:string,sort:string){
+    public profile(filter:string,sort:string,verification:string){
       const httpOptions = {
         withCredentials: true 
       };
-      const params = new HttpParams().set('filter',filter).set('sort',sort);
+      const params = new HttpParams().set('filter',filter).set('sort',sort).set('verification',verification);
       return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + 'profile?'+params,httpOptions);
     }
-    public profileId(id: string,filter:string,sort:string){
-      const params = new HttpParams().set('filter',filter).set('sort',sort);
+    public profileId(id: string,filter:string,sort:string,verification:string){
+      const params = new HttpParams().set('filter',filter).set('sort',sort).set('verification',verification);
       return this.http.get<ProfileModel>(GlobalVariable.BASE_API_URL + `profile/${id}?`+params);
     }
 
@@ -96,5 +96,18 @@ import { GameList, ProfileModel } from './models/profile';
       return this.http.get<GameList>(GlobalVariable.BASE_API_URL + 'profile/get/game?'+params,httpOptions); 
     }
 
+    public getNotification(){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'profile/notification',httpOptions); 
+    }
+
+    public deleteNotification(notification:string){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.delete(GlobalVariable.BASE_API_URL + 'profile/notification?notification='+notification,httpOptions); 
+    }
     
   }

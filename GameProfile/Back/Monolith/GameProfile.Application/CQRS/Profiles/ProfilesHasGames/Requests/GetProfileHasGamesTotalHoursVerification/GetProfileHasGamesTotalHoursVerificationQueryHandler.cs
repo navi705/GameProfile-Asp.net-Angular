@@ -3,17 +3,18 @@ using GameProfile.Domain.Enums.Profile;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHours
+namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGamesTotalHoursVerification
 {
-    public sealed class GetProfileHasGamesTotalHoursQueryHandler : IRequestHandler<GetProfileHasGamesTotalHoursQuery, int>
+    public sealed class GetProfileHasGamesTotalHoursVerificationQueryHandler : IRequestHandler<GetProfileHasGamesTotalHoursVerificationQuery,int>
     {
         private readonly IDatabaseContext _context;
-        public GetProfileHasGamesTotalHoursQueryHandler(IDatabaseContext context)
+
+        public GetProfileHasGamesTotalHoursVerificationQueryHandler(IDatabaseContext context)
         {
             _context = context;
         }
 
-        public async Task<int> Handle(GetProfileHasGamesTotalHoursQuery request, CancellationToken cancellationToken)
+        public async Task<int> Handle(GetProfileHasGamesTotalHoursVerificationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.ProfileHasGames.AsNoTracking().AsQueryable();
             if (request.Filter == "1")
@@ -33,7 +34,7 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetPro
                 query = query.Where(x => x.StatusGame == StatusGameProgressions.Planned);
             }
 
-            return await query.Where(x => x.ProfileId == request.ProfieId).SumAsync(x => x.MinutesInGame)/60;
+            return await query.Where(x => x.ProfileId == request.ProfileId).SumAsync(x => x.MinutesInGameVerified) / 60;
         }
     }
 }

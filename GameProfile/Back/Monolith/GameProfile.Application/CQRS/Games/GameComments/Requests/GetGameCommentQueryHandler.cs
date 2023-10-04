@@ -25,7 +25,7 @@ namespace GameProfile.Application.CQRS.Games.GameComments.Requests
                     Profile = new Profile(x.ProfileId, x.Profile.Name, null, null) { GameHasRatingFromProfiles = x.Profile.GameHasRatingFromProfiles.Where(f=>f.ProfileId == x.ProfileId && f.GameId == x.GameId).ToList() }
                     , GameCommentHasReplies = x.GameCommentHasReplies.Select(h=> new GameCommentHasReplie(h.Id, h.ProfileId, h.CommentId, h.Created, h.Replie)
                     {
-                        Profile = new Profile(h.ProfileId, h.Profile.Name, null, null) 
+                        Profile = new Profile(h.ProfileId, h.Profile.Name, null, null) { GameHasRatingFromProfiles = h.Profile.GameHasRatingFromProfiles.Where(f => f.ProfileId == h.ProfileId && f.GameId == x.GameId).ToList() }
                     }).ToList()
                 }
                 )

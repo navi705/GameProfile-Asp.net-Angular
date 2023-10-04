@@ -22,7 +22,7 @@ using GameProfile.Application.CQRS.Games.Requests.GetGamesByPubOrDev;
 using GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch;
 using GameProfile.Application.CQRS.Games.Requests.GetGenres;
 using GameProfile.Application.CQRS.Games.Requests.GetTags;
-using GameProfile.Application.CQRS.Games.Tags.Commands.AddTag;
+using GameProfile.Application.CQRS.Profiles.Notification.Commands.Create;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Domain.ValueObjects.Game;
@@ -31,7 +31,7 @@ using GameProfile.WebAPI.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.Design;
+using System;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -248,7 +248,7 @@ namespace GameProfile.WebAPI.Controllers
 
             var gameHasRating = await Sender.Send(new GetGameHaveRatingFromProfileByGameIdQuery(gameId));
 
-            decimal avarageRating = gameHasRating.Sum(x => x.ReviewScore) / gameHasRating.Count;
+            decimal avarageRating = gameHasRating.Sum(x => (decimal)x.ReviewScore) / gameHasRating.Count;
 
             Review review = new(Domain.Enums.Game.SiteReviews.GameProfile, avarageRating);
 
@@ -275,6 +275,7 @@ namespace GameProfile.WebAPI.Controllers
         {
             var query = new CreateGameCommentCommand(gameId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), comment);
             await Sender.Send(query);
+
             return Ok();
         }
 
@@ -334,6 +335,17 @@ namespace GameProfile.WebAPI.Controllers
         {
             var query = new CreateGameReplieCommand(commentId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), replie);
             await Sender.Send(query);
+
+            var gameComment = await Sender.Send(new GetGameCommentByIdQuery(commentId));
+
+
+            // send owner notification
+            if ( gameComment.ProfileId != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+            {
+                var queryNotification = new CreateProfileNotificationComand(gameComment.ProfileId, $"ReplieGame {gameComment.GameId}");
+                await Sender.Send(queryNotification);
+            }
+
             return Ok();
         }
 

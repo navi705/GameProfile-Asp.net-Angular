@@ -10,7 +10,7 @@
         <a mat-button class="nav-a" routerLink="stats" routerLinkActive="nav-a-selected">Stats</a>
       </nav>
       <div class="search">
-        <mat-icon>search</mat-icon>
+        <mat-icon class="icon-search">search</mat-icon>
         <input class="search-input"
           [matAutocomplete]="auto"
           [(ngModel)]="searchString"
@@ -37,6 +37,17 @@
         <div class="login">
           <a href="/profile"><img src="{{image}}" class="avatar" /></a>
         </div>
+
+        <mat-icon *ngIf="notificationCount>0" matBadge="{{notificationCount}}" [matMenuTriggerFor]="notify" matBadgeColor="accent" class="icon-notification">notifications</mat-icon>
+
+        <mat-icon *ngIf="notificationCount<=0" class="icon-notification">notifications</mat-icon>
+
+        <mat-menu #notify="matMenu">
+          <a href="{{item.link}}" (click)="deleteNotify(i)" mat-menu-item class="notification-menu" *ngFor="let item of notifyShow;let i = index">
+            <span>{{item.content}}</span>
+          </a>
+        </mat-menu>
+
       </ng-template>
     </div>
   </mat-toolbar>

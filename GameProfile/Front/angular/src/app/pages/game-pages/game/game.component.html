@@ -132,9 +132,9 @@
 
                 <div class="replie" *ngFor="let replie of comment.gameCommentHasReplies;let j = index">
                     <div class="replie-header">
-                        <span class="comment-author"><a href="/profile/{{comment.profileId}}">{{comment.profile.name.value}} <span *ngIf="comment.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{comment.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
+                        <span class="comment-author"><a href="/profile/{{replie.profileId}}">{{replie.profile.name.value}} <span *ngIf="replie.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{replie.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
                         
-                        <span class="comment-date">{{comment.createdDate.slice(0,10)}}</span>
+                        <span class="comment-date">{{replie.created.slice(0,10)}}</span>
                     </div>
                     <div *ngIf="checkCanControlComment(replie.profileId)">
                         <a mat-raised-button color="warn" (click)="deleteReplie(replie.id)">Delete</a>

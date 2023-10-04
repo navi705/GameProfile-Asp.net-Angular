@@ -100,6 +100,17 @@ nav a {
   display: none;
 }
 
+.icon-notification{
+  margin-left: 10px;
+  font-size: 30px;
+  overflow: visible;
+}
+
+.notification-menu{
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 650px) {
   .menu {
     display: none;
@@ -138,6 +149,15 @@ nav a {
 
   .show-menu .menu {
     display: block;
+  }
+
+  .icon-search{
+    display: none;
+  }
+
+  .icon-notification{
+    margin-left: 0px;
+    font-size: 24px;
   }
   
 }

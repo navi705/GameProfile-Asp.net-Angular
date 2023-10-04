@@ -6,5 +6,6 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.Create
     public sealed record class CreateProfileHasGameCommand(Guid ProfileId,
                                                              Guid GameId,
                                                              StatusGameProgressions StatusGameProgressions,
-                                                             int MinutesInGame) : IRequest;
+                                                             int MinutesInGame,
+                                                             int MinutesInGameVerified) : IRequest;
 }

@@ -18,6 +18,10 @@ import { ProfileService } from 'src/app/services/profile.service';
     findGames: Observable<Game[]>;
     isMenuOpen:boolean = false;
 
+    notificationCount: number = 0;
+
+    notifyShow:Array<NotificationShow> = [];
+
     constructor(public gameService:GameService,public profileService:ProfileService){
       this.searchString = "";
       this.findGames = new Observable<Game[]>();
@@ -39,7 +43,29 @@ import { ProfileService } from 'src/app/services/profile.service';
           if (response) {
           this.image = response;
           localStorage.setItem('auth', 'true');
-          
+          this.profileService.getNotification().subscribe(response => {this.notificationCount = response.length;
+            response.forEach(r=>{
+              let temp = r.stringFor.split(" ");
+
+              if(temp[0] == 'ReplieGame'){
+                let notShow: NotificationShow ={link:'game?id='+temp[1],content:'Someone replied to your comment in the games',name:r.stringFor};
+                this.notifyShow.push(notShow);
+              }
+
+              if(temp[0] == 'RepliePost'){
+                let notShow: NotificationShow ={link:'forum/'+temp[1],content:'Someone replied to your answer in the forum',name:r.stringFor};
+                this.notifyShow.push(notShow);
+              }
+
+              if(temp[0] == 'MessagePost'){
+                let notShow: NotificationShow ={link:'forum/'+temp[1],content:'Someone replied to your post in the forum',name:r.stringFor};
+                this.notifyShow.push(notShow);
+              }
+
+            })
+            console.log(this.notifyShow);
+          }         
+          );
           }
         });
 
@@ -56,4 +82,14 @@ import { ProfileService } from 'src/app/services/profile.service';
     toggleMenu():void{
       this.isMenuOpen = !this.isMenuOpen;
     }
+    deleteNotify(i:number){
+      this.profileService.deleteNotification(this.notifyShow[i].name).subscribe();
+    }
+
+    
+  }
+  interface NotificationShow{
+      link:string,
+      content:string,
+      name:string
   }
