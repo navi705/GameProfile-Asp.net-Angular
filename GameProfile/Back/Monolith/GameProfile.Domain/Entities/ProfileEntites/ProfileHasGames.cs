@@ -42,7 +42,7 @@ namespace GameProfile.Domain.Entities.ProfileEntites
 
         public int MinutesInGame { get; private set; }
 
-        public int MinutesInGameVerified { get; private set; }
+        public int MinutesInGameVerified { get; set; }
 
     }
 }

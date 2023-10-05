@@ -1,13 +1,14 @@
-.profile-info-container{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    background-color: #7a7a7a31;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 40px 10px 40px;
-    border-radius: 20px;
+.profile-info-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  background-color: #7a7a7a31;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 40px 10px 40px;
+  border-radius: 20px;
 }
+
 /* .profile-text-info{
     padding: 20px 20px 20px 20px;
     display: flex;
@@ -15,85 +16,103 @@
     background-color: #7a7a7a31;
     margin-left: 20px;
 } */
-.time{
+.time {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 22px;
   font-weight: 400;
 }
-.nickname{
-    font-size: 26px;
-    font-weight: 500;
+
+.nickname {
+  font-size: 26px;
+  font-weight: 500;
+  max-width: 200px;
+  word-break: break-all;
+
 }
-.avatar{
-    border-radius: 10%;
+
+.avatar {
+  border-radius: 10%;
 }
-.menu{
-    display: flex;
-    margin-bottom: 20px;
+
+.menu {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 20px;
 }
+
 .game-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: flex-start;
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: flex-start;
+}
+
 .game-container {
-    flex-basis: calc(25% - 20px);
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-    margin-right: 20px;
-  }
-  
+  flex-basis: calc(25% - 20px);
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
 .game-container:nth-child(4n) {
-    margin-right: 0;
-  }
-
-.game-image{
-    margin-bottom: 20px;
-    border-radius: 4px;
-}
-.active{
-    color: #00acc1;
+  margin-right: 0;
 }
 
-.hoursVereficated{
+.game-image {
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.active {
+  color: #00acc1;
+}
+
+.hoursVereficated {
   margin-right: auto;
   margin-left: auto;
   font-size: 20px;
   font-weight: 600;
 }
 
-.sort{
+.sort {
   margin-right: 10px;
 }
 
-.marg{
+.marg {
   margin-bottom: 5px;
 }
-@media (max-width: 650px) 
-{
 
-  .profile-info-container{
+@media (max-width: 650px) {
+
+  .profile-info-container {
     flex-direction: column;
-}
+  }
 
-        .container-page {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-      
-        .game-list {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        
-         
+  .container-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .game-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .menu{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .steams{
+    display: flex;
+    flex-direction: column;
+  }
+
+
 }

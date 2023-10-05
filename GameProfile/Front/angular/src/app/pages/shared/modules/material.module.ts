@@ -18,10 +18,11 @@ import {MatSliderModule} from '@angular/material/slider';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const MaterialComponents = [MatToolbarModule, MatCardModule,MatButtonModule,MatInputModule,MatCheckboxModule,MatButtonToggleModule,MatSelectModule,MatDatepickerModule
 ,MatNativeDateModule,MatAutocompleteModule,MatIconModule,ScrollingModule,MatProgressSpinnerModule,MatSnackBarModule,MatChipsModule
-,MatSliderModule,MatBadgeModule,MatMenuModule,MatDialogModule];
+,MatSliderModule,MatBadgeModule,MatMenuModule,MatDialogModule,MatTooltipModule];
 
 @NgModule({
 imports: [MaterialComponents],

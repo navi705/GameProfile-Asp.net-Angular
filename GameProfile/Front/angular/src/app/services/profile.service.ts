@@ -110,4 +110,26 @@ import { GameList, ProfileModel } from './models/profile';
       return this.http.delete(GlobalVariable.BASE_API_URL + 'profile/notification?notification='+notification,httpOptions); 
     }
     
+    public updateVereficatedHours(){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.put(GlobalVariable.BASE_API_URL + 'profile/update/valide-time',null,httpOptions); 
+    }
+
+    public addSteamAccount(objects:any){
+      const httpOptions = {
+        withCredentials: true 
+      };
+
+      return this.http.put(GlobalVariable.BASE_API_URL + 'profile/steam/add',objects,httpOptions);
+    }
+
+    public getSteanAccounts(){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'profile/steams',httpOptions);
+    }
+
   }

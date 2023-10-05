@@ -31,6 +31,7 @@ import { FindTeammeteSeacrhComponent } from './pages/find-temmate-pages/find-tea
 import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 import { AddForumPostComponent } from './pages/forum-pages/add-forum-post/add-forum-post.component';
 import { PostComponent } from './pages/forum-pages/post/post.component';
+import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-account/add-steam-account/add-steam-account.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -65,6 +66,7 @@ const MY_DATE_FORMAT = {
     ForumComponent,
     AddForumPostComponent,
     PostComponent,
+    AddSteamAccountComponent,
   ],
   imports: [
     BrowserModule,

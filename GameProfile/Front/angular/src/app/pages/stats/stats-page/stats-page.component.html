@@ -6,6 +6,8 @@
                 <th>#</th>
                 <th>Name</th>
                 <th>Total Hours Played</th>
+                <th>Total Not Verify Hours</th>
+                <th>Total Verify Hour</th>
                 <th>Total Games</th>
               </tr>
             </thead>
@@ -14,6 +16,8 @@
                 <td>{{ i + 1 }}</td>
                 <td><a  href="profile/{{stat.id}}">{{ stat.profileName.value }}</a></td>
                 <td>{{ stat.totalHours }}</td>
+                <td>{{ stat.totalNotVereficatedHours }}</td>
+                <td>{{ stat.hoursVerificated }}</td>
                 <td>{{ stat.countGames }}</td>
               </tr>
             </tbody>

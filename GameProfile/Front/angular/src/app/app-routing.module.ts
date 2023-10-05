@@ -17,6 +17,7 @@ import { FindTeammeteSeacrhComponent } from './pages/find-temmate-pages/find-tea
 import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 import { AddForumPostComponent } from './pages/forum-pages/add-forum-post/add-forum-post.component';
 import { PostComponent } from './pages/forum-pages/post/post.component';
+import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-account/add-steam-account/add-steam-account.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
@@ -34,6 +35,7 @@ const routes: Routes = [
   {path:'forum',component: ForumComponent},
   {path:'forum/add',component: AddForumPostComponent},
   {path:'forum/:id',component:PostComponent},
+  {path:'add-steam-account',component:AddSteamAccountComponent},
   {path: '**', component: NotFoundComponent},
 ];
 

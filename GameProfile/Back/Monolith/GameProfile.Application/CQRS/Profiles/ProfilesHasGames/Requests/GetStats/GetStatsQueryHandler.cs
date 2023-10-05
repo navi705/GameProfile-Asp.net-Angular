@@ -13,19 +13,21 @@ namespace GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetSta
             _context = context;
         }
 
-        public Task<List<AggregateProfileStats>> Handle(GetStatsProfilesQuery request, CancellationToken cancellationToken)
+        public async Task<List<AggregateProfileStats>> Handle(GetStatsProfilesQuery request, CancellationToken cancellationToken)
         {
-            var result = _context.Profiles
+            var result = await _context.Profiles.AsNoTracking()
             .Include(p => p.ProfileHasGames)
-            .ToList()
             .Select(p => new AggregateProfileStats(
                  p.Id,
                  p.Name,
+                  p.ProfileHasGames.Sum(phg => phg.MinutesInGame + phg.MinutesInGameVerified) / 60,
                  p.ProfileHasGames.Sum(phg => phg.MinutesInGame) / 60,
-                 p.ProfileHasGames.Count()))
-            .OrderByDescending(x=> x.TotalHours).ToList();
+                 p.ProfileHasGames.Sum(phg => phg.MinutesInGameVerified) / 60,
+                 p.ProfileHasGames.Count())).ToListAsync(cancellationToken);
 
-            return Task.FromResult(result);
+            result = result.OrderByDescending(x => x.HoursVerificated).ToList();
+
+            return result;
         }
     }
 }

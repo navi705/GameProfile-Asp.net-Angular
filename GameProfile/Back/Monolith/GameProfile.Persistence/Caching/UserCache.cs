@@ -6,6 +6,7 @@
 
         public List<UserDevice> DeviceList { get; set; }
 
+        public SteamUpdateTime SteamUpdateTime { get; set; }
     }
 
     public class UserDevice
@@ -16,6 +17,12 @@
 
     }
 
+    public class SteamUpdateTime 
+    { 
+        public DateTime DateTime { get; set; }
+
+        public int CountUpdateSteam { get; set; }
+    }
 
 }
 

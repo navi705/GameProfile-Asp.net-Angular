@@ -10,8 +10,23 @@
     </div>
     <div class="menu">
         <button mat-button color="primary">Games</button>
+        <button mat-raised-button color="accent" #tooltip="matTooltip"
+        matTooltip="Click and expect the games to be updated and added soon.
+
+        Click to add games from a new account.
+        
+        Available 2 times a day (At the moment it is not stable and there are bugs )
+        "
+         (click)="updateVereficated()">Update Vereficated</button>
+        <a mat-raised-button color="primary" href="{{urlSteam}}">Add steam profile</a>
         <button mat-raised-button color="warn" (click)="logout()">Logout</button>
     </div>
+
+    <div clas="steams">
+        <span>Steam id: </span>
+        <a *ngFor="let item of steamIds" href="https://steamcommunity.com/profiles/{{item}}">{{item}} </a>
+    </div>
+
     <span>{{gamesCount}}</span>
     <div class="game-menu">
         <button mat-button [ngClass]="{ 'active': selectedState === 'all' }" (click)="selectState('all')">All</button>

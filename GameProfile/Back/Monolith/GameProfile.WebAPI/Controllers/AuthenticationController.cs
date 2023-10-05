@@ -112,16 +112,18 @@ namespace GameProfile.WebAPI.Controllers
             }
 
             // cookie for redis
-            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]), DeviceList = list };
+            var userCache = new UserCache() { AvatarImage = new Uri(userInfo[0]), DeviceList = list};
             var cookie = Response.Headers["Set-Cookie"].ToString().Split('=')[1].Split(';')[0];
 
             if (list.Where(x => x.UserAgent == Request.Headers.UserAgent.ToString()).Count() > 0)
             {
                 list.Where(x => x.UserAgent == Request.Headers.UserAgent.ToString()).First().SessionCookie = cookie;
+                userCache.SteamUpdateTime =getCache.SteamUpdateTime;
             }
             else
             {
                 userCache.DeviceList.Add(new() { UserAgent = Request.Headers.UserAgent.ToString(), SessionCookie = cookie });
+                userCache.SteamUpdateTime = new SteamUpdateTime { DateTime = DateTime.Now.AddDays(-2), CountUpdateSteam = 0 };
             }
            
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);

@@ -3,6 +3,7 @@ import { GameList, ProfileModel } from 'src/app/services/models/profile';
 import { ProfileService } from 'src/app/services/profile.service';
 import { of, catchError } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GlobalVariable } from 'src/app/global';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,8 @@ export class ProfileComponent {
   selectedState: string = 'all';
   sort:string = "hoursDesc";
   verification:string = "yes";
+  urlSteam:string = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${GlobalVariable.BASE_FRONT_URL}add-steam-account&openid.realm=${GlobalVariable.BASE_FRONT_URL}&openid.identity=http://specs.openid.net/auth/2.0/identifier_select&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select`;
+  steamIds:string[] = [];
 
   selectState(state: string) {
     this.selectedState = state;
@@ -48,6 +51,7 @@ export class ProfileComponent {
     ).subscribe(response => {  if (response) { this.profile = response;this.gamesCount = this.profile.gameList.length;
       localStorage.setItem('auth', 'true');}});
 
+      this.profileService.getSteanAccounts().subscribe(response => {this.steamIds = response;});
 
   }
   public updateGame(game: GameList) {
@@ -65,6 +69,11 @@ export class ProfileComponent {
       this.profile.gameList = this.profile.gameList.filter(item => item.id !== game.id);
     });
   }
+
+  updateVereficated(){
+    this.profileService.updateVereficatedHours().subscribe();
+  }
+
 
   logout() {
     this.profileService.logout().subscribe(response=>window.location.href = "/games");
