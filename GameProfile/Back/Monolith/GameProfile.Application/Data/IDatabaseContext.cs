@@ -34,10 +34,5 @@ namespace GameProfile.Application.Data
         DbSet<GameCommentHasReplie> GameCommentHasReplies { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
-
-        Task<int> ExecuteSqlInterpolatedAsync(FormattableString sql, CancellationToken cancellationToken = default);
-
-        Task<int> ExecuteSqlRawAsync(string sql, CancellationToken cancellationToken = default);
-
     }
 }

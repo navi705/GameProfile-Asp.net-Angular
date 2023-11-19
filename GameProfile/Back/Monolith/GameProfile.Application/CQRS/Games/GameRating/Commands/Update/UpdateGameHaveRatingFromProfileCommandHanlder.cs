@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Games.GameRating.Commands.Update
         public async Task Handle(UpdateGameHaveRatingFromProfileCommand request, CancellationToken cancellationToken)
         {
            var gameHaveRatingFromProfile = await _context.GameHasRatingFromProfiles.Where(x=>x.ProfileId == request.ProfileId && x.GameId == request.GameId).FirstOrDefaultAsync(cancellationToken);
-            gameHaveRatingFromProfile.ReviewScore = request.score;
+            gameHaveRatingFromProfile.ChangeReview(request.score);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

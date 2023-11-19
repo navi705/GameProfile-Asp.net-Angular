@@ -26,9 +26,7 @@ namespace GameProfile.WebAPI.Controllers
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpGet]
         public async Task<IActionResult> HaveAdmin()
-        {
-          
-
+        {         
             var isAdmin = await Sender.Send(new DoesHaveHaveRoleAdminQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
 
            if (!isAdmin)

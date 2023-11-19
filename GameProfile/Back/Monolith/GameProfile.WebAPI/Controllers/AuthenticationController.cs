@@ -12,11 +12,8 @@ using GameProfile.Application.CQRS.Profiles.Requests.GetBySteamId;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
-using GameProfile.Application.CQRS.Games.GamesSteamAppId.Commands;
-using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
-using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.WebAPI.ApiCompilation;
-using static GameProfile.Infrastructure.Steam.Models.ListGames;
+using GameProfile.Application.DTO;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -26,7 +23,10 @@ namespace GameProfile.WebAPI.Controllers
         private readonly ILogger<AuthenticationController> _logger;
         private readonly ISteamApi _steamApi;
         private readonly SteamApiCompilation _steamApiCompilation;
-        public AuthenticationController(ISender sender, ICacheService cacheService, ILogger<AuthenticationController> logger, ISteamApi steamApi) : base(sender)
+        public AuthenticationController(ISender sender,
+            ICacheService cacheService,
+            ILogger<AuthenticationController> logger,
+            ISteamApi steamApi) : base(sender)
         {
             _cacheService = cacheService;
             _logger = logger;
@@ -38,7 +38,6 @@ namespace GameProfile.WebAPI.Controllers
         [HttpPost("login/steam")]
         public async Task<IActionResult> LoginBySteam(SteamOpenIdData steamOpenIdData)
         {
-            //SteamApi steamApi = new();
             string idUser = steamOpenIdData.openidclaimed_id[37..];
             if (await _steamApi.CheckOpenIdSteam(steamOpenIdData) == false)
             {
@@ -52,7 +51,7 @@ namespace GameProfile.WebAPI.Controllers
                 _logger.LogInformation($"Profile is close {idUser}");
                 return BadRequest("Check your profile settings");
             }
-
+            // TODO: add if game hours close
             var userInfo = await _steamApi.SteamUserGetPlayerSummaries(idUser);
 
             var query = new GetProfileQuery(idUser);
@@ -66,10 +65,6 @@ namespace GameProfile.WebAPI.Controllers
                 _logger.LogInformation($"Profile is added Id-{idUser} NickName-{userInfo[1]}");
                 foreach (var item in games.games)
                 {
-                    //if(item.appid == 115320)
-                    //{
-                    //    _logger.LogInformation("aboba");
-                    //}
                     Guid gameId = Guid.Empty;
                     var checkHaveSteamId = await Sender.Send(new GetGamesIdBySteamIdQuery(item.appid));
                     if (checkHaveSteamId is null){
@@ -100,6 +95,7 @@ namespace GameProfile.WebAPI.Controllers
             }
 
             profile = await Sender.Send(query);
+
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, profile.Id.ToString()) };
             ClaimsIdentity claimsIdentity = new(claims, "Cookies");
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
@@ -128,7 +124,7 @@ namespace GameProfile.WebAPI.Controllers
            
             await _cacheService.SetAsync(profile.Id.ToString(), userCache);
             _logger.LogInformation($"{userInfo[1]} is Steam login");
-            return Ok(new AnswerLoginSteam() { Name = userInfo[1], Avatar = userInfo[0],Id=profile.Id.ToString() });
+            return Ok(new AuthDTO(userInfo[1], userInfo[0], profile.Id.ToString()));
         }
 
         
@@ -144,13 +140,5 @@ namespace GameProfile.WebAPI.Controllers
             _logger.LogInformation($"Logged out {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value}");
             return Ok();
         }
-
-    }
-    class AnswerLoginSteam
-    {
-        public string Name { get; set; }
-        public string Avatar { get; set; }
-
-        public string Id { get; set; }
     }
 }

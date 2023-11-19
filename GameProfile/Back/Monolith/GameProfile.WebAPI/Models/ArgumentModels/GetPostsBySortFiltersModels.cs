@@ -1,4 +1,4 @@
-﻿namespace GameProfile.WebAPI.Models
+﻿namespace GameProfile.WebAPI.Models.ArgumentModels
 {
     public sealed class GetPostsBySortFiltersModels
     {
@@ -10,13 +10,13 @@
 
         public DateTime CreatedDateTo { get; set; }
 
-        public string? Language { get; set; }
+        public List<string>? Languages { get; set; } = new();
 
-        public string? LanguageExcluding { get; set; }
+        public List<string>? LanguagesExcluding { get; set; } = new();
 
-        public string? Game { get; set; }
+        public List<string>?  Games { get; set; } = new();
 
-        public string? GameExcluding { get; set; }
+        public List<string>? GamesExcluding { get; set; } = new();
 
         public decimal? RateOf { get; set; }
 
@@ -24,9 +24,9 @@
 
         public string? Closed { get; set; }
 
-        public string? Topic{ get; set; }
+        public List<string>? Topics { get; set; } = new();
 
-        public string? TopicExcluding { get; set; }
+        public List<string>? TopicsExcluding { get; set; } = new();
 
         public string? SearchString { get; set; }
 

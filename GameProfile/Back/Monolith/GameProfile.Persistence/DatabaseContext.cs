@@ -2,7 +2,6 @@
 using GameProfile.Domain.Entities.Forum;
 using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Entities.ProfileEntites;
-using GameProfile.Persistence.EntityConfigurations;
 using GameProfile.Persistence.EntityConfigurations.Forum;
 using GameProfile.Persistence.EntityConfigurations.Game;
 using GameProfile.Persistence.EntityConfigurations.Profile;
@@ -40,36 +39,31 @@ namespace GameProfile.Persistence
             base.OnModelCreating(modelBuilder);
         }
 
-        public Task<int> ExecuteSqlInterpolatedAsync(FormattableString sql, CancellationToken cancellationToken = default)
-        {
-            return this.Database.ExecuteSqlInterpolatedAsync(sql, cancellationToken);
-        }
-
-        public Task<int> ExecuteSqlRawAsync(string sql, CancellationToken cancellationToken = default)
-        {
-            return this.Database.ExecuteSqlRawAsync(sql, cancellationToken);
-        }
-
+        #region Games
         public DbSet<Game> Games { get; set; }
-        public DbSet<Profile> Profiles { get; set; }
-        public DbSet<ProfileHasGames> ProfileHasGames { get; set; }
-
-        public DbSet<Role> Roles { get; set; }
-
         public DbSet<GameSteamId> GameSteamIds { get; set; }
         public DbSet<NotGameSteamId> NotGameSteamIds { get; set; }
-
-        public DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
-
-        public DbSet<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
 
         public DbSet<GameHasComments> GameHasComments { get; set; }
 
         public DbSet<GameCommentHasReplie> GameCommentHasReplies { get; set; }
 
-        //Forum
+        public DbSet<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+        #endregion
+        #region Profile
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<ProfileHasGames> ProfileHasGames { get; set; }
+
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+        #endregion
+        #region Forum
         public DbSet<Post> Posts { get; set; }
+
         public DbSet<MessagePost> MessagePosts {get;set;}
+
         public DbSet<Replie> Replies { get; set; }
+        #endregion
     }
 }

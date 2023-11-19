@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Forum.Commands.UpdateRating
         public async Task Handle(UpdateRatingPostCommand request, CancellationToken cancellationToken)
         {
             var post = await _context.Posts.FirstOrDefaultAsync(x => x.Id == request.PostId, cancellationToken);
-            post.Rating += request.Rating;
+            post.ChangeRating(request.Rating);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

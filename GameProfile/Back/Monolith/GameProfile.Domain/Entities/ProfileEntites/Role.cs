@@ -20,11 +20,9 @@ namespace GameProfile.Domain.Entities.ProfileEntites
 
         public string Name { get; private set; }
 
-        public ICollection<StringForEntity>? Rights { get; set; }
+        public ICollection<StringForEntity>? Rights { get; private set; }
 
-        //refrences properties ef core
-        //Пробую без промежуточной сущности типо без profilehasgames
-        //public ICollection<ProfileHasRole>? ProfileHasRoles { get; set; }
+        //reference properties for ef core
 
         public ICollection<Profile>? Profile { get; set; }
     }

@@ -10,16 +10,19 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public Profile(Guid id,
                        Name name,
                        Description description,
-                       ICollection<StringForEntity> steamIds) : this(id)
+                       ICollection<StringForEntity> steamIds,
+                       ICollection<StringForEntity> notificationMessages) : this(id)
         {
             Name = name;
             Description = description;
             SteamIds = steamIds;
+            NotificationMessages = notificationMessages;
         }
 
         /// <summary>
         /// EF constructor
         /// </summary>
+        /// I can't remove because ef core
         private Profile(Guid id) : base(id)
         {
 
@@ -31,25 +34,41 @@ namespace GameProfile.Domain.Entities.ProfileEntites
 
         public ICollection<StringForEntity> SteamIds { get; private set; }
 
-        public ICollection<StringForEntity> NotificationMessages { get; set; }
+        public ICollection<StringForEntity> NotificationMessages { get; private set; }
 
-        //refrences properties ef core
-        public ICollection<ProfileHasGames> ProfileHasGames { get; set; }
-        public ICollection<Post> Posts { get; set; }
+        //reference properties for ef core
+        #region reference properties 
+        public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
+        public ICollection<Post>? Posts { get; set; }
 
-        public ICollection<MessagePost> Messages { get; set; }
+        public ICollection<MessagePost>? Messages { get; set; }
 
-        public ICollection<Replie> Replies { get; set; }
+        public ICollection<Replie>? Replies { get; set; }
 
-        public ICollection<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+        public ICollection<PostHaveRatingFromProfile>? PostHaveRatingFromProfiles { get; set; }
 
-        public ICollection<Role> Roles { get; set; }
+        public ICollection<Role>? Roles { get; set; }
 
-        public ICollection<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+        public ICollection<GameHasRatingFromProfile>? GameHasRatingFromProfiles { get; set; }
 
-        public ICollection<GameHasComments> GameHasComments { get; set; }
+        public ICollection<GameHasComments>? GameHasComments { get; set; }
 
-        public ICollection<GameCommentHasReplie> GameCommentHasReplies { get; set;}
-        
+        public ICollection<GameCommentHasReplie>? GameCommentHasReplies { get; set;}
+        #endregion
+
+        public void AddNotification(StringForEntity notify)
+        {
+            if(NotificationMessages == null)
+            {
+                NotificationMessages = new List<StringForEntity>{
+                    notify
+                };
+            }
+            else
+            {
+                NotificationMessages.Add(notify);
+            }
+        }
+
     }
 }

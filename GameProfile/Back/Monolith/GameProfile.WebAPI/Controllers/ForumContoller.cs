@@ -1,13 +1,8 @@
 ﻿using GameProfile.Application.CQRS.Forum.Commands.CloseOrOpen;
 using GameProfile.Application.CQRS.Forum.Commands.Create;
 using GameProfile.Application.CQRS.Forum.Commands.Delete;
-using GameProfile.Application.CQRS.Forum.Commands.UpdateRating;
+using GameProfile.Application.CQRS.Forum.Commands.UpdateRatingComplitation;
 using GameProfile.Application.CQRS.Forum.Commands.UpdateTimeUpdate;
-using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Create;
-using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Delete;
-using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Commands.Update;
-using GameProfile.Application.CQRS.Forum.PostHaveRatingFromProfile.Requests.GetByProfileIdPostId;
-using GameProfile.Application.CQRS.Forum.PostMessage.Commands;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands.Create;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands.Delete;
 using GameProfile.Application.CQRS.Forum.PostMessage.Commands.Update;
@@ -16,143 +11,105 @@ using GameProfile.Application.CQRS.Forum.Replie.Commands.Create;
 using GameProfile.Application.CQRS.Forum.Replie.Commands.Delete;
 using GameProfile.Application.CQRS.Forum.Replie.Commands.Update;
 using GameProfile.Application.CQRS.Forum.Replie.Requests.GetById;
+using GameProfile.Application.CQRS.Forum.Requests.GetPostAuthor;
 using GameProfile.Application.CQRS.Forum.Requests.GetPostById;
 using GameProfile.Application.CQRS.Forum.Requests.GetPostsQuery;
 using GameProfile.Application.CQRS.Profiles.Notification.Commands.Create;
-using GameProfile.Domain.Entities.Forum;
-using GameProfile.WebAPI.Models;
+using GameProfile.WebAPI.Models.ArgumentModels;
 using GameProfile.WebAPI.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameProfile.WebAPI.Controllers
 {
     [Route("forum")]
     public sealed class ForumContoller : ApiController
     {
-        public ForumContoller(ISender sender)
+        private readonly ILogger<ForumContoller> _logger;
+        public ForumContoller(ISender sender, ILogger<ForumContoller> logger)
            : base(sender)
         {
+            _logger = logger;
         }
 
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpPut("add")]
-        public async Task<IActionResult> PutPost(string title, string description, string topic, string? games, string languages)
+        public async Task<IActionResult> PutPost(string title, string description, string topic, [FromQuery]List<string>? games, [FromQuery][Required] List<string> languages)
         {
-            List<string> games1 = new();
-            List<string> languages1 = new();
-            if (languages is not null && languages != "")
+            if (games is null)
             {
-                languages1 = languages.Split(',').ToList();
-            }
-            if (games is not null && games != "")
-            {
-                games1 = games.Split(',').ToList();
+                games = new List<string>();
             }
 
-            var query = new CreatePostCommand(title, description, topic, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), languages1, games1);
-            await Sender.Send(query);
+            var query = new CreatePostCommand(title,
+                                              description,
+                                              topic,
+                                              new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value),
+                                              languages,
+                                              games);
+
+            var queryResult = await Sender.Send(query);
+            if (!string.IsNullOrWhiteSpace(queryResult.ErrorMessage))
+            {
+                _logger.LogWarning($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} " +
+                    $"Create a new Post failed Error: {queryResult.ErrorMessage}");
+                return Forbid(queryResult.ErrorMessage);
+            }
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} Create a new Post");
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetPost([FromQuery] GetPostsBySortFiltersModels getPostsBySortFilters)
         {
-            List<string> languages = new();
-            List<string> languagesExcluding = new();
-            List<string> games = new();
-            List<string> gamesExcluding = new();
-            List<string> topic = new();
-            List<string> topicExcluding = new();
-            if (getPostsBySortFilters.Language is not null && getPostsBySortFilters.Language != "")
-            {
-                languages = getPostsBySortFilters.Language.Split(",").ToList();
-            }
-            if (getPostsBySortFilters.Game is not null && getPostsBySortFilters.Game != "")
-            {
-                games = getPostsBySortFilters.Game.Split(",").ToList();
-            }
-            if (getPostsBySortFilters.Topic is not null && getPostsBySortFilters.Topic != "")
-            {
-                topic = getPostsBySortFilters.Topic.Split(",").ToList();
-            }
-            if (getPostsBySortFilters.GameExcluding is not null && getPostsBySortFilters.GameExcluding != "")
-            {
-                gamesExcluding = getPostsBySortFilters.GameExcluding.Split(",").ToList();
-            }
-            if (getPostsBySortFilters.LanguageExcluding is not null && getPostsBySortFilters.LanguageExcluding != "")
-            {
-                languagesExcluding = getPostsBySortFilters.LanguageExcluding.Split(",").ToList();
-            }
-            if (getPostsBySortFilters.TopicExcluding is not null && getPostsBySortFilters.TopicExcluding != "")
-            {
-                topicExcluding = getPostsBySortFilters.TopicExcluding.Split(",").ToList();
-            }
+            var query = new GetPostsQuery(getPostsBySortFilters.Sorting,
+                                          getPostsBySortFilters.Page,
+                                          getPostsBySortFilters.CreatedDateOf,
+                                          getPostsBySortFilters.CreatedDateTo,
+                                          getPostsBySortFilters.Languages,
+                                          getPostsBySortFilters.Games,
+                                          getPostsBySortFilters.RateOf,
+                                          getPostsBySortFilters.RateTo,
+                                          getPostsBySortFilters.Closed,
+                                          getPostsBySortFilters.Topics,
+                                          getPostsBySortFilters.LanguagesExcluding,
+                                          getPostsBySortFilters.GamesExcluding,
+                                          getPostsBySortFilters.TopicsExcluding,
+                                          getPostsBySortFilters.SearchString);
 
-            var query = new GetPostsQuery(getPostsBySortFilters.Sorting, getPostsBySortFilters.Page, getPostsBySortFilters.CreatedDateOf
-                , getPostsBySortFilters.CreatedDateTo, languages, games, getPostsBySortFilters.RateOf, getPostsBySortFilters.RateTo,
-                getPostsBySortFilters.Closed, topic, languagesExcluding, gamesExcluding, topicExcluding, getPostsBySortFilters.SearchString);
             var answer = await Sender.Send(query);
-            foreach (var post in answer)
-            {
-                if (post.Games is not null)
-                {
-                    foreach (var game in post.Games)
-                    {
-                        game.Posts = null;
-                    }
-                }
-            }
+            _logger.LogInformation($"Someone Get Posts");
             return Ok(answer);
         }
+
+        [AllowAnonymous]
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetForumById(Guid postId)
         {
             var post = await Sender.Send(new GetPostByIdQuery(postId));
-
-            if (post.Games is not null)
-            {
-                foreach (var game in post.Games)
-                {
-                    game.Posts = null;
-                }
-            }
-
-            if (post.MessagePosts is not null)
-            {
-                foreach (var message in post.MessagePosts)
-                {
-                    message.Profile.Messages = null;
-                }
-            }
-
+            _logger.LogInformation($"Someone Get Post {postId}");
             return Ok(post);
         }
 
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteForumById(Guid Id)
+        public async Task<IActionResult> DeleteForumById(Guid id)
         {
-            var post = await Sender.Send(new GetPostByIdQuery(Id));
+            var authorPost = await Sender.Send(new GetPostAuthorQuery(id));
 
-            if (post.Games is not null)
-            {
-                foreach (var game in post.Games)
-                {
-                    game.Posts = null;
-                }
-            }
-
-            if (post.Author.ToString() != HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)
+            if (authorPost != HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)
             {
                 return Forbid();
             }
 
-            var query = new DeleteForumCommand(Id);
+            var query = new DeleteForumCommand(id);
             await Sender.Send(query);
+            _logger.LogInformation($"User {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} delete post");
             return Ok();
         }
 
@@ -161,28 +118,21 @@ namespace GameProfile.WebAPI.Controllers
         [HttpPost()]
         public async Task<IActionResult> CloseOrOpenForumById(Guid id, bool close)
         {
-            var post = await Sender.Send(new GetPostByIdQuery(id));
+            var authorPost = await Sender.Send(new GetPostAuthorQuery(id));
 
-            if (post is null)
+            if (authorPost is null)
             {
                 return Forbid();
             }
 
-            if (post.Games is not null)
-            {
-                foreach (var game in post.Games)
-                {
-                    game.Posts = null;
-                }
-            }
-
-            if (post.Author.ToString() != HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)
+            if (authorPost != HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)
             {
                 return Forbid();
             }
 
             var query = new CloseOrOpenForumCommand(id, close);
             await Sender.Send(query);
+            _logger.LogInformation($"User {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} post is close {close}");
             return Ok();
         }
 
@@ -191,69 +141,12 @@ namespace GameProfile.WebAPI.Controllers
         [HttpPost("rating")]
         public async Task<IActionResult> PostAddRating(Guid postId, string rating)
         {
-            var postHaveRating = await Sender.Send(new GetByProfilePostIdPostHaveRatingFromProfileQuery(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
-
-            if (postHaveRating is null)
-            {
-                if (rating == "positive")
-                {
-                    var query = new CreatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), true);
-                    await Sender.Send(query);
-
-                    await Sender.Send(new UpdateRatingPostCommand(postId, 1));
-                }
-                else
-                {
-                    var query = new CreatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), false);
-                    await Sender.Send(query);
-
-                    await Sender.Send(new UpdateRatingPostCommand(postId, -1));
-                }
-            }
-            else
-            {
-
-                if (rating == "positive")
-                {
-                    if (postHaveRating.IsPositive == false)
-                    {
-                        var query = new UpdatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), true);
-                        await Sender.Send(query);
-
-                        await Sender.Send(new UpdateRatingPostCommand(postId, 2));
-                    }
-                    else
-                    {
-                        var query = new DeletePostHaveRatingFromProfileCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
-                        await Sender.Send(query);
-
-                        await Sender.Send(new UpdateRatingPostCommand(postId, -1));
-                    }
-                }
-                else
-                {
-                    if (postHaveRating.IsPositive == true)
-                    {
-                        var query = new UpdatePostHaveRatingFromProfileCommand(postId, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), false);
-                        await Sender.Send(query);
-
-                        await Sender.Send(new UpdateRatingPostCommand(postId, -2));
-                    }
-                    else
-                    {
-                        var query = new DeletePostHaveRatingFromProfileCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
-                        await Sender.Send(query);
-
-                        await Sender.Send(new UpdateRatingPostCommand(postId, 1));
-                    }
-                }
-            }
-
-
+            await Sender.Send(new UpdateRatingComplitationCommand(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId, rating));
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} add rating");
             return Ok();
         }
 
-        // MessagePost
+        #region MessagePost
 
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
@@ -261,20 +154,25 @@ namespace GameProfile.WebAPI.Controllers
         public async Task<IActionResult> CreateMessagePost(string content, Guid postId)
         {
             var query = new CreateMessagePostCommand(content, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), postId);
-            await Sender.Send(query);
+            var queryResult = await Sender.Send(query);
+
+            if (!string.IsNullOrWhiteSpace(queryResult.ErrorMessage))
+            {
+                return Forbid(queryResult.ErrorMessage);
+            }
 
             // send owner notification
-            var post = await Sender.Send(new GetPostByIdQuery(postId));
+            var authorPost = await Sender.Send(new GetPostAuthorQuery(postId));
 
-            if (post.Author != new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value))
+            if (authorPost != HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)
             {
-                var queryNotification = new CreateProfileNotificationComand(post.Author, $"MessagePost {post.Id}");
+                var queryNotification = new CreateProfileNotificationComand(new Guid(authorPost), $"MessagePost {postId}");
                 await Sender.Send(queryNotification);
             }
 
             var queryUpdateTime = new UpdateTimeUpdateCommand(postId);
             await Sender.Send(queryUpdateTime);
-
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} add message post");
             return Ok();
         }
 
@@ -294,10 +192,7 @@ namespace GameProfile.WebAPI.Controllers
 
             var query = new DeleteMessagePostCommand(messagePostID);
             await Sender.Send(query);
-
-            //var queryUpdateTime = new UpdateTimeUpdateCommand(postMessage.PostId);
-            //await Sender.Send(queryUpdateTime);
-
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} delete message post");
             return Ok();
         }
 
@@ -316,15 +211,18 @@ namespace GameProfile.WebAPI.Controllers
             }
 
             var query = new UpdateMessagePostCommand(messagePostID, content);
-            await Sender.Send(query);
+            var messagePostResult = await Sender.Send(query);
 
-            //var queryUpdateTime = new UpdateTimeUpdateCommand(postMessage.PostId);
-            //await Sender.Send(queryUpdateTime);
-
+            if (!string.IsNullOrWhiteSpace(messagePostResult.ErrorMessage))
+            {
+                return Forbid(messagePostResult.ErrorMessage);
+            }
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} update message post {messagePostID}");
             return Ok();
         }
+        #endregion
 
-        //Replies
+        #region Replies
 
         [Authorize]
         [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
@@ -333,6 +231,11 @@ namespace GameProfile.WebAPI.Controllers
         {
             var query = new CreateReplieCommand(content, new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value), messagePostId);
             var replie = await Sender.Send(query);
+
+            if (!string.IsNullOrWhiteSpace(replie.ErrorMessage))
+            {
+                return Forbid($"{replie.ErrorMessage}");
+            }
 
             var query1 = new GetPostMessageByIdQuery(messagePostId);
 
@@ -348,7 +251,7 @@ namespace GameProfile.WebAPI.Controllers
 
             var queryUpdateTime = new UpdateTimeUpdateCommand(postMessage.PostId);
             await Sender.Send(queryUpdateTime);
-
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} add replie for message post {messagePostId}");
             return Ok();
         }
 
@@ -364,7 +267,7 @@ namespace GameProfile.WebAPI.Controllers
             }
 
             await Sender.Send(new DeleteReplieCommand(replieId));
-
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} delete replie");
             return Ok();
         }
 
@@ -381,11 +284,13 @@ namespace GameProfile.WebAPI.Controllers
 
             var replie = await Sender.Send(new UpdateReplieCommand(replieId, content));
 
-            //var queryUpdateTime = new UpdateTimeUpdateCommand(replie.MessagePost.PostId);
-            //await Sender.Send(queryUpdateTime);
-
+            if (!string.IsNullOrWhiteSpace(replie.ErrorMessage))
+            {
+                return Forbid(replie.ErrorMessage);
+            }
+            _logger.LogInformation($"User by Id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} update replie {replieId}");
             return Ok();
         }
-
+        #endregion
     }
 }

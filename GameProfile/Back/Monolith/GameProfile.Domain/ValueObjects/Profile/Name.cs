@@ -13,7 +13,7 @@
         {
             if (name.Length > MaxLength)
             {
-                throw new Exception("The name exceeds the maximum length");
+                throw new Exception($"The name exceeds the maximum length {MaxLength}");
             }
             return new Name(name);
         }

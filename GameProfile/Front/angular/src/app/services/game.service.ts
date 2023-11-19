@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { GlobalVariable } from '../global';
-import { Game,GamePut } from './models/game';
+import { Game,GameForBrowse,GamePut } from './models/game';
 import { SotrtFilter } from './models/sortFilters';
 
 @Injectable({
@@ -29,12 +29,13 @@ import { SotrtFilter } from './models/sortFilters';
           return;     
       params = params.append(key, sortFilters[key]);
       });
-        return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games?' +params,httpOptions);   
+        return this.http.get<Array<GameForBrowse>>(GlobalVariable.BASE_API_URL + 'game/games?' +params,httpOptions);   
     }
     public fetchGamesByDeveloper(type:string,name:string){
       let params = new HttpParams().set('type',type).set('who',name);
       return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/devorpub?'+params);   
     }
+
     public fetchGamesBySortFilters(sortFilters:any){
       const httpOptions = {
         withCredentials: true 
@@ -49,6 +50,7 @@ import { SotrtFilter } from './models/sortFilters';
         console.log(GlobalVariable.BASE_API_URL + 'game/games?' +params);
         return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games?' +params,httpOptions);   
       }     
+
     public fecthGameByString(title:string){
       return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/search?title='+title);   
     }

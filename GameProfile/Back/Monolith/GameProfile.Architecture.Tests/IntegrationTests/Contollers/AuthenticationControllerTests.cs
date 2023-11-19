@@ -1,14 +1,21 @@
-﻿using GameProfile.Application;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using GameProfile.Application.Data;
 
 namespace GameProfile.Unit.Tests.IntegrationTests.Contollers
 {
     public sealed class AuthenticationControllerTests : IntegrationControllerTest
     {
+        public AuthenticationControllerTests(IDatabaseContext context) : base(context)
+        {
+
+        }
+
         [Fact]
         private async void LoginBySteam()
         {
-            var asf = HttpClient.PostAsync("/login/steam", null).Result;
+            var result = HttpClient.PostAsync("/login/steam", null).Result;
+
+
+
         }
 
     }

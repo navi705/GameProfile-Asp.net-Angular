@@ -9,18 +9,18 @@
                 <div class="game-content">
                     <a href="/game?id={{game.id}}" class="game-title"><b>{{game.title}}</b><mat-icon color="primary" class="star">star</mat-icon>{{averageScore(game)}}</a>
                     <span class="game-content-span">Release Date: <span *ngIf="game.releaseDate.slice(0,-9) != '0001-01-01'">{{game.releaseDate.slice(0,-9)}}</span> <span *ngIf="game.releaseDate.slice(0,-9) == '0001-01-01'">Coming soon</span></span>
-                    <span class="game-content-span">Genre: <span *ngFor="let item of game.genres">{{item.gameString}}
+                    <span class="game-content-span">Genre: <span *ngFor="let item of game.genres">{{item}}
                         </span></span>
                     <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers"
-                            href="/game/filter?type=publisher&name={{item.gameString}}">{{item.gameString}} </a></span>
+                            href="/game/filter?type=publisher&name={{item}}">{{item}} </a></span>
                     <span class="game-content-span">Developer: <a *ngFor="let item of game.developers"
-                            href="/game/filter?type=developer&name={{item.gameString}}">{{item.gameString}} </a></span>
-                    <span *ngIf="game.profileHasGames != undefined ? game.profileHasGames.length>0 :false" 
+                            href="/game/filter?type=developer&name={{item}}">{{item}} </a></span>
+                    <span *ngIf="game.status != 0" 
                         [ngClass]="{
-                            'status-playing': game.profileHasGames[0].statusGame ==1,
-                            'status-completed': game.profileHasGames[0].statusGame ==2,
-                            'status-dropped': game.profileHasGames[0].statusGame ==3,
-                            'status-planned': game.profileHasGames[0].statusGame ==4}">Profile status: {{getStatusText(game.profileHasGames[0].statusGame)}}</span>        
+                            'status-playing': game.status == 1,
+                            'status-completed': game.status ==2,
+                            'status-dropped': game.status ==3,
+                            'status-planned': game.status ==4}">Profile status: {{getStatusText(game.status)}}</span>        
                 </div>
             </div>
         </div>

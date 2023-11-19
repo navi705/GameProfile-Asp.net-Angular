@@ -16,7 +16,6 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetTags
 
         public async Task<List<string>> Handle(GetTagsQuery request, CancellationToken cancellationToken)
         {
-            //var tags = _context.Games.AsNoTracking().SelectMany(x => x.Tags).Select(x => x.GameString).Distinct().OrderBy(x => x).ToListAsync(cancellationToken);
             var tags = await _cacheService.GetAsync<List<string>>("tags");
             return tags;
         }

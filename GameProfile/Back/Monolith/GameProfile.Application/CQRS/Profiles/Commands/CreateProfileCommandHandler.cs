@@ -22,7 +22,7 @@ namespace GameProfile.Application.CQRS.Profiles.Commands
             {
                 new StringForEntity(request.SteamId)
             };
-            var profile = new Profile(Guid.Empty, name, description, steamId);
+            var profile = new Profile(Guid.Empty, name, description, steamId,null);
             _context.Profiles.Add(profile);
             await _context.SaveChangesAsync(cancellationToken);
         }

@@ -6,7 +6,7 @@ using GameProfile.Persistence.Caching;
 using GameProfile.WebAPI.Configuration.Options;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-
+using System.Threading.RateLimiting;
 
 namespace GameProfile.WebAPI.Configuration
 {
@@ -53,7 +53,26 @@ namespace GameProfile.WebAPI.Configuration
             {
                 options.JsonSerializerOptions.MaxDepth = 300; // default is 64
             });
-  
+
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+
+                options.AddPolicy("global", httpContext =>
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10,
+                            Window = TimeSpan.FromSeconds(10)
+                        }
+                        );
+                });
+
+            });
+
             return services;
         }
 

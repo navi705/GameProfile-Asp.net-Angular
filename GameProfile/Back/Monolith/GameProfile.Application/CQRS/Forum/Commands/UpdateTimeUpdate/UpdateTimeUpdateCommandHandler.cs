@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Forum.Commands.UpdateTimeUpdate
         public async Task Handle(UpdateTimeUpdateCommand request, CancellationToken cancellationToken)
         {
             var post = await _context.Posts.Where(x => x.Id == request.PostId).FirstOrDefaultAsync(cancellationToken);
-            post.Updated = DateTime.Now;
+            post.UpdateUpdateTime();
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

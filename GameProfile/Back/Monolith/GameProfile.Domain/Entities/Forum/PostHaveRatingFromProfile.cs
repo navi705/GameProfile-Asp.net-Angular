@@ -15,7 +15,12 @@ namespace GameProfile.Domain.Entities.Forum
 
         public Guid PostId { get; private set; }
 
-        public bool IsPositive { get; set; }
+        public bool IsPositive { get; private set; }
+
+        public void IsPositiveEdit(bool isPositive)
+        {
+            IsPositive = isPositive;
+        }
 
         // reference propertetys
         public Profile? Profile { get; set; }

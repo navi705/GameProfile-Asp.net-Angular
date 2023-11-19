@@ -1,7 +1,8 @@
-﻿using GameProfile.Domain.Entities.Forum;
+﻿using GameProfile.Application.DTO;
+using GameProfile.Domain.Entities.Forum;
 using MediatR;
 
 namespace GameProfile.Application.CQRS.Forum.Requests.GetPostById
 {
-    public sealed record class GetPostByIdQuery(Guid PostId) : IRequest<Post>;
+    public sealed record class GetPostByIdQuery(Guid PostId) : IRequest<PostOneDTO>;
 }

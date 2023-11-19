@@ -6,6 +6,7 @@ namespace GameProfile.Domain.Entities.GameEntites
 {
     public sealed class Game : Entity
     {
+        #region Constructors
         public Game(Guid id,
                     string title,
                     DateTime releaseDate,
@@ -34,7 +35,7 @@ namespace GameProfile.Domain.Entities.GameEntites
         /// <summary>
         /// EF constructor
         /// </summary>
-
+        
         private Game(Guid id,
                     string title,
                     DateTime releaseDate,
@@ -52,7 +53,8 @@ namespace GameProfile.Domain.Entities.GameEntites
             AchievementsCount = achievementsCount;
             BackgroundImage = backgroundImage;
         }
-
+        #endregion
+        //I didn't do read only collection because it's a lot of unnecessary code for each collection as the project is small it's not reasonable
         public string Title { get; private set; }
 
         public DateTime ReleaseDate { get; private set; }
@@ -83,13 +85,11 @@ namespace GameProfile.Domain.Entities.GameEntites
         //reference propertys ef core
         public ICollection<ProfileHasGames>? ProfileHasGames { get; set; }
 
-        public ICollection<Post> Posts { get; set; }
+        public ICollection<Post>? Posts { get; set; }
 
-        public ICollection<GameHasRatingFromProfile> GameHasRatingFromProfiles { get; set; }
+        public ICollection<GameHasRatingFromProfile>? GameHasRatingFromProfiles { get; set; }
 
-        public ICollection<GameHasComments> GameHasComments { get; set; }
-
-
+        public ICollection<GameHasComments>? GameHasComments { get; set; }
 
     }
 }

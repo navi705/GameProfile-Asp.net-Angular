@@ -16,7 +16,7 @@ namespace GameProfile.Application.CQRS.Forum.Commands.CloseOrOpen
         public async Task Handle(CloseOrOpenForumCommand request, CancellationToken cancellationToken)
         {
             var post = await _context.Posts.Where(x => x.Id == request.Id).FirstOrDefaultAsync();
-            post.Closed = request.Close;
+            post.ChangeOpenStatus(request.Close);
             await _context.SaveChangesAsync();
         }
     }

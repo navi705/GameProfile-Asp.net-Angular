@@ -7,7 +7,7 @@
             SteamAppId = steamAppId;
         }
 
-        public int SteamAppId { get; init; }
+        public int SteamAppId { get; private init; }
 
     }
 }

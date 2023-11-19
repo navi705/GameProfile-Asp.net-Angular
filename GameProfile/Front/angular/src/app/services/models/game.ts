@@ -13,6 +13,25 @@ export interface Game {
     profileHasGames: any[]
     achievementsCount: number
   }
+
+  export interface GameForBrowse
+  {
+    id: string
+    title: string
+    releaseDate: string
+    headerImage: string
+    genres: genre[]
+    publishers: publisher[]
+    developers: developer[]
+    review: review[]
+    status: StatusGameProgressions
+  }
+
+  export interface review
+  {
+    site: number
+    score:number
+  }
   
   export interface screenshot {
     uri: string

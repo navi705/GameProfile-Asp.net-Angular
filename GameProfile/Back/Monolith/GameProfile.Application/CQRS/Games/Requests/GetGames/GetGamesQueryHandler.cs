@@ -1,11 +1,12 @@
 ﻿using GameProfile.Application.Data;
+using GameProfile.Application.DTO;
 using GameProfile.Domain.Entities.GameEntites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameProfile.Application.CQRS.Games.Requests.GetGames
 {
-    public sealed class GetGamesQueryHandler : IRequestHandler<GetGamesQuery, List<Game>>
+    public sealed class GetGamesQueryHandler : IRequestHandler<GetGamesQuery, List<GamesDTO>>
     {
         private readonly IDatabaseContext _context;
         public GetGamesQueryHandler(IDatabaseContext context)
@@ -13,7 +14,7 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
             _context = context;
         }
 
-        public async Task<List<Game>> Handle(GetGamesQuery request, CancellationToken cancellationToken)
+        public async Task<List<GamesDTO>> Handle(GetGamesQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Games.AsNoTracking().AsQueryable();
 
@@ -104,26 +105,48 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
             int skipGame = request.Page * 50;
             query = query.Skip(skipGame).Take(50);
 
-            List<Game>? games = new();
+            List<GamesDTO>? games = new();
 
             if (request.ProfileId != Guid.Empty)
             {
-                games = await query.GroupJoin(_context.ProfileHasGames.Where(p => p.ProfileId == request.ProfileId),game => game.Id,
+                // TODO: CHECK
+                //games = await query.GroupJoin(_context.ProfileHasGames.Where(p => p.ProfileId == request.ProfileId),game => game.Id,
+                //    profileGame => profileGame.GameId,
+                //    (game, profileGames) => new { Game = game, ProfileGames = profileGames })
+                //    .SelectMany(x => x.ProfileGames.DefaultIfEmpty(),
+                //    (x, profileGame) => new Game(x.Game.Id, x.Game.Title, x.Game.ReleaseDate, x.Game.HeaderImage, null, x.Game.Nsfw, null, x.Game.Developers, x.Game.Publishers, x.Game.Genres, null, null, null, x.Game.Reviews, 0) {ProfileHasGames = x.Game.ProfileHasGames.Select(g=>new Domain.Entities.ProfileEntites.ProfileHasGames(Guid.Empty,Guid.Empty,Guid.Empty,g.StatusGame,-1,-1)).ToList() })
+                //    .ToListAsync(cancellationToken);
+                games = await query.GroupJoin(_context.ProfileHasGames.Where(p => p.ProfileId == request.ProfileId), game => game.Id,
                     profileGame => profileGame.GameId,
                     (game, profileGames) => new { Game = game, ProfileGames = profileGames })
                     .SelectMany(x => x.ProfileGames.DefaultIfEmpty(),
-                    (x, profileGame) => new Game(x.Game.Id, x.Game.Title, x.Game.ReleaseDate, x.Game.HeaderImage, null, x.Game.Nsfw, null, x.Game.Developers, x.Game.Publishers, x.Game.Genres, null, null, null, x.Game.Reviews, 0) {ProfileHasGames = x.Game.ProfileHasGames.Select(g=>new Domain.Entities.ProfileEntites.ProfileHasGames(Guid.Empty,Guid.Empty,Guid.Empty,g.StatusGame,-1,-1)).ToList() })
-                    .ToListAsync(cancellationToken);
+                    (x, profileGame) => new GamesDTO(
+                        x.Game.Id,
+                        x.Game.Title,
+                        x.Game.ReleaseDate,
+                        x.Game.HeaderImage,
+                        x.Game.Developers.Select(d => d.GameString).ToList(),
+                        x.Game.Publishers.Select(d => d.GameString).ToList(),
+                        x.Game.Genres.Select(d => d.GameString).ToList(),
+                        x.Game.Reviews,
+                        x.Game.ProfileHasGames.Select(g => g.StatusGame).FirstOrDefault()
+                        )).ToListAsync(cancellationToken);
             }
             else
             {
-                games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
+                games = await query.Select(x => new GamesDTO(
+                       x.Id,
+                       x.Title,
+                       x.ReleaseDate,
+                       x.HeaderImage,
+                       x.Developers.Select(d => d.GameString).ToList(),
+                       x.Publishers.Select(d => d.GameString).ToList(),
+                       x.Genres.Select(d => d.GameString).ToList(),
+                       x.Reviews,
+                       null)).ToListAsync(cancellationToken);
 
             }
-
-            //var games = await query.Select(x => new Game(x.Id, x.Title, x.ReleaseDate, x.HeaderImage, null, x.Nsfw, null, x.Developers, x.Publishers, x.Genres, null, null, null, x.Reviews, 0)).ToListAsync(cancellationToken);
-
-            return games;
+             return games;
         }
     }
 }

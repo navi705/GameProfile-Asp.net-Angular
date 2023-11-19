@@ -34,15 +34,20 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public Guid ProfileId { get; private set; }
 
         public Guid GameId { get; private set; }
-        //reference property
-        public Game Game { get; set; }
-        //reference property
-        public Profile Profile { get; set; }
+
         public StatusGameProgressions StatusGame { get; private set; }
 
         public int MinutesInGame { get; private set; }
 
-        public int MinutesInGameVerified { get; set; }
+        public int MinutesInGameVerified { get; private set; }
 
+        //reference properties for ef core
+        public Game Game { get; set; }
+        public Profile Profile { get; set; }
+
+        public void ChangeVerificatedHours(int minutes)
+        {
+            MinutesInGameVerified = minutes;
+        }
     }
 }

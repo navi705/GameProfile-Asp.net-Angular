@@ -15,18 +15,8 @@ namespace GameProfile.Application.CQRS.Profiles.Notification.Commands.Create
 
         public async Task Handle(CreateProfileNotificationComand request, CancellationToken cancellationToken)
         {
-          var profile = _context.Profiles.FirstOrDefault(x => x.Id == request.ProfileId);
-            if(profile.NotificationMessages == null)
-            {
-                profile.NotificationMessages = new List<StringForEntity>
-                {
-                    new StringForEntity(request.Notification)
-                };
-            }
-            else
-            {
-                profile.NotificationMessages.Add(new StringForEntity(request.Notification));
-            }
+            var profile = _context.Profiles.FirstOrDefault(x => x.Id == request.ProfileId);
+            profile.AddNotification(new StringForEntity(request.Notification));
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

@@ -1,4 +1,4 @@
-﻿using GameProfile.Domain.Entities.GameEntites;
+﻿using GameProfile.Application.DTO;
 using GameProfile.Domain.Enums.Profile;
 using MediatR;
 
@@ -18,5 +18,5 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGames
         List<StatusGameProgressions> StatusGameExcluding,
         decimal? RateOf,
         decimal? RateTo,
-        Guid ProfileId) : IRequest<List<Game>>;
+        Guid ProfileId) : IRequest<List<GamesDTO>>;
 }

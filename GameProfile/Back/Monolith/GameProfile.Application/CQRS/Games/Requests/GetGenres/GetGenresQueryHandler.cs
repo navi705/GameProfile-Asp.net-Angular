@@ -17,8 +17,6 @@ namespace GameProfile.Application.CQRS.Games.Requests.GetGenres
         public async Task<List<string>> Handle(GetGenresQuery request, CancellationToken cancellationToken)
         {
             var genres = await _cacheService.GetAsync<List<string>>("genres");
-            //var genres = _context.Games.AsNoTracking().SelectMany(x=> x.Genres).Select(x => x.GameString).Distinct().ToList();
-            //genres = genres.OrderBy(x=>x).ToList();
             return genres;
         }
     }

@@ -18,13 +18,17 @@ namespace GameProfile.Domain.Entities.ProfileEntites
 
         public Guid GameId { get; private set; }
 
-        public int ReviewScore { get; set; }
+        public int ReviewScore { get; private set; }
 
-        //refrences properties ef core
-        public Profile Profile { get; set; }
+        //reference properties for ef core
+        public Profile? Profile { get; set; }
 
-        public Game Game { get; set; }
+        public Game? Game { get; set; }
 
+        public void ChangeReview(int score)
+        {
+            ReviewScore = score;
+        }
 
     }
 }

@@ -162,60 +162,9 @@ app.MapPut("minimaApi", async (IMediator mediator, ISteamApi steamApi) =>
     }
 });
 
-app.MapPut("AddGameFromJson", async (IMediator mediator) =>
-{
-    string jsonString = "";
+app.UseRateLimiter();
 
-    using (StreamReader reader = new StreamReader(@"C:\Users\vrclu\Desktop\Newfolder\games19072252.json"))
-    {
-        jsonString = reader.ReadToEnd();
-    }
-    var gamesFromJson = System.Text.Json.JsonSerializer.Deserialize<List<Game>>(jsonString);
-    int i = 0;
-    foreach(var game in gamesFromJson)
-    {
-        try {
-            int startIndex = game.Screenshots.First().Uri.ToString().IndexOf("/apps/") + 6;
-            int endIndex = game.Screenshots.First().Uri.ToString().IndexOf("/", startIndex);
-            int appId = Int32.Parse(game.Screenshots.First().Uri.ToString().Substring(startIndex, endIndex - startIndex));
-            var querySteamId = new GetGamesIdBySteamIdQuery(appId);
-            var gameSteamId = await mediator.Send(querySteamId);
-            if (gameSteamId is not null)
-            {
-                Debug.WriteLine($"{appId} ");
-                continue;
-            }
-            var query1 = new CreateGameCommand(game.Title,
-                                             game.ReleaseDate,
-                                             game.HeaderImage,
-                                             game.BackgroundImage,
-                                             game.Nsfw,
-                                             game.Description,
-                                             game.Genres,
-                                             game.Publishers,
-                                             game.Developers,
-                                             game.Tags,
-                                             game.Screenshots,
-                                             game.ShopsLinkBuyGame,
-                                             game.Reviews,
-                                             game.AchievementsCount);
-            await mediator.Send(query1);
-            var query2 = await mediator.Send(new GetGameByNameQuery(game.Title));
-            var query3 = new CreateGamesSteamAppIdQuery(query2.Id, appId);
-            await mediator.Send(query3);
-            Debug.WriteLine($"$ App id{appId}  Game Id{query2.Id} yey" );
-        }
-        catch {
-            Debug.WriteLine($"Something go wrong");
-            continue;
-            
-        }
-    }
-    Debug.WriteLine("Finish");
-});
-
-app.MapControllers();
-//app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.MapControllers().RequireRateLimiting("global");
 app.UseCors("AllowCredentials");
 app.UseHttpsRedirection();
 
