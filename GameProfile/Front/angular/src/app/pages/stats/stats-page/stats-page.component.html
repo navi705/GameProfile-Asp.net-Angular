@@ -14,10 +14,10 @@
             <tbody>
               <tr *ngFor="let stat of stats; let i = index">
                 <td>{{ i + 1 }}</td>
-                <td><a  href="profile/{{stat.id}}">{{ stat.profileName.value }}</a></td>
+                <td><a  href="profile/{{stat.profileId}}">{{ stat.profieleNickname }}</a></td>
                 <td>{{ stat.totalHours }}</td>
-                <td>{{ stat.totalNotVereficatedHours }}</td>
                 <td>{{ stat.hoursVerificated }}</td>
+                <td>{{ stat.notVereficatedHours }}</td>
                 <td>{{ stat.countGames }}</td>
               </tr>
             </tbody>

@@ -42,6 +42,10 @@
   margin-bottom: 20px;
 }
 
+.menu button{
+ font-size: 24px;
+}
+
 .game-list {
   display: flex;
   flex-wrap: wrap;

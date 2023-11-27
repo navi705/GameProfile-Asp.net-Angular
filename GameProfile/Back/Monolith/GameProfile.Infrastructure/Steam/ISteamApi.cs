@@ -16,6 +16,10 @@ namespace GameProfile.Infrastructure.Steam
 
         Task<SteamGameFromStoreApi> GetGameFromStoreApi(int appId);
 
+        Task<string> GetDota2Rating(string steamId);
+
+        //Task<string> GetCS2Rank(string steamId);
+
         public Task<double> GetGameReview(int appID);
     }
 }

@@ -19,7 +19,7 @@ export class GameComponent {
   id: any;
   game: any;
   hours:number = 0;
-  hoursBefore:number=-1;
+  hoursBefore:number=0;
   status = StatusGameProgressions.NONE;
   statusBefore = StatusGameProgressions.NONE;
 
@@ -79,11 +79,14 @@ export class GameComponent {
   }
   
   addGameToProfile(){
-    if(this.hours != this.hoursBefore || this.status != this.statusBefore){
-      this.profileSerivce.updateGame(this.id,this.hours,this.status).subscribe();
+    if(this.status == StatusGameProgressions.NONE){
       return;
     }
-    if(this.status == StatusGameProgressions.NONE){
+    if(this.statusBefore == StatusGameProgressions.NONE){
+      this.profileSerivce.addGame(this.id,this.status,this.hours).subscribe();
+    }
+    if(this.hours != this.hoursBefore || this.status != this.statusBefore){
+      this.profileSerivce.updateGame(this.id,this.hours,this.status).subscribe();
       return;
     }
     this.profileSerivce.addGame(this.id,this.status,this.hours).subscribe();

@@ -54,9 +54,15 @@ import { SotrtFilter } from './models/sortFilters';
     public fecthGameByString(title:string){
       return this.http.get<Array<Game>>(GlobalVariable.BASE_API_URL + 'game/games/search?title='+title);   
     }
-    public putGame(game:GamePut){
-      return this.http.put<GamePut>(GlobalVariable.BASE_API_URL + 'game',game);
+    public putGameFromSteam(appId:number){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.put<GamePut>(GlobalVariable.BASE_API_URL + `game/add-game-from-steam?appId=${appId}`,null,httpOptions);
     }
+
+
+
     public deleteGame(id:string){
       return this.http.delete(GlobalVariable.BASE_API_URL + 'game?gameid=' + id);
     }

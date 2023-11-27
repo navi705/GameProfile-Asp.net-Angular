@@ -132,4 +132,11 @@ import { GameList, ProfileModel } from './models/profile';
       return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'profile/steams',httpOptions);
     }
 
+    public getRanks(profileId:any){
+      const httpOptions = {
+        withCredentials: true 
+      };
+      return this.http.get<Array<any>>(GlobalVariable.BASE_API_URL + 'profile/ranks?profileId=' + profileId ,httpOptions);
+    }
+
   }

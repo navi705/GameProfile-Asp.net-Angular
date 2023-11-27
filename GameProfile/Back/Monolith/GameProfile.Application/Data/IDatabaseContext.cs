@@ -33,6 +33,8 @@ namespace GameProfile.Application.Data
 
         DbSet<GameCommentHasReplie> GameCommentHasReplies { get; set; }
 
+        DbSet<Ranks> Ranks { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellation = default);
     }
 }

@@ -1,0 +1,11 @@
+.rank{
+    display: flex;
+    gap: 2em;
+}
+.rank{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+}

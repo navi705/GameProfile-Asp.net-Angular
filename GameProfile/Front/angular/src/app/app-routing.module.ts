@@ -22,7 +22,7 @@ import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-accoun
 const routes: Routes = [
   {path:'game',component: GameComponent},
   {path:'games',component: GamesComponent},
-  // {path:'game/add-game',component: GameAddComponent},
+   {path:'game/add-game',component: GameAddComponent},
   {path:'login', component:LoginComponent},
   {path:'after-login-steam',component:AfterLoginSteamComponent},
   {path:'profile',component: ProfileComponent},

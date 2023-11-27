@@ -91,5 +91,7 @@ namespace GameProfile.Domain.Entities.GameEntites
 
         public ICollection<GameHasComments>? GameHasComments { get; set; }
 
+        public ICollection<Ranks>? Ranks { get; set;}
+
     }
 }

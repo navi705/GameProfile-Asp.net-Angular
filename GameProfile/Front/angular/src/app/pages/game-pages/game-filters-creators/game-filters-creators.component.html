@@ -10,9 +10,9 @@
                     <div class="game-content">
                         <a href="/game?id={{game.id}}" class="game-title" ><b>{{game.title}}</b></a>
                         <span class="game-content-span">Release Date: {{game.releaseDate.slice(0,-9)}}</span>
-                        <span class="game-content-span" >Genre: <a *ngFor="let item of game.genres">{{item.gameString}} </a></span>
-                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers">{{item.gameString}} </a></span>
-                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers">{{item.gameString}} </a></span>
+                        <span class="game-content-span" >Genre: <a *ngFor="let item of game.genres">{{item}} </a></span>
+                        <span class="game-content-span">Publisher: <a *ngFor="let item of game.publishers">{{item}} </a></span>
+                        <span class="game-content-span">Developer: <a *ngFor="let item of game.developers">{{item}} </a></span>
                     </div>
             </div>
     </div>

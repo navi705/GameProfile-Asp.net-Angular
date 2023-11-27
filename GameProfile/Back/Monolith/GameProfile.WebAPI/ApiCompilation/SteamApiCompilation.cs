@@ -4,10 +4,12 @@ using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Command.Create;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.Application.CQRS.Games.Requests.GetGameByName;
+using GameProfile.Application.CQRS.Profiles.Ranks.Commands;
 using GameProfile.Domain.Enums.Game;
 using GameProfile.Domain.ValueObjects.Game;
 using GameProfile.Infrastructure.Shared;
 using GameProfile.Infrastructure.Steam;
+using GameProfile.Persistence.Migrations;
 using MediatR;
 
 namespace GameProfile.WebAPI.ApiCompilation
@@ -53,6 +55,8 @@ namespace GameProfile.WebAPI.ApiCompilation
                 var gameStore = await _steamApi.GetGameFromStoreApi(appId);
                 if (gameStore is null)
                 {
+                    // TODO: Is right?
+                    await Sender.Send(new NotSteamGameAppIDCreateCommand(appId));
                     return Guid.Empty;
                 }
                 double scoreMetactiric = -1;
@@ -129,6 +133,304 @@ namespace GameProfile.WebAPI.ApiCompilation
                 return Guid.Empty;
             }
         }
+
+        public async Task AddRatingGameFromSteam(int steamAppId,string steamId, Guid profileId, int i)
+        {
+            if(steamAppId == 530)
+            {
+                if(i == 0)
+                {
+                    var query3 = new RankDeleteByGameCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId);
+                    await Sender.Send(query3);
+                }
+                await AddRatingToDota2(steamId, profileId);
+            }
+
+            //if (steamAppId == 730)
+            //{
+            //    if (i == 0)
+            //    {
+            //        var query3 = new RankDeleteByGameCommand(new Guid("cb9e4ba3-a40c-4d5a-ddea-08db8ac12e56"), profileId);
+            //        await Sender.Send(query3);
+            //    }
+            //    await AddRatingToCS2(steamId,profileId);
+            //}
+        }
+
+        public async Task AddRatingToDota2(string steamId,Guid profileId)
+        {
+            var rating = await _steamApi.GetDota2Rating(steamId);
+
+            if (string.IsNullOrWhiteSpace(rating))
+            {
+                return;
+            }
+
+            #region a lot of if
+            if (rating == "11")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1-154 MMR", "Herald 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-herald-1.png","","","");
+                await Sender.Send(query);
+                return;
+            }
+
+            if(rating == "12")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "154-308 MMR", "Herald 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-herald-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "13")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "308-462 MMR", "Herald 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-herald-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "14")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "462-616 MMR", "Herald 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-herald-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "15")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "616-769 MMR", "Herald 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-herald-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "21")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "770-924 MMR", "Guardian 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-guardian-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "22")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "924-1078 MMR", "Guardian 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-guardian-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "23")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1078-1232 MMR", "Guardian 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-guardian-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "24")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1232-1386 MMR", "Guardian 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-guardian-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "26")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1386-1540 MMR", "Guardian 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-guardian-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "31")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1540-1694 MMR", "Crusader 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-crusader-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "32")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1694-1848", "Crusader 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-crusader-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "33")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "1848-2002 MMR", "Crusader 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-crusader-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "34")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2002-2156 MMR", "Crusader 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-crusader-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "35")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2156-2310 MMR", "Crusader 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-crusader-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+
+            if (rating == "41")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2310-2464 MMR", "Archon 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-archon-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "42")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2464-2618 MMR", "Archon 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-archon-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "43")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2618-2772 MMR", "Archon 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-archon-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "44")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2772-2926 MMR", "Archon 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-archon-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "45")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "2926-3080 MMR", "Archon 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-archon-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "51")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3080-3234 MMR", "Legend 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-legend-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "52")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3234-3388 MMR", "Legend 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-legend-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "53")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3388-3542 MMR", "Legend 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-legend-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "54")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3542-3696 MMR", "Legend 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-legend-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "55")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3696-3850 MMR", "Legend 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-legend-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+
+            if (rating == "61")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "3850-4004 MMR", "Ancient 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-ancient-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "62")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4004-4158 MMR", "Ancient 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-ancient-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "63")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4158-4312 MMR", "Ancient 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-ancient-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "64")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4312-4466 MMR", "Ancient 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-ancient-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "65")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4466-4620 MMR", "Ancient 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-ancient-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+
+            if (rating == "71")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4620-4820 MMR", "Divine 1", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-divine-1.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "72")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "4820-5020 MMR", "Divine 2", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-divine-2.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "73")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "5020-5220 MMR", "Divine 3", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-divine-3.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "74")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "5220-5420 MMR", "Divine 4", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-divine-4.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            if (rating == "75")
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, "5420-5620 MMR", "Divine 5", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-divine-5.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+            else
+            {
+                var query = new RankCreateCommand(new Guid("2bd44f4a-d35f-4974-f11c-08db8f68ef37"), profileId, ">5620 MMR", "Immortal", "https://hawk.live/images/dota-2-seasonal-ranking-medals/seasonal-rank-immortal.png", "", "", "");
+                await Sender.Send(query);
+                return;
+            }
+
+
+            #endregion
+        }
+
+        //public async Task AddRatingToCS2(string steamId, Guid profileId)
+        //{
+        //    var rank = await _steamApi.GetCS2Rank(steamId);
+        //}
+
     }
 
 }

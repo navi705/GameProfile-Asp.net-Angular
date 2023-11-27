@@ -14,10 +14,10 @@
             <div class="topic-post-title">
                 <span class="post-title">{{post.title}}</span>
                 <span>Topic: {{post.topic}}</span>
-                <span>Author: <a href="profile/{{post.author}}">{{post.profile.name.value}}</a></span>
+                <span>Author: <a href="profile/{{post.author.id}}">{{post.author.nickname}}</a></span>
                 <span>Created: {{post.created.slice(0,10)}}</span>
                 <span>Last Update: {{post.updated.slice(0,10)}} </span>
-                <span>Languages: <span *ngFor="let language of post.languages">{{language.stringFor}} </span></span>
+                <span>Languages: <span *ngFor="let language of post.languages">{{language}} </span></span>
                 <span>Games: <a href="game?id={{game.id}}" *ngFor="let game of post.games">{{game.title}} </a> </span>
 
                 <span class="topic-post-status-close" *ngIf="post.closed == true;else elseBloc">Status:
@@ -39,10 +39,10 @@
 
     <div class="content">
 
-        <div class="post-message" *ngFor="let messagePost of post.messagePosts;let j = index">
-            <span><a href="profile/{{messagePost.authorId}}">{{messagePost.profile.name.value}}</a></span>
+        <div class="post-message" *ngFor="let messagePost of post.messages;let j = index">
+            <span><a href="profile/{{messagePost.author.id}}">{{messagePost.author.nickname}}</a></span>
             <span>Created: {{messagePost.created.slice(0,10)}}</span>
-            <div class="post-message-control" *ngIf="checkCanControlMessagePost(messagePost.authorId)">
+            <div class="post-message-control" *ngIf="checkCanControlMessagePost(messagePost.author.id)">
                 <a mat-raised-button (click)="deleteMessagePost(messagePost.id)" color="warn">Delete</a>
                 <a mat-raised-button (click)="editMessagePost(j)" color="accent">Edit</a>
             </div>
@@ -81,9 +81,9 @@
 
 
             <div class="replie" *ngFor="let replie of messagePost.replies;let i = index ">
-                <span><a href="profile/{{replie.authorId}}">{{replie.profile.name.value}}</a></span>
+                <span><a href="profile/{{replie.author.id}}">{{replie.author.nickname}}</a></span>
                 <span>Created: {{replie.created.slice(0,10)}}</span>
-                <div class="post-message-control" *ngIf="checkCanControlMessagePost(replie.authorId)">
+                <div class="post-message-control" *ngIf="checkCanControlMessagePost(replie.author.id)">
                     <a mat-raised-button (click)="deleteReplie(replie.id)" color="warn">Delete</a>
                     <a mat-raised-button (click)="editReplieF(i,j)" color="accent">Edit</a>
                 </div>

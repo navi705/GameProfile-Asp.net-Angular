@@ -1,0 +1,8 @@
+<div class="ranks">
+    <div class="rank" *ngFor="let rank of ranks">
+        <a href="">{{rank.gameTitle}}</a>
+        <span>{{rank.ranks.rankName}}</span>
+        <img src="{{rank.ranks.rankImage}}" />
+        <span>{{rank.ranks.rank}}</span>
+    </div>
+</div>

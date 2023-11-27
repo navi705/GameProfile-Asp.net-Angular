@@ -36,6 +36,8 @@ namespace GameProfile.Persistence
             modelBuilder.ApplyConfiguration(new GameCommentHasReplieConfigure());
             modelBuilder.ApplyConfiguration(new GameHasCommentsConfigure());
 
+            modelBuilder.ApplyConfiguration(new RankConfigure());
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -57,6 +59,8 @@ namespace GameProfile.Persistence
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<PostHaveRatingFromProfile> PostHaveRatingFromProfiles { get; set; }
+
+        public DbSet<Ranks> Ranks { get; set; }
         #endregion
         #region Forum
         public DbSet<Post> Posts { get; set; }

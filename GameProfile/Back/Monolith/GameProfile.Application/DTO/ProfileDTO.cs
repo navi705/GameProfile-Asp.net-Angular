@@ -1,4 +1,5 @@
-﻿using GameProfile.Domain.Enums.Profile;
+﻿using GameProfile.Domain.Entities.ProfileEntites;
+using GameProfile.Domain.Enums.Profile;
 
 namespace GameProfile.Application.DTO
 {
@@ -21,5 +22,9 @@ namespace GameProfile.Application.DTO
         int Hours,
         StatusGameProgressions StatusGame,
         int HoursVereficated);
+
+    public sealed record class RankDTO(Ranks Ranks,
+                                       Guid GameId,
+                                       string GameTitle);
 
 }

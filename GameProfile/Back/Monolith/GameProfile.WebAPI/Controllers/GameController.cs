@@ -16,6 +16,8 @@ using GameProfile.Application.CQRS.Games.Requests.GetGamesBySearch;
 using GameProfile.Application.CQRS.Games.Requests.GetGenres;
 using GameProfile.Application.CQRS.Games.Requests.GetTags;
 using GameProfile.Application.CQRS.Profiles.Notification.Commands.Create;
+using GameProfile.Infrastructure.Steam;
+using GameProfile.WebAPI.ApiCompilation;
 using GameProfile.WebAPI.Models.ArgumentModels;
 using GameProfile.WebAPI.Shared;
 using MediatR;
@@ -28,10 +30,12 @@ namespace GameProfile.WebAPI.Controllers
     public sealed class GameController : ApiController
     {
         private readonly ILogger<GameController> _logger;
-        public GameController(ISender sender, ILogger<GameController> logger)
+        private readonly SteamApiCompilation _steamApiCompilation;
+        public GameController(ISender sender, ILogger<GameController> logger, ISteamApi steamApi)
             : base(sender)
         {
             _logger = logger;
+            _steamApiCompilation = new(sender, steamApi);
         }
 
         #region Games
@@ -68,6 +72,21 @@ namespace GameProfile.WebAPI.Controllers
             var query = new GetGamesByPubOrDevQuery(type, who, profileId);
             _logger.LogInformation($"Someone get games by DevOrPub {who}");
             return Ok(await Sender.Send(query));
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPut("add-game-from-steam")]
+        public async Task<IActionResult> AddSteamGame([FromQuery]int appId)
+        {
+            var answer = await _steamApiCompilation.AddGame(appId);
+            if (answer == Guid.Empty)
+            {
+                _logger.LogInformation($"Game alredy have or something went wrong {appId}");
+                return BadRequest("Game alredy have or something went wrong ");
+            }
+            _logger.LogInformation($"User by id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} add game from steam {appId}");
+            return Ok(answer);
         }
 
         // TODO: be careful with allow here

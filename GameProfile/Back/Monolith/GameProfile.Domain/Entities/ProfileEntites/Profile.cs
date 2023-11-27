@@ -54,6 +54,8 @@ namespace GameProfile.Domain.Entities.ProfileEntites
         public ICollection<GameHasComments>? GameHasComments { get; set; }
 
         public ICollection<GameCommentHasReplie>? GameCommentHasReplies { get; set;}
+
+        public ICollection<Ranks>? Ranks { get; set; }
         #endregion
 
         public void AddNotification(StringForEntity notify)

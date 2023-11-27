@@ -4,10 +4,13 @@ using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProf
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateValidHours;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasGameBySteamId;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileSteamIds;
+using GameProfile.Application.CQRS.Profiles.Ranks.Commands;
+using GameProfile.Domain.Entities.GameEntites;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Infrastructure.Steam;
 using GameProfile.Persistence.Caching;
 using MediatR;
+using System.Runtime.CompilerServices;
 
 namespace GameProfile.WebAPI.ApiCompilation.Controllers
 {
@@ -35,19 +38,21 @@ namespace GameProfile.WebAPI.ApiCompilation.Controllers
             var userCache = await _cacheService.GetAsync<UserCache>(profileId.ToString());
 
 
-            if (userCache.SteamUpdateTime.CountUpdateSteam > 2)
-            {
-                return "You already update your profile 2 for 24 hours";
-            }
+            //if (userCache.SteamUpdateTime.CountUpdateSteam > 2)
+            //{
+            //    return "You already update your profile 2 for 24 hours";
+            //}
 
-            if (userCache.SteamUpdateTime.DateTime.AddHours(24) > DateTime.Now)
-            {
-                return "You already update your profile you need wait 24 hours";
+            //if (userCache.SteamUpdateTime.DateTime.AddHours(24) > DateTime.Now)
+            //{
+            //    return "You already update your profile you need wait 24 hours";
 
-            }
+            //}
 
             var steamIds = await Sender.Send(new GetProfileSteamIdsQuery(profileId));
             int i = 0;
+            int temp= 0;
+            Dictionary<int,int> gameCount= new ();
             foreach (var steamId in steamIds)
             {
                 var games = await _steamApi.SteamOwnedGames(steamId);
@@ -58,8 +63,20 @@ namespace GameProfile.WebAPI.ApiCompilation.Controllers
 
                 foreach (var game in games.games)
                 {
+                    gameCount.TryGetValue(game.appid, out temp);
+                    if (temp == 0)
+                    {
+                        gameCount.Add(game.appid,1);
+                    }
+                    else
+                    {
+                        gameCount[game.appid]++;
+                    }
+
                     var query = new GetProfileHasGameBySteamIdQuery(profileId, game.appid);
                     var gameProfile = await Sender.Send(query);
+                   
+                    await _steamApiCompilation.AddRatingGameFromSteam(game.appid,steamId,profileId,i);
 
                     if (gameProfile is null)
                     {
@@ -90,8 +107,13 @@ namespace GameProfile.WebAPI.ApiCompilation.Controllers
 
                     if (i > 0)
                     {
-                        var query6 = new UpdateVerificatedMinutesProfileHasGameCommand(gameProfile.ProfileId, gameProfile.GameId, game.playtime_forever);
-                        // + gameProfile.MinutesInGameVerified
+                        //если игра только на одном акке
+                        if (gameCount[game.appid] == 1)
+                        {
+                            var query7 = new UpdateVerificatedMinutesProfileHasGameCommand(gameProfile.ProfileId, gameProfile.GameId, game.playtime_forever);
+                            await Sender.Send(query7);
+                        }
+                        var query6 = new UpdateVerificatedMinutesProfileHasGameCommand(gameProfile.ProfileId, gameProfile.GameId, game.playtime_forever + gameProfile.MinutesInGameVerified);
                         await Sender.Send(query6);
                         continue;
                     }
@@ -101,15 +123,17 @@ namespace GameProfile.WebAPI.ApiCompilation.Controllers
                 i++;
             }
 
-            userCache.SteamUpdateTime.CountUpdateSteam++;
-            if (userCache.SteamUpdateTime.CountUpdateSteam > 2)
-            {
-                userCache.SteamUpdateTime.CountUpdateSteam = 0;
-                userCache.SteamUpdateTime.DateTime = DateTime.Now;
-            }
-            await _cacheService.SetAsync(profileId.ToString(), userCache);
+            //userCache.SteamUpdateTime.CountUpdateSteam++;
+            //if (userCache.SteamUpdateTime.CountUpdateSteam > 2)
+            //{
+            //    userCache.SteamUpdateTime.CountUpdateSteam = 0;
+            //    userCache.SteamUpdateTime.DateTime = DateTime.Now;
+            //}
+            //await _cacheService.SetAsync(profileId.ToString(), userCache);
             return "";
         }
+
+        
 
     }
 }

@@ -113,7 +113,7 @@ namespace GameProfile.Application.CQRS.Forum.Requests.GetPostsQuery
 
             if (request.SeacrchString is not null && request.SeacrchString != "")
             {
-                query = query.Where(x => EF.Functions.Like(x.Title, $"%{request.SeacrchString}%") || EF.Functions.Like(x.Description, $"%{request.SeacrchString}%"));
+                query = query.Where(x => EF.Functions.Like(x.Title.ToLower(), $"%{request.SeacrchString.ToLower()}%") || EF.Functions.Like(x.Description.ToLower(), $"%{request.SeacrchString.ToLower()}%"));
             }
 
             int skipPosts = request.Page * 50;

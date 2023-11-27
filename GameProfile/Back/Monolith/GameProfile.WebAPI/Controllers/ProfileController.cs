@@ -7,11 +7,13 @@ using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.DeleteProf
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.UpdateProfileHasGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileHasOneGame;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetProfileSteamIds;
+using GameProfile.Application.CQRS.Profiles.Ranks.Requests;
 using GameProfile.Application.CQRS.Profiles.Requests.GetComp;
 using GameProfile.Application.CQRS.Profiles.Requests.GetSteamIdBySteamId;
 using GameProfile.Domain.Enums.Profile;
 using GameProfile.Infrastructure.Steam;
 using GameProfile.Persistence.Caching;
+using GameProfile.WebAPI.ApiCompilation;
 using GameProfile.WebAPI.ApiCompilation.Controllers;
 using GameProfile.WebAPI.Shared;
 using MediatR;
@@ -26,6 +28,7 @@ namespace GameProfile.WebAPI.Controllers
         private readonly ProfileComplitation _profileComplitation;
         private readonly ICacheService _cacheService;
         private readonly ISteamApi _steamApi;
+       
         public ProfileController(
             ISender sender,
             ICacheService cacheService,
@@ -35,6 +38,8 @@ namespace GameProfile.WebAPI.Controllers
             _cacheService = cacheService;
             _steamApi = steamApi;
             _logger = logger;
+            _profileComplitation = new(sender, cacheService, steamApi);
+            
         }
 
         [Authorize]
@@ -214,5 +219,15 @@ namespace GameProfile.WebAPI.Controllers
             _logger.LogInformation($"User by id {HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value} get steam profiles");
             return Ok(await Sender.Send(query));
         }
+
+        [AllowAnonymous]
+        [HttpGet("profile/ranks")]
+        public async Task<IActionResult> GetRanks(Guid profileId)
+        {
+            var query = new GetRanksQuery(profileId);
+            var answer = await Sender.Send(query);
+            return Ok(answer);
+        }    
+
     }
 }

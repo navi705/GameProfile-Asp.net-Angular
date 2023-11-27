@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +32,8 @@ import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 import { AddForumPostComponent } from './pages/forum-pages/add-forum-post/add-forum-post.component';
 import { PostComponent } from './pages/forum-pages/post/post.component';
 import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-account/add-steam-account/add-steam-account.component';
+import { ProfileGamesRanksComponentComponent } from './pages/profile-pages/profile/profile-components/profile-games-ranks-component/profile-games-ranks-component.component';
+import { ProfileSettingsComponentComponent } from './pages/profile-pages/profile/profile-components/profile-settings-component/profile-settings-component.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -67,6 +69,8 @@ const MY_DATE_FORMAT = {
     AddForumPostComponent,
     PostComponent,
     AddSteamAccountComponent,
+    ProfileGamesRanksComponentComponent,
+    ProfileSettingsComponentComponent,
   ],
   imports: [
     BrowserModule,

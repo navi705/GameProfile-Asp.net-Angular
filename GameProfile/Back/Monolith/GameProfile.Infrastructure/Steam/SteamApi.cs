@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Net.Http;
 
 namespace GameProfile.Infrastructure.Steam
 {
@@ -215,7 +214,45 @@ namespace GameProfile.Infrastructure.Steam
             return 0;
         }
 
+        public async Task<string> GetDota2Rating(string steamId)
+        {
+            var steamId32 = SteamID64toSteamID32(steamId);
+
+            var response = await _httpClient.GetAsync($"https://api.opendota.com/api/players/{steamId32}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var data = JObject.Parse(json);
+                var mmrEstimate = data["rank_tier"];
+                return mmrEstimate.ToString();
+            }
+            return "";
+        }
+
+        static string SteamID64toSteamID32(string steamID64)
+        {
+            long a = long.Parse(steamID64);
+            var asdf = a - 76561197960265728;
+
+            return asdf.ToString();
+        }
+
+        //public async Task<string> GetCS2Rank(string steamId)
+        //{
+        //    HtmlWeb web = new HtmlWeb();
+        //    web.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:40.0) Gecko/20100101 Firefox/40.0";
+            
+        //    HtmlDocument doc = await web.LoadFromWebAsync($"https://csstats.gg/player/{steamId}");
+
+        //    HtmlNode userRatingNode = doc.DocumentNode.Descendants(".cs2rating").FirstOrDefault();
+
+        //    string rank = userRatingNode?.InnerText;
+
+        //    return rank;
+        //}
     }
+
     public class SteamGameFromApi
     {
         public string Name { get; set; }

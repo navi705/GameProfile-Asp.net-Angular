@@ -18,7 +18,7 @@
                     <a href="forum/{{post.id}}" class="forum-title">{{post.title}}</a>
                     <span class="description">{{post.description.slice(0,30)}}</span>
                     <span>Created: {{post.created.slice(0,10)}}</span>
-                    <span>Languages: <span *ngFor="let language of post.languages">{{language.stringFor}} </span>
+                    <span>Languages: <span *ngFor="let language of post.languages">{{language}} </span>
                     </span>
                     <span *ngIf="post.closed == true;else elseBloc">Status: Closed</span>
                     <ng-template #elseBloc>
@@ -26,7 +26,7 @@
                     </ng-template>
                     <span>Games: <a href="game?id={{game.id}}" *ngFor="let game of post.games">{{game.title}} </a> </span>
                     <span>Topic: {{post.topic}}</span>
-                    <span>Author: <a href="profile/{{post.author}}">{{post.profile.name.value}}</a></span>
+                    <span>Author: <a href="profile/{{post.author.id}}">{{post.author.nickname}}</a></span>
                 </div>
 
 

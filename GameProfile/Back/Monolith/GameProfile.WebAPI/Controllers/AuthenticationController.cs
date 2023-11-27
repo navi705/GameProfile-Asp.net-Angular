@@ -14,6 +14,8 @@ using GameProfile.Application.CQRS.Games.GamesSteamAppId.Requests;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Commands.CreateProfileHasGame;
 using GameProfile.WebAPI.ApiCompilation;
 using GameProfile.Application.DTO;
+using GameProfile.Application.CQRS.Profiles.Ranks.Commands;
+using GameProfile.Domain.Entities.GameEntites;
 
 namespace GameProfile.WebAPI.Controllers
 {
@@ -78,6 +80,11 @@ namespace GameProfile.WebAPI.Controllers
                     if(gameId == Guid.Empty)
                     {
                         continue;
+                    }
+
+                    if (item.appid == 570)
+                    { 
+                        await _steamApiCompilation.AddRatingToDota2(idUser, profile.Id);
                     }
 
                     var statusGame = StatusGameProgressions.Playing;

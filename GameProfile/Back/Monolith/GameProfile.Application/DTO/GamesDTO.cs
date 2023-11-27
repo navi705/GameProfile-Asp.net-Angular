@@ -3,7 +3,7 @@ using GameProfile.Domain.ValueObjects.Game;
 
 namespace GameProfile.Application.DTO
 {
-    public sealed record class GamesForTitleSearchDTO(Guid Id, string Titile, Uri HeaderImage);
+    public sealed record class GamesForTitleSearchDTO(Guid Id, string Title, Uri HeaderImage);
 
     public sealed record class GamesDTO(
         Guid Id,
