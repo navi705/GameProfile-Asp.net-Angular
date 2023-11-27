@@ -12,6 +12,8 @@ using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Requests;
 using GameProfile.Application.CQRS.Games.NotSteamGameAppID.Command.Create;
 using GameProfile.WebAPI.Configuration;
 using GameProfile.Application.CQRS.Games.Commands.CreateGame;
+using GameProfile.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -176,6 +178,17 @@ app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Lax
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<DatabaseContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 
 app.Run();
 public partial class Program { }// for testing
