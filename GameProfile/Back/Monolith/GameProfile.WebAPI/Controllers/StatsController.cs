@@ -1,5 +1,6 @@
 ﻿using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetStats;
 using GameProfile.Application.CQRS.Profiles.ProfilesHasGames.Requests.GetStats.GetCount;
+using GameProfile.Application.CQRS.Stats.Request.AdvancedStats;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,15 @@ namespace GameProfile.WebAPI.Controllers
         {
             var query = new GetCountProfilesQuery();
             _logger.LogInformation("Someone get count of profiles");
+            return Ok(await Sender.Send(query));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("advanced-stats")]
+        public async Task<IActionResult> AdvancedStats()
+        {
+            var query = new AdvenStatsRequest();
+            _logger.LogInformation("Someone get advanced stats");
             return Ok(await Sender.Send(query));
         }
 

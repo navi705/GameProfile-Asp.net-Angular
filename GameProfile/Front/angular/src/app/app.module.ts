@@ -34,6 +34,9 @@ import { PostComponent } from './pages/forum-pages/post/post.component';
 import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-account/add-steam-account/add-steam-account.component';
 import { ProfileGamesRanksComponentComponent } from './pages/profile-pages/profile/profile-components/profile-games-ranks-component/profile-games-ranks-component.component';
 import { ProfileSettingsComponentComponent } from './pages/profile-pages/profile/profile-components/profile-settings-component/profile-settings-component.component';
+import { AdvancedStatisticsComponent } from './pages/stats/advanced-statistics/advanced-statistics.component';
+
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -71,6 +74,7 @@ const MY_DATE_FORMAT = {
     AddSteamAccountComponent,
     ProfileGamesRanksComponentComponent,
     ProfileSettingsComponentComponent,
+    AdvancedStatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +83,7 @@ const MY_DATE_FORMAT = {
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
+    NgxChartsModule,
   ],
   providers: [ {
     provide: DateAdapter,

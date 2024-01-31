@@ -18,6 +18,7 @@ import { ForumComponent } from './pages/forum-pages/forum/forum.component';
 import { AddForumPostComponent } from './pages/forum-pages/add-forum-post/add-forum-post.component';
 import { PostComponent } from './pages/forum-pages/post/post.component';
 import { AddSteamAccountComponent } from './pages/profile-pages/add-steam-account/add-steam-account/add-steam-account.component';
+import { AdvancedStatisticsComponent } from './pages/stats/advanced-statistics/advanced-statistics.component';
 
 const routes: Routes = [
   {path:'game',component: GameComponent},
@@ -36,6 +37,7 @@ const routes: Routes = [
   {path:'forum/add',component: AddForumPostComponent},
   {path:'forum/:id',component:PostComponent},
   {path:'add-steam-account',component:AddSteamAccountComponent},
+  {path:'advanced-statistics',component:AdvancedStatisticsComponent},
   {path: '**', component: NotFoundComponent},
 ];
 

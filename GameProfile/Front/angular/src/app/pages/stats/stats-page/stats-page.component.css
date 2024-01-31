@@ -12,3 +12,7 @@ table {
     font-weight: bold;
   }
   
+.advanced-statistics{
+  font-size: 32px;
+  display: flex;
+  }

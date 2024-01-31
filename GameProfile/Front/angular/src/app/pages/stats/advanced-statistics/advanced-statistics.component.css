@@ -1,0 +1,15 @@
+::ng-deep .ngx-charts { 
+    text{
+        fill: #fff!important; 
+    }
+}
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+.title{
+    font-size: 28px;
+    font-weight: 500;
+    align-items: center;
+}

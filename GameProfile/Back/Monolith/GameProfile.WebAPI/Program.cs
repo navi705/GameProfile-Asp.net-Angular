@@ -179,6 +179,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
     MinimumSameSitePolicy = SameSiteMode.Lax
 });
 
+//migration
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
