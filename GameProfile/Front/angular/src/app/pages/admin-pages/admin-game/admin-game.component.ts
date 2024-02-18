@@ -10,6 +10,7 @@ import { AdminService } from 'src/app/services/admin.service';
 export class AdminGameComponent {
   id:string='';
   name:string='';
+  users:any;
   constructor( public adminService: AdminService
 
   )
@@ -28,10 +29,16 @@ export class AdminGameComponent {
     //   window.location.href='/';
     // }
     );
+
+    this.adminService.GetUsersAndRoles().subscribe(response => this.users = response);
   }
 
   delete(){
     this.adminService.deleteQuery(this.id,this.name).subscribe();
+  }
+
+  addModerator(id:string){
+    this.adminService.AddRoleToUser(id).subscribe();
   }
     
 }

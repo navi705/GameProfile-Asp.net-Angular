@@ -1,6 +1,6 @@
 <div class="container-page">
     <div class="wrapper">
-        <span class="title">Game releases by year</span>
+        <span class="title">Games released by year</span>
         <div>
             <ngx-charts-bar-vertical [results]="stats.yearStats" [xAxis]="true" [yAxis]="true"
             [title]="'Game releases by year'" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'" [yAxisLabel]="'Count'"
@@ -8,14 +8,14 @@
         </ngx-charts-bar-vertical>
         </div>
         
-        <span class="title">Genres popularity</span>
+        <span class="title">Genre popularity</span>
         <div>
             <ngx-charts-tree-map [results]="stats.genreStats">
 
             </ngx-charts-tree-map>
         </div >
 
-        <span class="title">Tags popularity</span>
+        <span class="title">Tag popularity</span>
         <div>
             <ngx-charts-tree-map [results]="stats.tagsStats" [view]="view">
 
@@ -29,21 +29,21 @@
             </ngx-charts-bar-horizontal>
         </div>
 
-        <span class="title">Tags average rating</span>
+        <span class="title">Tag average rating</span>
         <div>
             <ngx-charts-bar-horizontal [results]="tagsRating" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Rating'" [yAxisLabel]="'Tags'" [view]="view">
 
             </ngx-charts-bar-horizontal>
         </div>
 
-        <span class="title">Most popular genres in year</span>
+        <span class="title">Most popular genre by year</span>
         <div>
             <ngx-charts-bar-vertical [results]="stats.mostPopularGenreInYearsDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'" [yAxisLabel]="'Genre'"
             [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
         </ngx-charts-bar-vertical>
         </div>
 
-        <span class="title">Most popular tags in year</span>
+        <span class="title">Most popular tag by year</span>
         
         <table>
             <thead>
@@ -156,20 +156,20 @@
             </tbody>
           </table>
        
-          <span class="title">The most popular tags among users website</span>
+          <span class="title">The most popular tags on the site</span>
           <div>
           <ngx-charts-bar-horizontal [results]="stats.tagsPopularProfileDTO" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Tags'" [view]="view">
 
           </ngx-charts-bar-horizontal>
           </div>
 
-          <span class="title">The most popular genres among users website</span>
+          <span class="title">The most popular genres among website users</span>
             <div>
                 <ngx-charts-bar-vertical [results]="stats.genrePopularProfileDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Genre'"
             [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
         </ngx-charts-bar-vertical>
             </div>         
-          <span class="title">The most popular games among users website</span>
+          <span class="title">The most popular games on the site</span>
           <div>
             <ngx-charts-bar-vertical [results]="stats.mostPopularGameDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Game'"
             [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">

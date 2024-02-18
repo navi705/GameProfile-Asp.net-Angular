@@ -29,6 +29,7 @@ namespace GameProfile.Application.CQRS.Stats.Request.AdvancedStats
             .GroupBy(g => g.ReleaseDate.Year)
             .Select(group => new YearStatsDTO { Name = group.Key.ToString(), Value = group.Count() }
             )
+            .OrderBy(x=>x.Name)
         .ToListAsync(cancellationToken);
 
             Years[0].Name = "Release soon";

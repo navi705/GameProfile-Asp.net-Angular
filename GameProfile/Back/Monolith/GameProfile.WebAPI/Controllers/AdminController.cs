@@ -4,6 +4,8 @@ using GameProfile.Application.CQRS.Forum.Replie.Commands.Delete;
 using GameProfile.Application.CQRS.Games.Commands.DeleteGame;
 using GameProfile.Application.CQRS.Games.GameComments.Commands.Delete;
 using GameProfile.Application.CQRS.Games.GameComments.CommentReplies.Commands.Delete;
+using GameProfile.Application.CQRS.Profiles.Commands.AddRoleToProfile;
+using GameProfile.Application.CQRS.Profiles.Commands.GetRoles;
 using GameProfile.Application.CQRS.Profiles.Role.Command.CreateRole;
 using GameProfile.Application.CQRS.Profiles.Role.Request.DoesHaveHaveRoleAdmin;
 using GameProfile.WebAPI.Shared;
@@ -35,6 +37,22 @@ namespace GameProfile.WebAPI.Controllers
             }
 
            return Ok();
+        }
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpGet("users")]
+        public async Task<IActionResult> RolesByAdmin()
+        {
+            var isAdmin = await Sender.Send(new DoesHaveHaveRoleAdminQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
+
+            if (!isAdmin)
+            {
+                return Forbid();
+            }
+
+            var answer = await Sender.Send(new GetRolesRequest());
+            return Ok(answer);
         }
 
         [Authorize]
@@ -79,8 +97,29 @@ namespace GameProfile.WebAPI.Controllers
                 await Sender.Send(new DeleteGameReplieCommand(id));
             }
 
+
+
             return Ok();
         }
 
+       
+
+        [Authorize]
+        [TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
+        [HttpPost]
+        public async Task<IActionResult> AddRoleModeratorByAdmin(Guid id)
+        {
+            var isAdmin = await Sender.Send(new DoesHaveHaveRoleAdminQuery(new Guid(HttpContext.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value)));
+
+            if (!isAdmin)
+            {
+                return Forbid();
+            }
+
+            await Sender.Send(new AddRoleToProfileCommand(id));
+            return Ok();
+        }
+
+        
     }
 }

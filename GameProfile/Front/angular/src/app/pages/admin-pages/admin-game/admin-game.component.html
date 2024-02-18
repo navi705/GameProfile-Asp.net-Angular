@@ -2,6 +2,7 @@
 
     <div class="wrapper">
 
+        <div>
         <mat-form-field class="sorting">
             <mat-label>Id</mat-label>
             <input matInput [(ngModel)]="id">
@@ -20,6 +21,28 @@
         </mat-form-field>
 
         <a mat-raised-button color="warn" (click)="delete()">Delete</a>
+    </div>
+
+        <div class="roles">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users;">
+                    <td>{{user.name}}</td>
+                    <td>{{user.role}}</td>
+                    <td *ngIf="user.role != 'Admin' && user.role != 'Moderator' "><a mat-raised-button color="accent" (click)="addModerator(user.id)">Add moderator</a></td>
+                    <td *ngIf="user.role != 'Admin'  && user.role == 'Moderator' "><a mat-raised-button color="warn" (click)="addModerator(user.id)">Remove</a></td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
 
     </div>
 

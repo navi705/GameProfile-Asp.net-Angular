@@ -22,4 +22,12 @@ export class AdminService {
         return this.http.delete(GlobalVariable.BASE_API_URL + `admin?id=`+id+`&name=`+name,this.httpOptions);
     }
 
+    public GetUsersAndRoles(){
+        return this.http.get(GlobalVariable.BASE_API_URL + 'admin/users',this.httpOptions);
+    }
+
+    public AddRoleToUser(id:string){
+        return this.http.post(GlobalVariable.BASE_API_URL + 'admin?id=' + id,null,this.httpOptions);
+    }
+
 }

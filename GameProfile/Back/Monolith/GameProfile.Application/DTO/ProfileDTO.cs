@@ -1,5 +1,6 @@
 ﻿using GameProfile.Domain.Entities.ProfileEntites;
 using GameProfile.Domain.Enums.Profile;
+using System.Globalization;
 
 namespace GameProfile.Application.DTO
 {
@@ -26,5 +27,7 @@ namespace GameProfile.Application.DTO
     public sealed record class RankDTO(Ranks Ranks,
                                        Guid GameId,
                                        string GameTitle);
+
+    public sealed record class ProfileForAdminDTO(string name, string role, Guid id);
 
 }
