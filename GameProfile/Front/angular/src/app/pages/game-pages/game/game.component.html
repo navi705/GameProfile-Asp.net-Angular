@@ -80,19 +80,19 @@
 
         <div class="comment" *ngFor="let comment of comments;let i = index">
             <div class="comment-header">
-                <span class="comment-author"><a href="/profile/{{comment.profileId}}">{{comment.profile.name.value}} <span *ngIf="comment.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{comment.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
+                <span class="comment-author"><a href="/profile/{{comment.author.id}}">{{comment.author.nickname}} <span *ngIf="comment.author.rating != null"><mat-icon color="primary" class="star">star</mat-icon>{{comment.author.rating}}</span> </a></span>
                 
-                <span class="comment-date">{{comment.createdDate.slice(0,10)}}</span>
+                <span class="comment-date">{{comment.created.slice(0,10)}}</span>
             </div>
 
-            <div *ngIf="checkCanControlComment(comment.profileId)">
+            <div *ngIf="checkCanControlComment(comment.author.id)">
                 <a mat-raised-button color="warn" (click)="deleteComment(comment.id)">Delete</a>
                 <a mat-raised-button color="accent" (click)="editComment(i)">Edit</a>
             </div>
 
             <div class="comment-content">          
 
-                <span  *ngIf=" editCommentNumber !== i; else edit;" >{{comment.comment}}</span>
+                <span  *ngIf=" editCommentNumber !== i; else edit;" >{{comment.content}}</span>
 
                 <ng-template #edit>
                     <div class="edit">
@@ -130,20 +130,20 @@
 
             <div class="replies">
 
-                <div class="replie" *ngFor="let replie of comment.gameCommentHasReplies;let j = index">
+                <div class="replie" *ngFor="let replie of comment.replies;let j = index">
                     <div class="replie-header">
-                        <span class="comment-author"><a href="/profile/{{replie.profileId}}">{{replie.profile.name.value}} <span *ngIf="replie.profile.gameHasRatingFromProfiles.length >0"><mat-icon color="primary" class="star">star</mat-icon>{{replie.profile.gameHasRatingFromProfiles[0].reviewScore}}</span> </a></span>
+                        <span class="comment-author"><a href="/profile/{{replie.profileId}}">{{replie.author.nickname}} <span *ngIf="replie.author.rating != null"><mat-icon color="primary" class="star">star</mat-icon>{{replie.author.rating}}</span> </a></span>
                         
                         <span class="comment-date">{{replie.created.slice(0,10)}}</span>
                     </div>
-                    <div *ngIf="checkCanControlComment(replie.profileId)">
+                    <div *ngIf="checkCanControlComment(replie.author.id)">
                         <a mat-raised-button color="warn" (click)="deleteReplie(replie.id)">Delete</a>
                         <a mat-raised-button color="accent" (click)="editReplieF(i,replie.replie)">Edit</a>
                     </div>
 
                     <div class="replie-content">          
 
-                        <span  *ngIf=" editReplieNumber !== i; else editReplie;" >{{replie.replie}}</span>
+                        <span  *ngIf=" editReplieNumber !== i; else editReplie;" >{{replie.content}}</span>
 
                         <ng-template #editReplie>
                             <div class="edit">

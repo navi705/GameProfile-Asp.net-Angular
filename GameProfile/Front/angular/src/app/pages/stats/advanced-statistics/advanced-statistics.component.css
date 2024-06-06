@@ -13,3 +13,12 @@ th, td {
     font-weight: 500;
     align-items: center;
 }
+.spiner{
+    margin: 0 auto 0 auto;
+    
+}
+/* @media (max-width: 650px){
+    .wrapper{
+        max-width: 450px;
+    }
+} */

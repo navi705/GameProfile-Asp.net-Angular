@@ -52,7 +52,7 @@ namespace GameProfile.Application.CQRS.Stats.Request.AdvancedStats
 
             var genreAverageRatings = await _context.Games
     .AsNoTracking()
-    .Where(game => game.Reviews.Any()) // Filter out games with no reviews
+    .Where(game => game.Reviews.Any()) 
     .SelectMany(game => game.Genres.Select(tag => new { Tag = tag.GameString, Score = game.Reviews.Average(review => review.Score) }))
     .GroupBy(x => x.Tag)
     .Select(group => 
@@ -64,11 +64,11 @@ namespace GameProfile.Application.CQRS.Stats.Request.AdvancedStats
     )
     .ToListAsync(cancellationToken);
 
-            //
+            
 
             var mostPopularGenresByYear = await _context.Games
     .AsNoTracking()
-    .Where(game => game.Genres.Any()) // Filter out games with no genres
+    .Where(game => game.Genres.Any()) 
     .Select(game => new
     {
         Year = game.ReleaseDate.Year,
@@ -91,7 +91,7 @@ namespace GameProfile.Application.CQRS.Stats.Request.AdvancedStats
 
             var mostPopularTagsByYear = await _context.Games
     .AsNoTracking()
-    .Where(game => game.Tags.Any()) // Filter out games with no genres
+    .Where(game => game.Tags.Any()) 
     .Select(game => new
     {
         Year = game.ReleaseDate.Year,

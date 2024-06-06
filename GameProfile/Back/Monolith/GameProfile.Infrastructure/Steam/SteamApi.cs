@@ -44,40 +44,10 @@ namespace GameProfile.Infrastructure.Steam
                 var game = new SteamGameFromApi
                 {
                     Name = commonData.Value<string>("name"),
-                    Nsfw = commonData.Value<string>("has_adult_content_sex") == "1",
-                    // ReleaseTime = DateTimeOffset.FromUnixTimeSeconds(commonData["steam_release_date"].ToObject<long>()).UtcDateTime,
+                    Nsfw = commonData.Value<string>("has_adult_content_sex") == "1",                 
                     HeaderImg = new Uri($"https://cdn.cloudflare.steamstatic.com/steam/apps/{appID}/header.jpg")
                 };
 
-                //if (commonData["associations"] != null)
-                //{
-                //    foreach (var association in commonData["associations"])
-                //    {
-                //        var type = association.Value<string>("type");
-                //        var name = association.Value<string>("name");
-                //        if (type == "developer")
-                //        {
-                //            game.Developers.Add(new(name));
-                //        }
-                //        else if (type == "publisher")
-                //        {
-                //            game.Publishers.Add(new(name));
-                //        }
-                //    }
-                //}
-
-                //var genresData = data["genres"];
-                //if (genresData != null)
-                //{
-                //    var genres = genresData.ToObject<Dictionary<string, string>>();
-                //    foreach (var genreId in commonData["genres"] ?? Enumerable.Empty<JToken>())
-                //    {
-                //        if (genres.TryGetValue(genreId.ToString(), out var genre))
-                //        {
-                //            game.Genres.Add(new(genre));
-                //        }
-                //    }
-                //}
                 var tagsJson = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Steam/tags.json"));
                 var tagsDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(tagsJson);
                 var tagsData = commonData["store_tags"];
@@ -237,20 +207,7 @@ namespace GameProfile.Infrastructure.Steam
 
             return asdf.ToString();
         }
-
-        //public async Task<string> GetCS2Rank(string steamId)
-        //{
-        //    HtmlWeb web = new HtmlWeb();
-        //    web.UserAgent = "Mozilla/5.0 (Windows NT 6.1; rv:40.0) Gecko/20100101 Firefox/40.0";
-            
-        //    HtmlDocument doc = await web.LoadFromWebAsync($"https://csstats.gg/player/{steamId}");
-
-        //    HtmlNode userRatingNode = doc.DocumentNode.Descendants(".cs2rating").FirstOrDefault();
-
-        //    string rank = userRatingNode?.InnerText;
-
-        //    return rank;
-        //}
+ 
     }
 
     public class SteamGameFromApi

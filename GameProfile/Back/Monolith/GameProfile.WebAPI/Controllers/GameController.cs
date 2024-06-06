@@ -57,7 +57,6 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
 
-        // TODO: be careful with allow here
         [AllowAnonymous]
         [HttpGet("games/devorpub")]
         public async Task<IActionResult> GetGamesByDevOrPub(string type, string who)
@@ -89,7 +88,6 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(answer);
         }
 
-        // TODO: be careful with allow here
         [AllowAnonymous]
         [HttpGet("games")]
         public async Task<IActionResult> GetGames([FromQuery] GetGamesBySortFiltersModel filters)
@@ -136,72 +134,6 @@ namespace GameProfile.WebAPI.Controllers
             return Ok(await Sender.Send(query));
         }
         #endregion
-
-        //[Authorize]
-        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        //[HttpPut("genres")]
-        //public async Task<IActionResult> AddGenres(string genre)
-        //{
-        //    var query = new AddGenreCommand(genre);
-        //    await Sender.Send(query);
-        //    return Ok();
-        //}
-
-        ////[Authorize]
-        ////[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        ////[HttpDelete("genres")]
-        ////public async Task<IActionResult> DeleteGenres(string genre)
-        ////{
-        ////    var query = new AddGenreCommand(genre);
-        ////    await Sender.Send(query);
-        ////    return Ok();
-        ////}
-
-
-        //[Authorize]
-        //[TypeFilter(typeof(AuthorizeRedisCookieAttribute))]
-        //[HttpPut("tags")]
-        //public async Task<IActionResult> AddTags(string tag)
-        //{
-        //    var query = new AddTagCommand(tag);
-        //    await Sender.Send(query);
-
-        //    return Ok();
-        //}
-
-        //[HttpPut]
-        //public async Task<IActionResult> PutGame(Game game)
-        //{
-        //    var query = new CreateGameCommand(game.Title,
-        //                          game.ReleaseDate,
-        //                          game.HeaderImage,
-        //                          game.Nsfw,
-        //                          game.Description,
-        //                          game.Genres,
-        //                          game.Publishers,
-        //                          game.Developers,
-        //                          game.Screenshots,
-        //                          game.ShopsLinkBuyGame,
-        //                          game.AchievementsCount);
-        //    await Sender.Send(query);
-        //    return Ok();
-        //}
-
-        //[HttpDelete]
-        //public async Task<IActionResult> DeleteGame(Guid gameId)
-        //{
-        //    var query = new DeleteGameCommand(gameId);
-        //    await Sender.Send(query);
-        //    return Ok();
-        //}
-
-        //[HttpPut("update")]
-        //public async Task<IActionResult> UpdateGame(Game game, Guid id)
-        //{
-        //    var query = new UpdateGameCommand(game, id);
-        //    await Sender.Send(query);
-        //    return Ok();
-        //}
 
         #region Review
         [Authorize]

@@ -1,180 +1,200 @@
 <div class="container-page">
-    <div class="wrapper">
-        <span class="title">Games released by year</span>
-        <div>
-            <ngx-charts-bar-vertical [results]="stats.yearStats" [xAxis]="true" [yAxis]="true"
-            [title]="'Game releases by year'" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'" [yAxisLabel]="'Count'"
-            [showXAxisLabel]="true" [showYAxisLabel]="true">
+  <div class="wrapper">
+    <mat-progress-spinner *ngIf="loading" mode="indeterminate" class="spiner" diameter="350"></mat-progress-spinner>
+    <div *ngIf="!loading">
+      <span class="title">Games released by year</span>
+      <div>
+        <ngx-charts-bar-vertical [results]="stats.yearStats" [xAxis]="true" [yAxis]="true"
+          [title]="'Game releases by year'" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'"
+          [yAxisLabel]="'Count'" [showXAxisLabel]="true" [showYAxisLabel]="true">
         </ngx-charts-bar-vertical>
-        </div>
-        
-        <span class="title">Genre popularity</span>
-        <div>
-            <ngx-charts-tree-map [results]="stats.genreStats">
+      </div>
 
-            </ngx-charts-tree-map>
-        </div >
+      <span class="title">Genre popularity</span>
+      <div>
+        <ngx-charts-tree-map [results]="stats.genreStats">
 
-        <span class="title">Tag popularity</span>
-        <div>
-            <ngx-charts-tree-map [results]="stats.tagsStats" [view]="view">
+        </ngx-charts-tree-map>
+      </div>
 
-            </ngx-charts-tree-map>
-        </div>
+      <span class="title">Tag popularity</span>
+      <div>
+        <a mat-button color="accent" (click)="setView(0, 1)">All</a>
+        <a mat-button color="accent" (click)="setView(2, 1)">Half</a>
+        <a mat-button color="accent" (click)="setView(4, 1)">Quarter</a>
+        <ngx-charts-tree-map [results]="view1" [view]="view11">
 
-        <span class="title">Genre average rating</span>
-        <div class="title">
-            <ngx-charts-bar-horizontal [results]="stats.ratingGenresStats" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Rating'" [yAxisLabel]="'Genres'">
+        </ngx-charts-tree-map>
+      </div>
 
-            </ngx-charts-bar-horizontal>
-        </div>
+      <span class="title">Genre average rating</span>
+      <div class="title">
+        <ngx-charts-bar-horizontal [results]="stats.ratingGenresStats" [xAxis]="true" [yAxis]="true"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Rating'" [yAxisLabel]="'Genres'">
 
-        <span class="title">Tag average rating</span>
-        <div>
-            <ngx-charts-bar-horizontal [results]="tagsRating" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Rating'" [yAxisLabel]="'Tags'" [view]="view">
+        </ngx-charts-bar-horizontal>
+      </div>
 
-            </ngx-charts-bar-horizontal>
-        </div>
+      <span class="title">Tag average rating</span>
+      <div>
+        <a mat-button color="accent" (click)="setView(0, 2)">All</a>
+        <a mat-button color="accent" (click)="setView(2, 2)">Half</a>
+        <a mat-button color="accent" (click)="setView(4, 2)">Quarter</a>
+        <ngx-charts-bar-horizontal [results]="view2" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true"
+          [showYAxisLabel]="true" [xAxisLabel]="'Rating'" [yAxisLabel]="'Tags'" [view]="view22">
 
-        <span class="title">Most popular genre by year</span>
-        <div>
-            <ngx-charts-bar-vertical [results]="stats.mostPopularGenreInYearsDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'" [yAxisLabel]="'Genre'"
-            [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
-        </ngx-charts-bar-vertical>
-        </div>
+        </ngx-charts-bar-horizontal>
 
-        <span class="title">Most popular tag by year</span>
-        
-        <table>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th>Genre</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1969</td>
-                <td>Action RPG</td>
-              </tr>
-              <tr>
-                <td>1997</td>
-                <td>Arcade</td>
-              </tr>
-              <tr>
-                <td>1998</td>
-                <td>Action-Adventure</td>
-              </tr>
-              <tr>
-                <td>2000</td>
-                <td>1990's</td>
-              </tr>
-              <tr>
-                <td>2003</td>
-                <td>Indie</td>
-              </tr>
-              <tr>
-                <td>2004</td>
-                <td>Indie</td>
-              </tr>
-              <tr>
-                <td>2005</td>
-                <td>Atmospheric</td>
-              </tr>
-              <tr>
-                <td>2006</td>
-                <td>Building</td>
-              </tr>
-              <tr>
-                <td>2007</td>
-                <td>Aliens</td>
-              </tr>
-              <tr>
-                <td>2008</td>
-                <td>First-Person</td>
-              </tr>
-              <tr>
-                <td>2009</td>
-                <td>Automobile Sim</td>
-              </tr>
-              <tr>
-                <td>2010</td>
-                <td>Co-op</td>
-              </tr>
-              <tr>
-                <td>2011</td>
-                <td>Grand Strategy</td>
-              </tr>
-              <tr>
-                <td>2012</td>
-                <td>Casual</td>
-              </tr>
-              <tr>
-                <td>2013</td>
-                <td>Automobile Sim</td>
-              </tr>
-              <tr>
-                <td>2014</td>
-                <td>Magic</td>
-              </tr>
-              <tr>
-                <td>2015</td>
-                <td>Indie</td>
-              </tr>
-              <tr>
-                <td>2016</td>
-                <td>Anime</td>
-              </tr>
-              <tr>
-                <td>2017</td>
-                <td>Cartoon</td>
-              </tr>
-              <tr>
-                <td>2018</td>
-                <td>Indie</td>
-              </tr>
-              <tr>
-                <td>2019</td>
-                <td>2D Platformer</td>
-              </tr>
-              <tr>
-                <td>2020</td>
-                <td>Character Customization</td>
-              </tr>
-              <tr>
-                <td>2021</td>
-                <td>Arcade</td>
-              </tr>
-              <tr>
-                <td>2022</td>
-                <td>Arcade</td>
-              </tr>
-              <tr>
-                <td>2023</td>
-                <td>3D</td>
-              </tr>
-            </tbody>
-          </table>
        
-          <span class="title">The most popular tags on the site</span>
-          <div>
-          <ngx-charts-bar-horizontal [results]="stats.tagsPopularProfileDTO" [xAxis]="true" [yAxis]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Tags'" [view]="view">
 
-          </ngx-charts-bar-horizontal>
-          </div>
+      </div>
 
-          <span class="title">The most popular genres among website users</span>
-            <div>
-                <ngx-charts-bar-vertical [results]="stats.genrePopularProfileDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Genre'"
-            [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
+      <span class="title">Most popular genre by year</span>
+      <div>
+        <ngx-charts-bar-vertical [results]="stats.mostPopularGenreInYearsDTO" [xAxis]="true" [yAxis]="true"
+          [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Years'" [yAxisLabel]="'Genre'"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
         </ngx-charts-bar-vertical>
-            </div>         
-          <span class="title">The most popular games on the site</span>
-          <div>
-            <ngx-charts-bar-vertical [results]="stats.mostPopularGameDTO" [xAxis]="true" [yAxis]="true" [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Game'"
-            [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
-        </ngx-charts-bar-vertical>
-          </div>
+      </div>
 
+      <span class="title">Most popular tag by year</span>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Genre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1969</td>
+            <td>Action RPG</td>
+          </tr>
+          <tr>
+            <td>1997</td>
+            <td>Arcade</td>
+          </tr>
+          <tr>
+            <td>1998</td>
+            <td>Action-Adventure</td>
+          </tr>
+          <tr>
+            <td>2000</td>
+            <td>1990's</td>
+          </tr>
+          <tr>
+            <td>2003</td>
+            <td>Indie</td>
+          </tr>
+          <tr>
+            <td>2004</td>
+            <td>Indie</td>
+          </tr>
+          <tr>
+            <td>2005</td>
+            <td>Atmospheric</td>
+          </tr>
+          <tr>
+            <td>2006</td>
+            <td>Building</td>
+          </tr>
+          <tr>
+            <td>2007</td>
+            <td>Aliens</td>
+          </tr>
+          <tr>
+            <td>2008</td>
+            <td>First-Person</td>
+          </tr>
+          <tr>
+            <td>2009</td>
+            <td>Automobile Sim</td>
+          </tr>
+          <tr>
+            <td>2010</td>
+            <td>Co-op</td>
+          </tr>
+          <tr>
+            <td>2011</td>
+            <td>Grand Strategy</td>
+          </tr>
+          <tr>
+            <td>2012</td>
+            <td>Casual</td>
+          </tr>
+          <tr>
+            <td>2013</td>
+            <td>Automobile Sim</td>
+          </tr>
+          <tr>
+            <td>2014</td>
+            <td>Magic</td>
+          </tr>
+          <tr>
+            <td>2015</td>
+            <td>Indie</td>
+          </tr>
+          <tr>
+            <td>2016</td>
+            <td>Anime</td>
+          </tr>
+          <tr>
+            <td>2017</td>
+            <td>Cartoon</td>
+          </tr>
+          <tr>
+            <td>2018</td>
+            <td>Indie</td>
+          </tr>
+          <tr>
+            <td>2019</td>
+            <td>2D Platformer</td>
+          </tr>
+          <tr>
+            <td>2020</td>
+            <td>Character Customization</td>
+          </tr>
+          <tr>
+            <td>2021</td>
+            <td>Arcade</td>
+          </tr>
+          <tr>
+            <td>2022</td>
+            <td>Arcade</td>
+          </tr>
+          <tr>
+            <td>2023</td>
+            <td>3D</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <span class="title">The most popular tags on the site</span>
+      <div>
+        <a mat-button color="accent" (click)="setView(0, 3)">All</a>
+        <a mat-button color="accent" (click)="setView(2, 3)">Half</a>
+        <a mat-button color="accent" (click)="setView(4, 3)">Quarter</a>
+        <ngx-charts-bar-horizontal [results]="view3" [xAxis]="true" [yAxis]="true"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Tags'" [view]="view33">
+
+        </ngx-charts-bar-horizontal>
+      </div>
+
+      <span class="title">The most popular genres among website users</span>
+      <div>
+        <ngx-charts-bar-vertical [results]="stats.genrePopularProfileDTO" [xAxis]="true" [yAxis]="true"
+          [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Genre'"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
+        </ngx-charts-bar-vertical>
+      </div>
+      <span class="title">The most popular games on the site</span>
+      <div>
+        <ngx-charts-bar-vertical [results]="stats.mostPopularGameDTO" [xAxis]="true" [yAxis]="true"
+          [showGridLines]="false" [showDataLabel]="true" [xAxisLabel]="'Count'" [yAxisLabel]="'Game'"
+          [showXAxisLabel]="true" [showYAxisLabel]="true" [view]="viewSmall">
+        </ngx-charts-bar-vertical>
+      </div>
     </div>
+  </div>
 </div>

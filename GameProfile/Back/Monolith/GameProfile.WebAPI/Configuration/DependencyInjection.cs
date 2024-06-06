@@ -65,7 +65,7 @@ namespace GameProfile.WebAPI.Configuration
                         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
                         factory: _ => new FixedWindowRateLimiterOptions
                         {
-                            PermitLimit = 10,
+                            PermitLimit = 40,
                             Window = TimeSpan.FromSeconds(10)
                         }
                         );
