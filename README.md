@@ -1,19 +1,16 @@
-# Introduction (Business Model)
-GameProfile - is a website for tracking time spent playing games. Connect your account from Steam, Origin, Upaly and more. 
-Here you can find games with reviews from Steam, Epic Games and MetaCritic. You can also find someone to play with. 
-Ещё агрегатор новостей и форум.
-
-
-Income from advertising (Google Adsense) 50,000 views per month 2,000 USD per year
-
-Expenses:
-* Domain 32 usd per year
-* Server to start 300 usd per year
-
-# Architecture
-First Server -client in folder front (client) back(server)
-
-# Techical Stack
+# GameProifle
+GameProfile is a web service designed for managing your game collection and providing mini analytics to enhance your gaming experience.
+## Techical Stack
 * Asp.net 7
 * Angular
 * CI/CD Github Actions
+* MS SQL
+* Redis
+* Docker
+* Nginx
+## Architecture
+* Infrastructure Layer: Handles external APIs 
+* Persistence Layer: Manages database interactions, migrations, and caching
+* Business Logic Layer: Contains core application rules and entities (e.g., Forum, Game, Profile).
+* Application Layer: Facilitates data transfer and DTO creation
+* Wep API Layer: Exposes API endpoints for client interaction
