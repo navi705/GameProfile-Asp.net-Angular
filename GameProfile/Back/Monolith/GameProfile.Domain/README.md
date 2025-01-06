@@ -1,7 +1,4 @@
 # Domain Layer
-Domain Layer -
-
-
 ## Entities 
 Entities - are entities that have identity, state and behaviour. They can be traceable, have links to other entities and have methods for changing their state. Entities usually represent real objects in the subject area, which may be unique, e.g. orders, users, etc.
 
