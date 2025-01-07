@@ -15,12 +15,14 @@ The entry point for the application is a request to the server via **Nginx**, wh
 - **SteamCMD**
 - **ASP.NET**
 All requests are handled by the **ASP.NET server**, which in turn communicates with the other applications.
+
 ![](/Screenshots/Scheme.png)
 * Infrastructure Layer: Handles external APIs 
 * Persistence Layer: Manages database interactions, migrations, and caching
 * Business Logic Layer: Contains core application rules and entities (e.g., Forum, Game, Profile).
 * Application Layer: Facilitates data transfer and DTO creation
 * Wep API Layer: Exposes API endpoints for client interaction
+
 ![](/Screenshots/Layers.png)
 ## ERD
 ![](/Screenshots/ERD.png)
